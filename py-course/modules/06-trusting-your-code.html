@@ -1,0 +1,552 @@
+<section class="module" id="module-6">
+  <div class="module-content">
+    <div class="module-header animate-in">
+      <span class="module-number">06</span>
+      <h1 class="module-title">Trusting Your Code</h1>
+      <p class="module-subtitle">pytest, fixtures, parametrize, mocking — how to verify your code works (and catch when Claude gets it wrong)</p>
+    </div>
+
+    <!-- Screen 1: Why Tests Exist -->
+    <div class="screen">
+      <h2 class="screen-heading animate-in">Why Tests Exist</h2>
+
+      <p class="animate-in">Tests are a ratchet wrench — each green test is a click that locks in your progress. You cannot accidentally slip backward.</p>
+
+      <div class="chat-window animate-in" id="chat-m6-tests">
+        <div class="chat-messages">
+          <div class="chat-message" data-sender="You" style="display:none">
+            <div class="chat-avatar" style="background: var(--color-actor-2)">D</div>
+            <div class="chat-bubble">
+              <span class="chat-sender" style="color: var(--color-actor-2)">You</span>
+              <p>I refactored the discount calculation function. Should be faster now.</p>
+            </div>
+          </div>
+          <div class="chat-message" data-sender="Test Suite" style="display:none">
+            <div class="chat-avatar" style="background: var(--color-actor-5)">T</div>
+            <div class="chat-bubble">
+              <span class="chat-sender" style="color: var(--color-actor-5)">Test Suite</span>
+              <p>Running 47 tests...</p>
+            </div>
+          </div>
+          <div class="chat-message" data-sender="Test Suite" style="display:none">
+            <div class="chat-avatar" style="background: var(--color-actor-5)">T</div>
+            <div class="chat-bubble">
+              <span class="chat-sender" style="color: var(--color-actor-5)">Test Suite</span>
+              <p>FAILED: test_zero_discount_returns_full_price</p>
+            </div>
+          </div>
+          <div class="chat-message" data-sender="You" style="display:none">
+            <div class="chat-avatar" style="background: var(--color-actor-2)">D</div>
+            <div class="chat-bubble">
+              <span class="chat-sender" style="color: var(--color-actor-2)">You</span>
+              <p>Wait — my refactor broke the zero-discount case?</p>
+            </div>
+          </div>
+          <div class="chat-message" data-sender="The Code" style="display:none">
+            <div class="chat-avatar" style="background: var(--color-actor-3)">C</div>
+            <div class="chat-bubble">
+              <span class="chat-sender" style="color: var(--color-actor-3)">The Code</span>
+              <p>Yes. The new formula divides by discount_pct. When pct=0, that is a ZeroDivisionError.</p>
+            </div>
+          </div>
+          <div class="chat-message" data-sender="Test Suite" style="display:none">
+            <div class="chat-avatar" style="background: var(--color-actor-5)">T</div>
+            <div class="chat-bubble">
+              <span class="chat-sender" style="color: var(--color-actor-5)">Test Suite</span>
+              <p>Without me, you would have shipped this. With me, you caught it in 3 seconds.</p>
+            </div>
+          </div>
+          <div class="chat-message" data-sender="You" style="display:none">
+            <div class="chat-avatar" style="background: var(--color-actor-2)">D</div>
+            <div class="chat-bubble">
+              <span class="chat-sender" style="color: var(--color-actor-2)">You</span>
+              <p>So tests do not just find bugs now — they prevent future regressions too.</p>
+            </div>
+          </div>
+          <div class="chat-message" data-sender="Test Suite" style="display:none">
+            <div class="chat-avatar" style="background: var(--color-actor-5)">T</div>
+            <div class="chat-bubble">
+              <span class="chat-sender" style="color: var(--color-actor-5)">Test Suite</span>
+              <p>Each green test is a ratchet click. Progress is locked in. You cannot accidentally slip backward.</p>
+            </div>
+          </div>
+        </div>
+        <div class="chat-typing" style="display:none">
+          <div class="chat-avatar" id="chat-m6-tests-typing-avatar" style="background: var(--color-actor-5)">T</div>
+          <div class="chat-typing-dots">
+            <span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span>
+          </div>
+        </div>
+        <div class="chat-controls">
+          <button class="btn chat-next-btn">Next Message</button>
+          <button class="btn chat-all-btn">Play All</button>
+          <button class="btn chat-reset-btn">Replay</button>
+          <span class="chat-progress"></span>
+        </div>
+      </div>
+
+      <div class="callout callout-accent animate-in">
+        <div class="callout-icon">💡</div>
+        <div class="callout-content">
+          <p>When Claude generates tests alongside code, it is creating a record of intended behavior. The test says: this function should do X. If anyone changes the function and breaks X, the test fails loudly. Tests are a contract written in executable form.</p>
+        </div>
+      </div>
+
+      <p class="animate-in">
+        Glossary:
+        <span class="term" data-definition="A piece of code that verifies another piece of code behaves correctly. Tests run automatically and report pass or fail — no manual checking needed.">test</span> ·
+        <span class="term" data-definition="A bug that was fixed but later reappeared — usually because a code change accidentally re-introduced the old broken behavior. Tests prevent regressions by catching them immediately.">regression</span> ·
+        <span class="term" data-definition="The most popular Python testing framework. Run it with `pytest` in your terminal. It auto-discovers test files and functions, runs them, and reports results.">pytest</span> ·
+        <span class="term" data-definition="All the tests for a project or module, run together. A passing test suite means all known intended behaviors are working.">test suite</span>
+      </p>
+    </div>
+
+    <!-- Screen 2: Writing Assertions -->
+    <div class="screen">
+      <h2 class="screen-heading animate-in">Writing Assertions</h2>
+
+      <p class="animate-in">A pytest test is any function whose name starts with <code>test_</code>. Inside, you use <code>assert</code> to state what you expect. If the assertion fails, pytest tells you exactly what the actual value was.</p>
+
+      <div class="step-cards animate-in">
+        <div class="step-card">
+          <div class="step-card-number">1</div>
+          <div class="step-card-content">
+            <strong>File naming</strong>
+            <p>pytest automatically discovers files named <code>test_*.py</code> or <code>*_test.py</code></p>
+          </div>
+        </div>
+        <div class="step-card">
+          <div class="step-card-number">2</div>
+          <div class="step-card-content">
+            <strong>Function naming</strong>
+            <p>Any function starting with <code>test_</code> is a test. No class or registration needed.</p>
+          </div>
+        </div>
+        <div class="step-card">
+          <div class="step-card-number">3</div>
+          <div class="step-card-content">
+            <strong>assert</strong>
+            <p><code>assert expected_value == actual_value</code>. If False, pytest shows both values.</p>
+          </div>
+        </div>
+        <div class="step-card">
+          <div class="step-card-number">4</div>
+          <div class="step-card-content">
+            <strong>pytest.raises()</strong>
+            <p>Wrap code that SHOULD raise an exception. The test fails if no exception is raised.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="translation-block animate-in">
+        <div class="translation-code">
+          <span class="translation-label">PYTHON</span>
+          <pre><code><span class="code-line"><span class="code-comment"># test_calculator.py</span></span>
+<span class="code-line"><span class="code-keyword">from</span> calculator <span class="code-keyword">import</span> add, divide</span>
+<span class="code-line"></span>
+<span class="code-line"><span class="code-keyword">def</span> <span class="code-function">test_add_positive_numbers</span>():</span>
+<span class="code-line">    <span class="code-property">result</span> = <span class="code-function">add</span>(<span class="code-number">3</span>, <span class="code-number">4</span>)</span>
+<span class="code-line">    <span class="code-keyword">assert</span> result == <span class="code-number">7</span></span>
+<span class="code-line"></span>
+<span class="code-line"><span class="code-keyword">def</span> <span class="code-function">test_divide_by_zero_raises</span>():</span>
+<span class="code-line">    <span class="code-keyword">import</span> pytest</span>
+<span class="code-line">    <span class="code-keyword">with</span> pytest.<span class="code-function">raises</span>(<span class="code-function">ZeroDivisionError</span>):</span>
+<span class="code-line">        <span class="code-function">divide</span>(<span class="code-number">10</span>, <span class="code-number">0</span>)</span>
+<span class="code-line"></span>
+<span class="code-line"><span class="code-keyword">def</span> <span class="code-function">test_add_returns_correct_type</span>():</span>
+<span class="code-line">    <span class="code-property">result</span> = <span class="code-function">add</span>(<span class="code-number">1.5</span>, <span class="code-number">2.5</span>)</span>
+<span class="code-line">    <span class="code-keyword">assert</span> <span class="code-function">isinstance</span>(result, <span class="code-property">float</span>)</span>
+<span class="code-line">    <span class="code-keyword">assert</span> result == <span class="code-number">4.0</span></span></code></pre>
+        </div>
+        <div class="translation-english">
+          <span class="translation-label">PLAIN ENGLISH</span>
+          <div class="translation-lines">
+            <p class="tl">&nbsp;</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl"><code>def test_add_positive_numbers():</code> → Any function starting with test_ is picked up by pytest automatically</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl"><code>assert result == 7</code> → "I expect result to equal 7. If not, stop and show me what it actually was."</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl"><code>def test_divide_by_zero_raises():</code> → A test specifically for error-handling behavior</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl"><code>with pytest.raises(ZeroDivisionError):</code> → "I expect this code to raise ZeroDivisionError. No exception = test failure."</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl"><code>def test_add_returns_correct_type():</code> → A separate test for the return type</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl"><code>assert isinstance(result, float)</code> → Check the type, not just the value</p>
+            <p class="tl">&nbsp;</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="callout callout-warning animate-in">
+        <div class="callout-icon">⚠️</div>
+        <div class="callout-content">
+          <p>Common trap: tests that pass but test nothing. <code>def test_something(): result = run(); assert result</code> — this only checks that result is truthy. A real assertion checks the specific expected value: <code>assert result == expected</code>.</p>
+        </div>
+      </div>
+
+      <p class="animate-in">
+        Glossary:
+        <span class="term" data-definition="A Python statement that checks a condition is True. If it is False, Python raises AssertionError. pytest catches this and reports the test as failed, showing the actual vs expected values.">assert</span> ·
+        <span class="term" data-definition="A context manager from pytest. Wraps code that is expected to raise a specific exception type. If no exception is raised (or the wrong type is raised), the test fails.">pytest.raises()</span> ·
+        <span class="term" data-definition="A statement in a test that checks a specific expected condition. Good assertions check exact values, not just truthiness.">assertion</span> ·
+        <span class="term" data-definition="The automatic process by which pytest finds test files (test_*.py or *_test.py) and test functions (def test_*) without any manual registration.">test discovery</span>
+      </p>
+    </div>
+
+    <!-- Screen 3: Fixtures and Parametrize -->
+    <div class="screen">
+      <h2 class="screen-heading animate-in">Fixtures — Shared Setup</h2>
+
+      <p class="animate-in">Fixtures eliminate repeated setup code. Write the setup once, mark it with <code>@pytest.fixture</code>, and pytest injects it automatically into every test that requests it.</p>
+
+      <div class="flow-animation animate-in" id="flow-m6-fix" data-steps='[
+        {"highlight":"flow-m6f-1","label":"test_active_user: 5 lines of user setup code"},
+        {"highlight":"flow-m6f-2","label":"test_admin_check: same 5 lines of user setup — duplicated","packet":true,"from":"m6f-1","to":"m6f-2"},
+        {"highlight":"flow-m6f-3","label":"test_can_view: same 5 lines again — third copy","packet":true,"from":"m6f-2","to":"m6f-3"},
+        {"highlight":"flow-m6f-4","label":"Extract to @pytest.fixture: write setup ONCE, all tests receive it as a parameter","packet":true,"from":"m6f-3","to":"m6f-4"},
+        {"highlight":"flow-m6f-4","label":"Each test declares the fixture by name: def test_active(sample_user): — pytest injects it automatically"}
+      ]'>
+        <div class="flow-actors">
+          <div class="flow-actor" id="flow-m6f-1">
+            <div class="flow-actor-icon">🔵</div>
+            <span>Test A</span>
+          </div>
+          <div class="flow-actor" id="flow-m6f-2">
+            <div class="flow-actor-icon">🟢</div>
+            <span>Test B</span>
+          </div>
+          <div class="flow-actor" id="flow-m6f-3">
+            <div class="flow-actor-icon">🟡</div>
+            <span>Test C</span>
+          </div>
+          <div class="flow-actor" id="flow-m6f-4">
+            <div class="flow-actor-icon">✨</div>
+            <span>Fixture</span>
+          </div>
+        </div>
+        <div class="flow-packet"></div>
+        <div class="flow-step-label">Click "Next Step" to begin</div>
+        <div class="flow-controls">
+          <button class="btn flow-next-btn">Next Step</button>
+          <button class="btn flow-reset-btn">Restart</button>
+          <span class="flow-progress"></span>
+        </div>
+      </div>
+
+      <div class="translation-block animate-in">
+        <div class="translation-code">
+          <span class="translation-label">PYTHON</span>
+          <pre><code><span class="code-line"><span class="code-keyword">import</span> pytest</span>
+<span class="code-line"><span class="code-keyword">from</span> app <span class="code-keyword">import</span> User, is_admin</span>
+<span class="code-line"></span>
+<span class="code-line">@pytest.<span class="code-function">fixture</span></span>
+<span class="code-line"><span class="code-keyword">def</span> <span class="code-function">sample_user</span>():</span>
+<span class="code-line">    <span class="code-keyword">return</span> <span class="code-function">User</span>(name=<span class="code-string">"Alice"</span>, role=<span class="code-string">"admin"</span>, active=<span class="code-keyword">True</span>)</span>
+<span class="code-line"></span>
+<span class="code-line"><span class="code-keyword">def</span> <span class="code-function">test_user_is_active</span>(sample_user):</span>
+<span class="code-line">    <span class="code-keyword">assert</span> sample_user.active <span class="code-keyword">is True</span></span>
+<span class="code-line"></span>
+<span class="code-line"><span class="code-keyword">def</span> <span class="code-function">test_admin_check</span>(sample_user):</span>
+<span class="code-line">    <span class="code-keyword">assert</span> <span class="code-function">is_admin</span>(sample_user) <span class="code-keyword">is True</span></span>
+<span class="code-line"></span>
+<span class="code-line">@pytest.mark.<span class="code-function">parametrize</span>(<span class="code-string">"a,b,expected"</span>, [</span>
+<span class="code-line">    (<span class="code-number">1</span>, <span class="code-number">2</span>, <span class="code-number">3</span>),</span>
+<span class="code-line">    (<span class="code-number">0</span>, <span class="code-number">0</span>, <span class="code-number">0</span>),</span>
+<span class="code-line">    (<span class="code-number">-1</span>, <span class="code-number">1</span>, <span class="code-number">0</span>),</span>
+<span class="code-line">])</span>
+<span class="code-line"><span class="code-keyword">def</span> <span class="code-function">test_add</span>(a, b, expected):</span>
+<span class="code-line">    <span class="code-keyword">from</span> calculator <span class="code-keyword">import</span> add</span>
+<span class="code-line">    <span class="code-keyword">assert</span> <span class="code-function">add</span>(a, b) == expected</span></code></pre>
+        </div>
+        <div class="translation-english">
+          <span class="translation-label">PLAIN ENGLISH</span>
+          <div class="translation-lines">
+            <p class="tl">&nbsp;</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl"><code>@pytest.fixture</code> → Marks a function as a fixture. pytest calls it and passes the return value to any test that lists it as a parameter</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl"><code>def test_user_is_active(sample_user):</code> → pytest sees sample_user in the signature and runs the fixture automatically</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl"><code>@pytest.mark.parametrize("a,b,expected", [...])</code> → Run this test multiple times with different inputs — no copy-pasting</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl">The table <code>(1,2,3), (0,0,0), (-1,1,0)</code> runs the test 3 times, once per row, producing 3 separate test results</p>
+            <p class="tl">&nbsp;</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="callout callout-info animate-in">
+        <div class="callout-icon">🔗</div>
+        <div class="callout-content">
+          <p>Parametrize is how Claude writes efficient tests. Instead of <code>test_add_positives</code>, <code>test_add_zeros</code>, <code>test_add_negatives</code> — three separate functions — it writes one parametrized test. When you see that decorator, it means one function tests many cases.</p>
+        </div>
+      </div>
+
+      <p class="animate-in">
+        Glossary:
+        <span class="term" data-definition="A function that provides setup data or objects to tests. Marked with @pytest.fixture. pytest calls it automatically and passes its return value to any test that declares it as a parameter.">fixture</span> ·
+        <span class="term" data-definition="A decorator that marks a function as a pytest fixture. The function runs before each test that requests it, and its return value is injected as the parameter value.">@pytest.fixture</span> ·
+        <span class="term" data-definition="A decorator that runs one test function multiple times with different argument values. Each row in the argument list becomes a separate test run with its own pass/fail result.">@pytest.mark.parametrize</span> ·
+        <span class="term" data-definition="The lifetime of a fixture — how often it is created. Default is 'function' (once per test). 'module' shares one instance per file. 'session' shares one across the entire test run.">scope</span>
+      </p>
+    </div>
+
+    <!-- Screen 4: Mocking -->
+    <div class="screen">
+      <h2 class="screen-heading animate-in">Mocking — Stub the World</h2>
+
+      <p class="animate-in">Mocking replaces real dependencies (APIs, databases, files) with fake versions during tests. Your code runs in isolation, with full control over what the fakes return.</p>
+
+      <div class="chat-window animate-in" id="chat-m6-mock">
+        <div class="chat-messages">
+          <div class="chat-message" data-sender="Your Code" style="display:none">
+            <div class="chat-avatar" style="background: var(--color-actor-2)">C</div>
+            <div class="chat-bubble">
+              <span class="chat-sender" style="color: var(--color-actor-2)">Your Code</span>
+              <p>I call fetch_weather('Tokyo') — normally this hits the real weather API.</p>
+            </div>
+          </div>
+          <div class="chat-message" data-sender="Real API" style="display:none">
+            <div class="chat-avatar" style="background: var(--color-actor-1)">A</div>
+            <div class="chat-bubble">
+              <span class="chat-sender" style="color: var(--color-actor-1)">Real API</span>
+              <p>That costs money, takes time, and fails when offline. Bad for automated tests.</p>
+            </div>
+          </div>
+          <div class="chat-message" data-sender="Mock" style="display:none">
+            <div class="chat-avatar" style="background: var(--color-actor-5)">M</div>
+            <div class="chat-bubble">
+              <span class="chat-sender" style="color: var(--color-actor-5)">Mock</span>
+              <p>I intercept that call with unittest.mock.patch. Your code never knows the difference.</p>
+            </div>
+          </div>
+          <div class="chat-message" data-sender="Your Code" style="display:none">
+            <div class="chat-avatar" style="background: var(--color-actor-2)">C</div>
+            <div class="chat-bubble">
+              <span class="chat-sender" style="color: var(--color-actor-2)">Your Code</span>
+              <p>I called fetch_weather('Tokyo') and got a response.</p>
+            </div>
+          </div>
+          <div class="chat-message" data-sender="Mock" style="display:none">
+            <div class="chat-avatar" style="background: var(--color-actor-5)">M</div>
+            <div class="chat-bubble">
+              <span class="chat-sender" style="color: var(--color-actor-5)">Mock</span>
+              <p>I returned {'temp': 22, 'condition': 'sunny'} — a fake response I control perfectly.</p>
+            </div>
+          </div>
+          <div class="chat-message" data-sender="Your Code" style="display:none">
+            <div class="chat-avatar" style="background: var(--color-actor-2)">C</div>
+            <div class="chat-bubble">
+              <span class="chat-sender" style="color: var(--color-actor-2)">Your Code</span>
+              <p>My logic processed it: formatted the display, returned the result string.</p>
+            </div>
+          </div>
+          <div class="chat-message" data-sender="Mock" style="display:none">
+            <div class="chat-avatar" style="background: var(--color-actor-5)">M</div>
+            <div class="chat-bubble">
+              <span class="chat-sender" style="color: var(--color-actor-5)">Mock</span>
+              <p>Your test verified the behavior without touching the real API once. This is isolation.</p>
+            </div>
+          </div>
+        </div>
+        <div class="chat-typing" style="display:none">
+          <div class="chat-avatar" id="chat-m6-mock-typing-avatar" style="background: var(--color-actor-5)">M</div>
+          <div class="chat-typing-dots">
+            <span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span>
+          </div>
+        </div>
+        <div class="chat-controls">
+          <button class="btn chat-next-btn">Next Message</button>
+          <button class="btn chat-all-btn">Play All</button>
+          <button class="btn chat-reset-btn">Replay</button>
+          <span class="chat-progress"></span>
+        </div>
+      </div>
+
+      <div class="translation-block animate-in">
+        <div class="translation-code">
+          <span class="translation-label">PYTHON</span>
+          <pre><code><span class="code-line"><span class="code-keyword">from</span> unittest.mock <span class="code-keyword">import</span> patch</span>
+<span class="code-line"><span class="code-keyword">import</span> pytest</span>
+<span class="code-line"><span class="code-keyword">from</span> weather_app <span class="code-keyword">import</span> get_weather_summary</span>
+<span class="code-line"></span>
+<span class="code-line"><span class="code-keyword">def</span> <span class="code-function">test_weather_sunny</span>():</span>
+<span class="code-line">    <span class="code-property">fake_data</span> = {<span class="code-string">"temp"</span>: <span class="code-number">22</span>, <span class="code-string">"condition"</span>: <span class="code-string">"sunny"</span>}</span>
+<span class="code-line"></span>
+<span class="code-line">    <span class="code-keyword">with</span> <span class="code-function">patch</span>(<span class="code-string">"weather_app.fetch_weather"</span>) <span class="code-keyword">as</span> mock_fetch:</span>
+<span class="code-line">        mock_fetch.return_value = fake_data</span>
+<span class="code-line">        <span class="code-property">result</span> = <span class="code-function">get_weather_summary</span>(<span class="code-string">"Tokyo"</span>)</span>
+<span class="code-line"></span>
+<span class="code-line">    <span class="code-keyword">assert</span> <span class="code-string">"sunny"</span> <span class="code-keyword">in</span> result</span>
+<span class="code-line">    mock_fetch.<span class="code-function">assert_called_once_with</span>(<span class="code-string">"Tokyo"</span>)</span></code></pre>
+        </div>
+        <div class="translation-english">
+          <span class="translation-label">PLAIN ENGLISH</span>
+          <div class="translation-lines">
+            <p class="tl">&nbsp;</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl"><code>patch("weather_app.fetch_weather")</code> → Replace fetch_weather in weather_app with a fake for the duration of the with block</p>
+            <p class="tl"><code>mock_fetch.return_value = fake_data</code> → When your code calls the fake, it returns this value</p>
+            <p class="tl"><code>get_weather_summary("Tokyo")</code> → Your real function runs — but the API call is intercepted</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl"><code>assert "sunny" in result</code> → Verify the output contains the expected content</p>
+            <p class="tl"><code>mock_fetch.assert_called_once_with("Tokyo")</code> → Verify the mock was called exactly once with exactly this argument</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="callout callout-warning animate-in">
+        <div class="callout-icon">⚠️</div>
+        <div class="callout-content">
+          <p>A test that patches the wrong path silently passes for the wrong reason. Always patch where the name is USED, not where it is defined. If weather_app.py does <code>from requests import get</code>, patch <code>weather_app.get</code>, not <code>requests.get</code>.</p>
+        </div>
+      </div>
+
+      <p class="animate-in">
+        Glossary:
+        <span class="term" data-definition="A fake object that replaces a real dependency (API, database, file) during a test. Mocks record how they were called so you can assert on their usage.">mock</span> ·
+        <span class="term" data-definition="A function from unittest.mock that temporarily replaces a named object with a Mock. Used as a context manager (with patch(...) as m:) or decorator. Always patch where the name is used, not where it is defined.">patch</span> ·
+        <span class="term" data-definition="A method on Mock objects that verifies the mock was called exactly one time with exactly the specified arguments. Raises AssertionError if the call count or arguments do not match.">assert_called_once_with()</span> ·
+        <span class="term" data-definition="Running a unit of code (a function, class) with all external dependencies replaced by mocks or stubs. Isolation means the test only verifies that one unit — not its dependencies.">test isolation</span>
+      </p>
+    </div>
+
+    <!-- Quiz -->
+    <div class="screen">
+      <h2 class="screen-heading animate-in">Check Your Understanding</h2>
+
+      <div class="quiz-container animate-in" id="quiz-module6">
+
+        <!-- Q1 -->
+        <div class="quiz-question-block"
+             data-correct="opt-c"
+             data-explanation-right="Exactly! Mocking replaces the real Stripe call with a fake that returns exactly the declined response you want to test. No real money, no network needed, deterministic every time."
+             data-explanation-wrong="Mocking is the right tool here. patch('app.stripe.charge') with a fake declined response lets you test the error handling path deterministically.">
+          <h3 class="quiz-question">Claude wrote a function that calls the Stripe payment API. You want to test that it handles declined cards correctly without charging anyone. How?</h3>
+          <div class="quiz-options">
+            <button class="quiz-option" data-value="opt-a">
+              <div class="quiz-option-radio"></div>
+              <span>Use a real Stripe test card number</span>
+            </button>
+            <button class="quiz-option" data-value="opt-b">
+              <div class="quiz-option-radio"></div>
+              <span>Skip the test — payment functions cannot be tested</span>
+            </button>
+            <button class="quiz-option" data-value="opt-c">
+              <div class="quiz-option-radio"></div>
+              <span>Mock the Stripe API call to return a declined response</span>
+            </button>
+            <button class="quiz-option" data-value="opt-d">
+              <div class="quiz-option-radio"></div>
+              <span>Test manually by clicking through the UI</span>
+            </button>
+          </div>
+          <div class="quiz-feedback"></div>
+        </div>
+
+        <!-- Q2 -->
+        <div class="quiz-question-block"
+             data-correct="opt-b"
+             data-explanation-right="Correct! Everything before yield is setup (runs before the test). Everything after yield is teardown (runs after the test). yield hands control to the test."
+             data-explanation-wrong="In fixtures, yield is the boundary: setup above it, teardown below it. A return would exit the fixture with no teardown capability.">
+          <h3 class="quiz-question">In a pytest fixture that uses <code>yield</code>, what separates setup from teardown?</h3>
+          <div class="quiz-options">
+            <button class="quiz-option" data-value="opt-a">
+              <div class="quiz-option-radio"></div>
+              <span>The return statement</span>
+            </button>
+            <button class="quiz-option" data-value="opt-b">
+              <div class="quiz-option-radio"></div>
+              <span>The yield statement</span>
+            </button>
+            <button class="quiz-option" data-value="opt-c">
+              <div class="quiz-option-radio"></div>
+              <span>The end of the fixture function</span>
+            </button>
+            <button class="quiz-option" data-value="opt-d">
+              <div class="quiz-option-radio"></div>
+              <span>A finally block</span>
+            </button>
+          </div>
+          <div class="quiz-feedback"></div>
+        </div>
+
+        <!-- Q3 -->
+        <div class="quiz-question-block"
+             data-correct="opt-a"
+             data-explanation-right="Right! parametrize runs the test once for each value. Each run is independent — if price=50 fails, the others still run. You get 5 separate test results."
+             data-explanation-wrong="Five separate functions works but is repetitive. A loop inside a test is worse: if one value fails, pytest reports a single failure with no detail about which value caused it.">
+          <h3 class="quiz-question">You want to run <code>test_discount</code> with five different price inputs. What is the most efficient approach?</h3>
+          <div class="quiz-options">
+            <button class="quiz-option" data-value="opt-a">
+              <div class="quiz-option-radio"></div>
+              <span><code>@pytest.mark.parametrize("price", [0, 10, 50, 99, 100])</code> on one function</span>
+            </button>
+            <button class="quiz-option" data-value="opt-b">
+              <div class="quiz-option-radio"></div>
+              <span>Write five separate test functions for each price</span>
+            </button>
+            <button class="quiz-option" data-value="opt-c">
+              <div class="quiz-option-radio"></div>
+              <span>Loop inside the test: <code>for price in [...]: assert ...</code></span>
+            </button>
+            <button class="quiz-option" data-value="opt-d">
+              <div class="quiz-option-radio"></div>
+              <span>Use a fixture that returns a list of prices</span>
+            </button>
+          </div>
+          <div class="quiz-feedback"></div>
+        </div>
+
+        <!-- Q4 -->
+        <div class="quiz-question-block"
+             data-correct="opt-b"
+             data-explanation-right="Correct! assert result passes for any truthy value — a non-empty string, a non-zero number. It does not verify that result is actually correct. A real assertion checks the specific expected value."
+             data-explanation-wrong="assert result only checks truthiness — not correctness. Good tests assert specific values: assert result['status'] == 'processed', not just assert result.">
+          <h3 class="quiz-question">You spot this test Claude generated: <code>def test_process(): result = process_data(sample); assert result</code>. What is wrong with it?</h3>
+          <div class="quiz-options">
+            <button class="quiz-option" data-value="opt-a">
+              <div class="quiz-option-radio"></div>
+              <span>Nothing — assert result checks that result is not None</span>
+            </button>
+            <button class="quiz-option" data-value="opt-b">
+              <div class="quiz-option-radio"></div>
+              <span>The assertion only checks that result is truthy — not what result actually contains</span>
+            </button>
+            <button class="quiz-option" data-value="opt-c">
+              <div class="quiz-option-radio"></div>
+              <span>The test should use assertEqual instead of assert</span>
+            </button>
+            <button class="quiz-option" data-value="opt-d">
+              <div class="quiz-option-radio"></div>
+              <span>Missing a fixture</span>
+            </button>
+          </div>
+          <div class="quiz-feedback"></div>
+        </div>
+
+        <button class="quiz-check-btn">Check Answers</button>
+        <button class="quiz-reset-btn">Try Again</button>
+      </div>
+    </div>
+
+  </div>
+</section>

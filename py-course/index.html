@@ -1,0 +1,2866 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Python Under the Hood</title>
+
+  <!-- Google Fonts: Bricolage Grotesque · DM Sans · JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,700;12..96,800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400;1,9..40,500&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="styles.css">
+
+  <style>
+    :root {
+      --color-accent:       #2A7B9B;
+      --color-accent-hover: #1F6280;
+      --color-accent-light: #E4F2F7;
+      --color-accent-muted: #5A9DB8;
+    }
+  </style>
+
+  <script src="main.js" defer></script>
+</head>
+<body>
+
+  <nav class="nav" id="nav">
+    <div class="progress-bar" id="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+    <div class="nav-inner">
+      <span class="nav-title">Python Under the Hood</span>
+      <div class="nav-dots" id="nav-dots" role="tablist">
+        <button class="nav-dot" data-target="module-1" data-tooltip="The Shape of Python" role="tab" aria-label="Module 1: The Shape of Python"></button>
+        <button class="nav-dot" data-target="module-2" data-tooltip="Making Decisions" role="tab" aria-label="Module 2: Making Decisions"></button>
+        <button class="nav-dot" data-target="module-3" data-tooltip="Keeping Things Moving" role="tab" aria-label="Module 3: Keeping Things Moving"></button>
+        <button class="nav-dot" data-target="module-4" data-tooltip="Building with Objects" role="tab" aria-label="Module 4: Building with Objects"></button>
+        <button class="nav-dot" data-target="module-5" data-tooltip="The Outside World" role="tab" aria-label="Module 5: The Outside World"></button>
+        <button class="nav-dot" data-target="module-6" data-tooltip="Trusting Your Code" role="tab" aria-label="Module 6: Trusting Your Code"></button>
+      </div>
+    </div>
+  </nav>
+
+  <main id="main">
+    <!-- modules/*.html content is assembled here by build.sh -->
+<section class="module" id="module-1">
+  <div class="module-content">
+    <div class="module-header animate-in">
+      <span class="module-number">01</span>
+      <h1 class="module-title">The Shape of Python</h1>
+      <p class="module-subtitle">Variables, strings, lists, tuples — the building blocks Claude uses in every script</p>
+    </div>
+
+    <!-- Screen 1: Names & Values -->
+    <div class="screen">
+      <h2 class="screen-heading animate-in">Names &amp; Values</h2>
+
+      <p class="animate-in">When you ask Claude to store a username or count, this is exactly what it writes. Variables are the simplest idea in programming — and the most powerful.</p>
+
+      <h3 class="animate-in">Variables are Luggage Tags</h3>
+      <p class="animate-in">Variables don't contain data — they point to data. Like a luggage tag: the tag isn't the suitcase, it's a label attached to one.</p>
+
+      <div class="translation-block animate-in">
+        <div class="translation-code">
+          <span class="translation-label">PYTHON</span>
+          <pre><code><span class="code-line"><span class="code-property">user_name</span> = <span class="code-string">"Alice"</span></span>
+<span class="code-line"><span class="code-property">score</span> = <span class="code-number">42</span></span>
+<span class="code-line"><span class="code-property">is_active</span> = <span class="code-keyword">True</span></span>
+<span class="code-line"><span class="code-property">last_login</span> = <span class="code-keyword">None</span></span></code></pre>
+        </div>
+        <div class="translation-english">
+          <span class="translation-label">PLAIN ENGLISH</span>
+          <div class="translation-lines">
+            <p class="tl">Create a label "user_name" pointing to the text Alice</p>
+            <p class="tl">Label "score" pointing to the number 42</p>
+            <p class="tl">A yes/no flag — True means yes, this user is active</p>
+            <p class="tl">Intentionally empty — this user has never logged in. <span class="term" data-definition="Python way of saying intentionally no value. Not zero, not empty string — just absent">None</span> is not zero, it means "no value yet"</p>
+          </div>
+        </div>
+      </div>
+
+      <p class="animate-in">
+        Glossary: <span class="term" data-definition="A named label that points to a value in memory — like a Post-it note with a name, stuck to a piece of data">variable</span> ·
+        <span class="term" data-definition="Naming where words are separated by underscores: user_name, is_active. Python standard style">snake_case</span> ·
+        <span class="term" data-definition="Python way of saying intentionally no value. Not zero, not empty string — just absent">None</span>
+      </p>
+
+      <div class="callout callout-info animate-in">
+        <div class="callout-icon">🐍</div>
+        <div class="callout-content">
+          <p>Python uses <span class="term" data-definition="Naming where words are separated by underscores: user_name, is_active. Python standard style">snake_case</span> (underscores between words) for variable names. JavaScript uses camelCase. When you tell Claude to store a user name, it automatically writes <code>user_name</code> in Python.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Screen 2: Strings Are More Than Text -->
+    <div class="screen">
+      <h2 class="screen-heading animate-in">Strings Are More Than Text</h2>
+
+      <h3 class="animate-in">Strings Have Superpowers</h3>
+      <p class="animate-in">A <span class="term" data-definition="Any sequence of text characters in Python. Defined with quotes: 'hello' or &quot;hello&quot;. Even '42' in quotes is a string, not a number.">string</span> is any text in Python. What makes it powerful is the dozens of <span class="term" data-definition="A function built into a type. .strip() is a method of strings — a verb that belongs to text. Call it with dot notation: text.strip()">methods</span> built right in — verbs you can call on any text.</p>
+
+      <div class="flow-animation animate-in" id="flow-m1-strings" data-steps="[
+        {&quot;highlight&quot;:&quot;flow-m1s-1&quot;,&quot;label&quot;:&quot;Raw input from a signup form: email with extra spaces&quot;},
+        {&quot;highlight&quot;:&quot;flow-m1s-2&quot;,&quot;label&quot;:&quot;.strip() removes leading and trailing whitespace&quot;,&quot;packet&quot;:true,&quot;from&quot;:&quot;m1s-1&quot;,&quot;to&quot;:&quot;m1s-2&quot;},
+        {&quot;highlight&quot;:&quot;flow-m1s-3&quot;,&quot;label&quot;:&quot;.lower() normalizes to lowercase for storage&quot;,&quot;packet&quot;:true,&quot;from&quot;:&quot;m1s-2&quot;,&quot;to&quot;:&quot;m1s-3&quot;},
+        {&quot;highlight&quot;:&quot;flow-m1s-4&quot;,&quot;label&quot;:&quot;f-string builds personalized greeting: f&apos;Welcome, {name}!&apos;&quot;,&quot;packet&quot;:true,&quot;from&quot;:&quot;m1s-3&quot;,&quot;to&quot;:&quot;m1s-4&quot;},
+        {&quot;highlight&quot;:&quot;flow-m1s-4&quot;,&quot;label&quot;:&quot;Result: clean, normalized email and personalized greeting ready to display&quot;}
+      ]">
+        <div class="flow-actors">
+          <div class="flow-actor" id="flow-m1s-1">
+            <div class="flow-actor-icon">📥</div>
+            <span>Raw Input</span>
+          </div>
+          <div class="flow-actor" id="flow-m1s-2">
+            <div class="flow-actor-icon">✂️</div>
+            <span>.strip()</span>
+          </div>
+          <div class="flow-actor" id="flow-m1s-3">
+            <div class="flow-actor-icon">🔡</div>
+            <span>.lower()</span>
+          </div>
+          <div class="flow-actor" id="flow-m1s-4">
+            <div class="flow-actor-icon">📝</div>
+            <span>f-string</span>
+          </div>
+        </div>
+        <div class="flow-packet"></div>
+        <div class="flow-step-label">Click "Next Step" to begin</div>
+        <div class="flow-controls">
+          <button class="btn flow-next-btn">Next Step</button>
+          <button class="btn flow-reset-btn">Restart</button>
+          <span class="flow-progress"></span>
+        </div>
+      </div>
+
+      <div class="callout callout-accent animate-in">
+        <div class="callout-icon">💡</div>
+        <div class="callout-content">
+          <p>The <code>f</code> in <span class="term" data-definition="A string prefixed with f. Anything in {} curly braces gets replaced with the value of that expression. f'Score: {42}' becomes 'Score: 42'">f-string</span> stands for formatted. The <code>{}</code> curly braces are windows into your code — whatever is inside gets substituted with its value. Claude uses f-strings constantly.</p>
+        </div>
+      </div>
+
+      <p class="animate-in">
+        Glossary: <span class="term" data-definition="Any sequence of text characters in Python. Defined with quotes: 'hello' or &quot;hello&quot;. Even '42' in quotes is a string, not a number.">string</span> ·
+        <span class="term" data-definition="A function built into a type. .strip() is a method of strings — a verb that belongs to text. Call it with dot notation: text.strip()">method</span> ·
+        <span class="term" data-definition="A string prefixed with f. Anything in {} curly braces gets replaced with the value of that expression. f'Score: {42}' becomes 'Score: 42'">f-string</span>
+      </p>
+    </div>
+
+    <!-- Screen 3: Lists vs Tuples -->
+    <div class="screen">
+      <h2 class="screen-heading animate-in">Lists vs Tuples</h2>
+
+      <h3 class="animate-in">Lists vs Tuples — Change vs Permanence</h3>
+      <p class="animate-in">Both hold sequences of items. The difference is mutability — whether the contents can change after creation.</p>
+
+      <div class="chat-window animate-in" id="chat-m1-lists">
+        <div class="chat-messages">
+          <div class="chat-message" data-sender="List" style="display:none">
+            <div class="chat-avatar" style="background: var(--color-actor-1)">L</div>
+            <div class="chat-bubble">
+              <span class="chat-sender" style="color: var(--color-actor-1)">List</span>
+              <p>I hold your to-do tasks. Add with <code>.append('buy milk')</code>, remove with <code>.pop()</code>. I grow and shrink.</p>
+            </div>
+          </div>
+          <div class="chat-message" data-sender="Tuple" style="display:none">
+            <div class="chat-avatar" style="background: var(--color-actor-2)">T</div>
+            <div class="chat-bubble">
+              <span class="chat-sender" style="color: var(--color-actor-2)">Tuple</span>
+              <p>I hold your GPS coordinates <code>(37.7, -122.4)</code>. Set at creation, never changed. Immutability is my feature.</p>
+            </div>
+          </div>
+          <div class="chat-message" data-sender="List" style="display:none">
+            <div class="chat-avatar" style="background: var(--color-actor-1)">L</div>
+            <div class="chat-bubble">
+              <span class="chat-sender" style="color: var(--color-actor-1)">List</span>
+              <p>I can be sorted with <code>.sort()</code> or <code>sorted(me)</code>. I can be sliced, filtered, comprehended.</p>
+            </div>
+          </div>
+          <div class="chat-message" data-sender="Tuple" style="display:none">
+            <div class="chat-avatar" style="background: var(--color-actor-2)">T</div>
+            <div class="chat-bubble">
+              <span class="chat-sender" style="color: var(--color-actor-2)">Tuple</span>
+              <p>I am faster and use less memory. When data should be fixed — use me. RGB colors. Database rows. Use List when it changes.</p>
+            </div>
+          </div>
+          <div class="chat-message" data-sender="List" style="display:none">
+            <div class="chat-avatar" style="background: var(--color-actor-1)">L</div>
+            <div class="chat-bubble">
+              <span class="chat-sender" style="color: var(--color-actor-1)">List</span>
+              <p>Try <code>my_list[0] = 'new'</code> — works fine!</p>
+            </div>
+          </div>
+          <div class="chat-message" data-sender="Tuple" style="display:none">
+            <div class="chat-avatar" style="background: var(--color-actor-2)">T</div>
+            <div class="chat-bubble">
+              <span class="chat-sender" style="color: var(--color-actor-2)">Tuple</span>
+              <p>Try <code>my_tuple[0] = 'new'</code> — TypeError! That is intentional protection.</p>
+            </div>
+          </div>
+        </div>
+        <div class="chat-typing" style="display:none">
+          <div class="chat-avatar" id="chat-m1-lists-typing-avatar" style="background: var(--color-actor-1)">?</div>
+          <div class="chat-typing-dots">
+            <span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span>
+          </div>
+        </div>
+        <div class="chat-controls">
+          <button class="btn chat-next-btn">Next Message</button>
+          <button class="btn chat-all-btn">Play All</button>
+          <button class="btn chat-reset-btn">Replay</button>
+          <span class="chat-progress"></span>
+        </div>
+      </div>
+
+      <div class="callout callout-warning animate-in">
+        <div class="callout-icon">⚠️</div>
+        <div class="callout-content">
+          <p>Common mistake: trying to modify a tuple. Python will throw a TypeError. This is a feature — tuples protect data that should never change after creation.</p>
+        </div>
+      </div>
+
+      <p class="animate-in">
+        Glossary: <span class="term" data-definition="An ordered, changeable collection of items. Written with square brackets: [1, 2, 3]. You can add, remove, and reorder items.">list</span> ·
+        <span class="term" data-definition="An ordered, fixed collection. Written with parentheses: (37.7, -122.4). Once created, cannot be changed.">tuple</span> ·
+        <span class="term" data-definition="Can be changed after creation. Lists are mutable — you can append, remove, or reorder items.">mutable</span> ·
+        <span class="term" data-definition="Cannot be changed after creation. Tuples and strings are immutable — once made, they stay the same forever.">immutable</span>
+      </p>
+    </div>
+
+    <!-- Screen 4: Reading Lists -->
+    <div class="screen">
+      <h2 class="screen-heading animate-in">Reading Lists</h2>
+
+      <h3 class="animate-in">Indexing and Slicing</h3>
+      <p class="animate-in">Once you have a list, you need to read specific items. Python gives you powerful tools for this — including counting from the back.</p>
+
+      <div class="translation-block animate-in">
+        <div class="translation-code">
+          <span class="translation-label">PYTHON</span>
+          <pre><code><span class="code-line"><span class="code-property">tasks</span> = [<span class="code-string">"buy milk"</span>, <span class="code-string">"write report"</span>, <span class="code-string">"call Alice"</span>, <span class="code-string">"review PR"</span>]</span>
+<span class="code-line"></span>
+<span class="code-line"><span class="code-property">first</span> = tasks[<span class="code-number">0</span>]      <span class="code-comment"># "buy milk"</span></span>
+<span class="code-line"><span class="code-property">last</span>  = tasks[<span class="code-number">-1</span>]     <span class="code-comment"># "review PR"</span></span>
+<span class="code-line"><span class="code-property">two</span>   = tasks[<span class="code-number">1</span>:<span class="code-number">3</span>]    <span class="code-comment"># ["write report", "call Alice"]</span></span>
+<span class="code-line"><span class="code-property">rev</span>   = tasks[::<span class="code-number">-1</span>]   <span class="code-comment"># reversed list</span></span></code></pre>
+        </div>
+        <div class="translation-english">
+          <span class="translation-label">PLAIN ENGLISH</span>
+          <div class="translation-lines">
+            <p class="tl"><span class="term" data-definition="The position of an item in a list. Python starts at 0. tasks[0] is the first item, tasks[1] is the second.">Index</span> 0 is the first item. Python counts from 0, not 1</p>
+            <p class="tl"><span class="term" data-definition="Count from the end of the list. -1 is always the last item, no matter how long the list is.">Negative index</span>: count from the back. -1 is always the last item</p>
+            <p class="tl"><span class="term" data-definition="A way to grab a chunk of a list. tasks[1:3] means from index 1 up to (not including) index 3.">Slice</span> from index 1 up to (not including) index 3</p>
+            <p class="tl">Slice with step -1: walk backward through the whole list — reverses it</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="callout callout-info animate-in">
+        <div class="callout-icon">🔢</div>
+        <div class="callout-content">
+          <p>Python counts from 0. The first item is at position 0. After a few days this feels natural — and you start finding 1-based indexing strange.</p>
+        </div>
+      </div>
+
+      <p class="animate-in">
+        Glossary: <span class="term" data-definition="The position of an item in a list. Python starts at 0. tasks[0] is the first item, tasks[1] is the second.">index</span> ·
+        <span class="term" data-definition="A way to grab a chunk of a list. tasks[1:3] means from index 1 up to (not including) index 3.">slice</span> ·
+        <span class="term" data-definition="Count from the end of the list. -1 is always the last item, no matter how long the list is.">negative index</span>
+      </p>
+    </div>
+
+    <!-- Screen 5: List Comprehensions -->
+    <div class="screen">
+      <h2 class="screen-heading animate-in">List Comprehensions</h2>
+
+      <h3 class="animate-in">Comprehensions — Lists Built in One Line</h3>
+      <p class="animate-in">Comprehensions are Python's compact way to build a new list from an existing one — with optional filtering and transformation. Claude uses them constantly.</p>
+
+      <div class="flow-animation animate-in" id="flow-m1-comp" data-steps="[
+        {&quot;highlight&quot;:&quot;flow-m1c-1&quot;,&quot;label&quot;:&quot;Source list [1,2,3,4,5,6,7,8] enters&quot;},
+        {&quot;highlight&quot;:&quot;flow-m1c-2&quot;,&quot;label&quot;:&quot;Filter keeps only even numbers (if n % 2 == 0)&quot;,&quot;packet&quot;:true,&quot;from&quot;:&quot;m1c-1&quot;,&quot;to&quot;:&quot;m1c-2&quot;},
+        {&quot;highlight&quot;:&quot;flow-m1c-2&quot;,&quot;label&quot;:&quot;[2,4,6,8] pass through&quot;},
+        {&quot;highlight&quot;:&quot;flow-m1c-3&quot;,&quot;label&quot;:&quot;Transform squares each (n * n)&quot;,&quot;packet&quot;:true,&quot;from&quot;:&quot;m1c-2&quot;,&quot;to&quot;:&quot;m1c-3&quot;},
+        {&quot;highlight&quot;:&quot;flow-m1c-4&quot;,&quot;label&quot;:&quot;Result: [4, 16, 36, 64]&quot;,&quot;packet&quot;:true,&quot;from&quot;:&quot;m1c-3&quot;,&quot;to&quot;:&quot;m1c-4&quot;}
+      ]">
+        <div class="flow-actors">
+          <div class="flow-actor" id="flow-m1c-1">
+            <div class="flow-actor-icon">📋</div>
+            <span>Source List</span>
+          </div>
+          <div class="flow-actor" id="flow-m1c-2">
+            <div class="flow-actor-icon">🔍</div>
+            <span>Filter</span>
+          </div>
+          <div class="flow-actor" id="flow-m1c-3">
+            <div class="flow-actor-icon">⚡</div>
+            <span>Transform</span>
+          </div>
+          <div class="flow-actor" id="flow-m1c-4">
+            <div class="flow-actor-icon">✅</div>
+            <span>Result</span>
+          </div>
+        </div>
+        <div class="flow-packet"></div>
+        <div class="flow-step-label">Click "Next Step" to begin</div>
+        <div class="flow-controls">
+          <button class="btn flow-next-btn">Next Step</button>
+          <button class="btn flow-reset-btn">Restart</button>
+          <span class="flow-progress"></span>
+        </div>
+      </div>
+
+      <div class="translation-block animate-in">
+        <div class="translation-code">
+          <span class="translation-label">PYTHON</span>
+          <pre><code><span class="code-line"><span class="code-property">numbers</span> = [<span class="code-number">1</span>, <span class="code-number">2</span>, <span class="code-number">3</span>, <span class="code-number">4</span>, <span class="code-number">5</span>, <span class="code-number">6</span>, <span class="code-number">7</span>, <span class="code-number">8</span>]</span>
+<span class="code-line"></span>
+<span class="code-line"><span class="code-comment"># Long way</span></span>
+<span class="code-line"><span class="code-property">result</span> = []</span>
+<span class="code-line"><span class="code-keyword">for</span> n <span class="code-keyword">in</span> numbers:</span>
+<span class="code-line">    <span class="code-keyword">if</span> n % <span class="code-number">2</span> == <span class="code-number">0</span>:</span>
+<span class="code-line">        result.<span class="code-function">append</span>(n * n)</span>
+<span class="code-line"></span>
+<span class="code-line"><span class="code-comment"># Comprehension — same result</span></span>
+<span class="code-line"><span class="code-property">result</span> = [n * n <span class="code-keyword">for</span> n <span class="code-keyword">in</span> numbers <span class="code-keyword">if</span> n % <span class="code-number">2</span> == <span class="code-number">0</span>]</span></code></pre>
+        </div>
+        <div class="translation-english">
+          <span class="translation-label">PLAIN ENGLISH</span>
+          <div class="translation-lines">
+            <p class="tl">Long way: make empty list, loop, check if even, square it, add it</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl">Short way: [expression for item in source if condition]</p>
+            <p class="tl">Both produce [4, 16, 36, 64]</p>
+            <p class="tl">Claude writes the short form — now you can read it</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="callout callout-accent animate-in">
+        <div class="callout-icon">💡</div>
+        <div class="callout-content">
+          <p>When you ask Claude to filter a list and transform each item, it almost always writes a comprehension. <code>[x * 2 for x in items if x &gt; 0]</code> means: go through items, keep the positive ones, double each one.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quiz -->
+    <div class="screen">
+      <h2 class="screen-heading animate-in">Check Your Understanding</h2>
+
+      <div class="quiz-container animate-in" id="quiz-module1">
+
+        <!-- Q1 -->
+        <div class="quiz-question-block"
+             data-correct="opt-b"
+             data-explanation-right="Exactly! List comprehensions with if are how Python filters. .endswith() checks if a string ends with that suffix."
+             data-explanation-wrong="Python lists have no .filter() method. The Pythonic way to filter is a comprehension with an if clause: [item for item in collection if condition]">
+          <h3 class="quiz-question">You have a list of filenames. Which expression gives only the <code>.py</code> files?</h3>
+          <div class="quiz-options">
+            <button class="quiz-option" data-value="opt-a">
+              <div class="quiz-option-radio"></div>
+              <span><code>files.filter(".py")</code></span>
+            </button>
+            <button class="quiz-option" data-value="opt-b">
+              <div class="quiz-option-radio"></div>
+              <span><code>[f for f in files if f.endswith(".py")]</code></span>
+            </button>
+            <button class="quiz-option" data-value="opt-c">
+              <div class="quiz-option-radio"></div>
+              <span><code>files.find(".py")</code></span>
+            </button>
+            <button class="quiz-option" data-value="opt-d">
+              <div class="quiz-option-radio"></div>
+              <span><code>for f in files: if ".py" in f</code></span>
+            </button>
+          </div>
+          <div class="quiz-feedback"></div>
+        </div>
+
+        <!-- Q2 -->
+        <div class="quiz-question-block"
+             data-correct="opt-c"
+             data-explanation-right="Correct! Empty lists, strings, and dicts are falsy in Python. `if cart_items:` is the idiomatic Pythonic check."
+             data-explanation-wrong="len() > 0 works but is not the Python idiom. Empty collections are falsy — if my_list: is the native way to ask if a list has items.">
+          <h3 class="quiz-question">Your code has <code>if cart_items:</code> to check if the cart has items. A colleague says use <code>len(cart_items) &gt; 0</code>. Who is right?</h3>
+          <div class="quiz-options">
+            <button class="quiz-option" data-value="opt-a">
+              <div class="quiz-option-radio"></div>
+              <span>The colleague — <code>len()</code> is more explicit</span>
+            </button>
+            <button class="quiz-option" data-value="opt-b">
+              <div class="quiz-option-radio"></div>
+              <span>Neither — use <code>cart_items != []</code></span>
+            </button>
+            <button class="quiz-option" data-value="opt-c">
+              <div class="quiz-option-radio"></div>
+              <span>You — empty lists are falsy in Python, so <code>if cart_items:</code> is correct and idiomatic</span>
+            </button>
+            <button class="quiz-option" data-value="opt-d">
+              <div class="quiz-option-radio"></div>
+              <span>Both work identically, <code>len()</code> is faster</span>
+            </button>
+          </div>
+          <div class="quiz-feedback"></div>
+        </div>
+
+        <!-- Q3: Drag-and-drop -->
+        <div class="dnd-container animate-in">
+          <h3 class="quiz-question">Match each Python type to its property:</h3>
+          <div class="dnd-chips">
+            <div class="dnd-chip" draggable="true" data-answer="list">list</div>
+            <div class="dnd-chip" draggable="true" data-answer="tuple">tuple</div>
+            <div class="dnd-chip" draggable="true" data-answer="str">str</div>
+          </div>
+          <div class="dnd-zones">
+            <div class="dnd-zone" data-correct="list">
+              <p class="dnd-zone-label">Mutable (changeable after creation)</p>
+              <div class="dnd-zone-target">Drop here</div>
+            </div>
+            <div class="dnd-zone" data-correct="tuple">
+              <p class="dnd-zone-label">Immutable, ordered, used for fixed records like coordinates</p>
+              <div class="dnd-zone-target">Drop here</div>
+            </div>
+            <div class="dnd-zone" data-correct="str">
+              <p class="dnd-zone-label">Immutable sequence of characters</p>
+              <div class="dnd-zone-target">Drop here</div>
+            </div>
+          </div>
+        </div>
+
+        <button class="quiz-check-btn">Check Answers</button>
+        <button class="quiz-reset-btn">Try Again</button>
+      </div>
+    </div>
+
+  </div>
+</section>
+<section class="module" id="module-2" style="background: var(--color-bg-warm)">
+  <div class="module-content">
+    <div class="module-header animate-in">
+      <span class="module-number">02</span>
+      <h1 class="module-title">Making Decisions</h1>
+      <p class="module-subtitle">Conditionals, truthiness, dictionaries — the logic layer behind every Claude-generated program</p>
+    </div>
+
+    <!-- Screen 1: Truthiness -->
+    <div class="screen">
+      <h2 class="screen-heading animate-in">Truthiness — Python's Yes and No</h2>
+      <p class="animate-in">Python evaluates more values than just <code>True</code> and <code>False</code>. Any non-empty, non-zero value is <span class="term" data-definition="A value that Python treats as True in a boolean context — non-zero numbers, non-empty strings, non-empty lists, and most objects.">truthy</span>. Any empty or zero value is <span class="term" data-definition="A value that Python treats as False in a boolean context — 0, 0.0, empty string, empty list, empty dict, None, and False itself.">falsy</span>. This is how Claude checks if a list has items, if a name was provided, if a user is logged in.</p>
+
+      <div class="pattern-cards animate-in">
+        <div class="pattern-card">
+          <div class="pattern-card-icon">✅</div>
+          <h3 class="pattern-card-title">Truthy Values</h3>
+          <p class="pattern-card-desc">Non-zero numbers, non-empty strings, non-empty lists — Python treats these as True in conditions</p>
+        </div>
+        <div class="pattern-card">
+          <div class="pattern-card-icon">❌</div>
+          <h3 class="pattern-card-title">Falsy Values</h3>
+          <p class="pattern-card-desc">0, 0.0, empty string, empty list, empty dict, None, False — Python treats these as False</p>
+        </div>
+        <div class="pattern-card">
+          <div class="pattern-card-icon">==</div>
+          <h3 class="pattern-card-title">Value Equality</h3>
+          <p class="pattern-card-desc">== checks if two values are equal: 'admin' == 'admin' is True. Use for comparing data.</p>
+        </div>
+        <div class="pattern-card">
+          <div class="pattern-card-icon">is</div>
+          <h3 class="pattern-card-title">Identity Check</h3>
+          <p class="pattern-card-desc">is checks if two variables point to the same object. Only use is for None: if user is None:</p>
+        </div>
+      </div>
+
+      <div class="translation-block animate-in">
+        <div class="translation-code">
+          <span class="translation-label">PYTHON</span>
+          <pre><code><span class="code-line"><span class="code-property">users</span> = []</span>
+<span class="code-line"><span class="code-property">name</span> = <span class="code-string">""</span></span>
+<span class="code-line"><span class="code-property">count</span> = <span class="code-number">0</span></span>
+<span class="code-line"><span class="code-property">user</span> = <span class="code-keyword">None</span></span>
+<span class="code-line"></span>
+<span class="code-line"><span class="code-keyword">if</span> users:              <span class="code-comment"># empty list → False</span></span>
+<span class="code-line">    <span class="code-function">send_newsletter</span>()</span>
+<span class="code-line"></span>
+<span class="code-line"><span class="code-keyword">if not</span> name:           <span class="code-comment"># empty string → False, not flips it</span></span>
+<span class="code-line">    <span class="code-function">ask_for_name</span>()</span>
+<span class="code-line"></span>
+<span class="code-line"><span class="code-keyword">if</span> count == <span class="code-number">0</span>:</span>
+<span class="code-line">    <span class="code-function">show_empty_state</span>()</span>
+<span class="code-line"></span>
+<span class="code-line"><span class="code-keyword">if</span> user <span class="code-keyword">is</span> <span class="code-keyword">None</span>:</span>
+<span class="code-line">    <span class="code-function">redirect_to_login</span>()</span></code></pre>
+        </div>
+        <div class="translation-english">
+          <span class="translation-label">PLAIN ENGLISH</span>
+          <div class="translation-lines">
+            <p class="tl">&nbsp;</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl"><code>if users:</code> → "if users has anything in it" — no .length check needed</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl"><code>if not name:</code> → "if name is empty or blank" — not flips falsy to True</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl"><code>if count == 0:</code> → explicit comparison for clarity with numbers</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl"><code>if user is None:</code> → always use is (not ==) to check for None</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="glossary-strip animate-in">
+        <span class="glossary-label">TERMS</span>
+        <span class="term" data-definition="A value that Python treats as True in a boolean context — non-zero numbers, non-empty strings, non-empty lists, and most objects.">truthy</span>
+        <span class="term" data-definition="A value that Python treats as False in a boolean context — 0, 0.0, empty string, empty list, empty dict, None, and False itself.">falsy</span>
+        <span class="term" data-definition="A value that is either True or False. Named after mathematician George Boole. Python's bool type has exactly two values: True and False.">boolean</span>
+      </div>
+    </div>
+
+    <!-- Screen 2: If/Elif/Else -->
+    <div class="screen">
+      <h2 class="screen-heading animate-in">If/Elif/Else — First Match Wins</h2>
+      <p class="animate-in">Python checks each condition in order. When it finds a True one, it runs that block and skips everything else.</p>
+
+      <div class="flow-animation animate-in" id="flow-m2-branch" data-steps='[
+        {"highlight":"flow-actor-1","label":"Request arrives with role = viewer"},
+        {"highlight":"flow-actor-2","label":"if role == &quot;admin&quot;: False, skip","packet":true,"from":"actor-1","to":"actor-2"},
+        {"highlight":"flow-actor-3","label":"elif role == &quot;editor&quot;: False, skip","packet":true,"from":"actor-2","to":"actor-3"},
+        {"highlight":"flow-actor-4","label":"elif role == &quot;viewer&quot;: True! Enter this branch","packet":true,"from":"actor-3","to":"actor-4"},
+        {"highlight":"flow-actor-4","label":"Show read-only view — done, rest skipped"}
+      ]'>
+        <div class="flow-actors">
+          <div class="flow-actor" id="flow-actor-1">
+            <div class="flow-actor-icon">📨</div>
+            <span>Request</span>
+          </div>
+          <div class="flow-actor" id="flow-actor-2">
+            <div class="flow-actor-icon">🔑</div>
+            <span>if check</span>
+          </div>
+          <div class="flow-actor" id="flow-actor-3">
+            <div class="flow-actor-icon">📝</div>
+            <span>elif check</span>
+          </div>
+          <div class="flow-actor" id="flow-actor-4">
+            <div class="flow-actor-icon">🚪</div>
+            <span>else</span>
+          </div>
+        </div>
+        <div class="flow-packet"></div>
+        <div class="flow-step-label">Click "Next Step" to begin</div>
+        <div class="flow-controls">
+          <button class="btn flow-next-btn">Next Step</button>
+          <button class="btn flow-reset-btn">Restart</button>
+          <span class="flow-progress"></span>
+        </div>
+      </div>
+
+      <div class="callout callout-info animate-in">
+        <div class="callout-icon">💡</div>
+        <div class="callout-content">
+          <strong class="callout-title">The ternary expression</strong>
+          <p>The <span class="term" data-definition="A one-line conditional expression: value_if_true if condition else value_if_false. Lets you assign a value based on a condition without a full if/else block.">ternary expression</span> is <code>value_if_true if condition else value_if_false</code>. So <code>label = 'pass' if score &gt;= 60 else 'fail'</code> on one line. Claude uses this often for simple assignments.</p>
+        </div>
+      </div>
+
+      <div class="glossary-strip animate-in">
+        <span class="glossary-label">TERMS</span>
+        <span class="term" data-definition="Short for 'else if'. Checked only if all earlier if/elif conditions were False. Python chains elif blocks to test multiple conditions in sequence.">elif</span>
+        <span class="term" data-definition="A one-line conditional expression: value_if_true if condition else value_if_false. Lets you assign a value based on a condition without a full if/else block.">ternary expression</span>
+      </div>
+    </div>
+
+    <!-- Screen 3: Match/Case -->
+    <div class="screen">
+      <h2 class="screen-heading animate-in">Match/Case — Clean Routing</h2>
+      <p class="animate-in">Python 3.10 added <span class="term" data-definition="A control flow statement added in Python 3.10. Compares a single value against a series of patterns (cases) and runs the first matching block.">match/case</span> — a cleaner way to route a single value to different code paths. You will see this in Claude-generated CLI tools and API handlers.</p>
+
+      <div class="chat-window animate-in" id="chat-m2-match">
+        <div class="chat-messages">
+          <div class="chat-message" data-sender="Router" style="display:none">
+            <div class="chat-avatar" style="background: var(--color-actor-1)">R</div>
+            <div class="chat-bubble">
+              <span class="chat-sender" style="color: var(--color-actor-1)">Router</span>
+              <p>Got command: 'delete'. I need to route this to the right handler.</p>
+            </div>
+          </div>
+          <div class="chat-message" data-sender="Old Way" style="display:none">
+            <div class="chat-avatar" style="background: var(--color-actor-2)">O</div>
+            <div class="chat-bubble">
+              <span class="chat-sender" style="color: var(--color-actor-2)">Old Way / if-elif</span>
+              <p>I handle it: <code>if cmd == 'create': ... elif cmd == 'update': ... elif cmd == 'delete': ...</code> — works, but gets long.</p>
+            </div>
+          </div>
+          <div class="chat-message" data-sender="New Way" style="display:none">
+            <div class="chat-avatar" style="background: var(--color-actor-3)">N</div>
+            <div class="chat-bubble">
+              <span class="chat-sender" style="color: var(--color-actor-3)">New Way / match-case</span>
+              <p>I handle it: <code>match cmd: case 'create': ... case 'update': ... case 'delete': ... case _:</code></p>
+            </div>
+          </div>
+          <div class="chat-message" data-sender="Router" style="display:none">
+            <div class="chat-avatar" style="background: var(--color-actor-1)">R</div>
+            <div class="chat-bubble">
+              <span class="chat-sender" style="color: var(--color-actor-1)">Router</span>
+              <p>Both work identically. But match/case reads like a table of options.</p>
+            </div>
+          </div>
+          <div class="chat-message" data-sender="New Way" style="display:none">
+            <div class="chat-avatar" style="background: var(--color-actor-3)">N</div>
+            <div class="chat-bubble">
+              <span class="chat-sender" style="color: var(--color-actor-3)">New Way / match-case</span>
+              <p><code>case _:</code> is my default — like <code>else</code>. Catches anything that did not match a specific case.</p>
+            </div>
+          </div>
+          <div class="chat-message" data-sender="Router" style="display:none">
+            <div class="chat-avatar" style="background: var(--color-actor-1)">R</div>
+            <div class="chat-bubble">
+              <span class="chat-sender" style="color: var(--color-actor-1)">Router</span>
+              <p>Use if/elif for complex logic with multiple conditions. Use match/case for routing one value to fixed options.</p>
+            </div>
+          </div>
+        </div>
+        <div class="chat-typing" style="display:none">
+          <div class="chat-avatar" id="chat-m2-match-typing-avatar" style="background: var(--color-actor-1)">?</div>
+          <div class="chat-typing-dots">
+            <span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span>
+          </div>
+        </div>
+        <div class="chat-controls">
+          <button class="btn chat-next-btn">Next Message</button>
+          <button class="btn chat-all-btn">Play All</button>
+          <button class="btn chat-reset-btn">Replay</button>
+          <span class="chat-progress"></span>
+        </div>
+      </div>
+
+      <div class="translation-block animate-in">
+        <div class="translation-code">
+          <span class="translation-label">PYTHON</span>
+          <pre><code><span class="code-line"><span class="code-keyword">def</span> <span class="code-function">handle_command</span>(cmd: <span class="code-property">str</span>) -&gt; <span class="code-property">str</span>:</span>
+<span class="code-line">    <span class="code-keyword">match</span> cmd:</span>
+<span class="code-line">        <span class="code-keyword">case</span> <span class="code-string">"create"</span>:</span>
+<span class="code-line">            <span class="code-keyword">return</span> <span class="code-function">create_item</span>()</span>
+<span class="code-line">        <span class="code-keyword">case</span> <span class="code-string">"update"</span>:</span>
+<span class="code-line">            <span class="code-keyword">return</span> <span class="code-function">update_item</span>()</span>
+<span class="code-line">        <span class="code-keyword">case</span> <span class="code-string">"delete"</span>:</span>
+<span class="code-line">            <span class="code-keyword">return</span> <span class="code-function">delete_item</span>()</span>
+<span class="code-line">        <span class="code-keyword">case</span> _:</span>
+<span class="code-line">            <span class="code-keyword">return</span> <span class="code-function">f</span><span class="code-string">"Unknown: {cmd}"</span></span></code></pre>
+        </div>
+        <div class="translation-english">
+          <span class="translation-label">PLAIN ENGLISH</span>
+          <div class="translation-lines">
+            <p class="tl">&nbsp;</p>
+            <p class="tl"><code>match cmd:</code> → look at cmd and find the matching case</p>
+            <p class="tl"><code>case "create":</code> → if cmd is exactly "create", run this block</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl"><code>case _:</code> → wildcard: runs when nothing else matched (like else)</p>
+            <p class="tl">First matching case wins — no fallthrough</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="glossary-strip animate-in">
+        <span class="glossary-label">TERMS</span>
+        <span class="term" data-definition="A control flow statement added in Python 3.10. Compares a single value against a series of patterns (cases) and runs the first matching block.">match/case</span>
+        <span class="term" data-definition="The wildcard pattern in a match statement. Written as case _: — matches anything that did not match an earlier case. Acts like the else in an if/elif chain.">case _</span>
+      </div>
+    </div>
+
+    <!-- Screen 4: Dictionaries as Named Storage -->
+    <div class="screen">
+      <h2 class="screen-heading animate-in">Dictionaries — Python Named Storage</h2>
+      <p class="animate-in">A <span class="term" data-definition="A data structure that maps keys to values. Written with curly braces: {'name': 'Alice', 'role': 'admin'}. Keys are usually strings; values can be anything.">dictionary</span> maps <span class="term" data-definition="The label used to look up a value in a dictionary. Like a word in a real dictionary — you look up the key to get its definition (value).">keys</span> to <span class="term" data-definition="The data stored under a key in a dictionary. user['name'] retrieves the value associated with the key 'name'.">values</span>. It is the data structure Claude uses to represent almost everything structured — users, configs, API responses, form data.</p>
+
+      <div class="callout callout-accent animate-in">
+        <div class="callout-icon">🌐</div>
+        <div class="callout-content">
+          <strong class="callout-title">Dicts are everywhere</strong>
+          <p>When Claude parses an API response, loads a config file, or processes form input — it works with dicts. JSON data from web APIs becomes a Python dict the moment you load it. Understanding dicts means understanding how Python sees the outside world.</p>
+        </div>
+      </div>
+
+      <div class="translation-block animate-in">
+        <div class="translation-code">
+          <span class="translation-label">PYTHON</span>
+          <pre><code><span class="code-line"><span class="code-property">user</span> = {</span>
+<span class="code-line">    <span class="code-string">"name"</span>: <span class="code-string">"Alice"</span>,</span>
+<span class="code-line">    <span class="code-string">"role"</span>: <span class="code-string">"admin"</span>,</span>
+<span class="code-line">    <span class="code-string">"score"</span>: <span class="code-number">0</span></span>
+<span class="code-line">}</span>
+<span class="code-line"></span>
+<span class="code-line"><span class="code-property">name</span>   = user[<span class="code-string">"name"</span>]              <span class="code-comment"># "Alice"</span></span>
+<span class="code-line"><span class="code-property">role</span>   = user.<span class="code-function">get</span>(<span class="code-string">"role"</span>, <span class="code-string">"viewer"</span>)  <span class="code-comment"># safe lookup</span></span>
+<span class="code-line">user[<span class="code-string">"score"</span>] = <span class="code-number">10</span>                 <span class="code-comment"># update</span></span>
+<span class="code-line">user[<span class="code-string">"email"</span>] = <span class="code-string">"a@b.com"</span>         <span class="code-comment"># add new key</span></span>
+<span class="code-line"><span class="code-keyword">del</span> user[<span class="code-string">"score"</span>]                  <span class="code-comment"># remove</span></span></code></pre>
+        </div>
+        <div class="translation-english">
+          <span class="translation-label">PLAIN ENGLISH</span>
+          <div class="translation-lines">
+            <p class="tl">&nbsp;</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl"><code>user["name"]</code> → Look up key "name" — returns "Alice". Crashes with KeyError if key missing</p>
+            <p class="tl"><code>user.get("role", "viewer")</code> → Safe: if "role" missing, return "viewer" as default — never crashes</p>
+            <p class="tl"><code>user["score"] = 10</code> → Set or update the value at "score"</p>
+            <p class="tl"><code>user["email"] = "a@b.com"</code> → Dicts grow dynamically — add new keys anytime</p>
+            <p class="tl"><code>del user["score"]</code> → Remove the key and its value entirely</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="glossary-strip animate-in">
+        <span class="glossary-label">TERMS</span>
+        <span class="term" data-definition="A data structure that maps keys to values. Written with curly braces: {'name': 'Alice', 'role': 'admin'}. Keys are usually strings; values can be anything.">dictionary</span>
+        <span class="term" data-definition="The label used to look up a value in a dictionary. Like a word in a real dictionary — you look up the key to get its definition (value).">key</span>
+        <span class="term" data-definition="The data stored under a key in a dictionary. user['name'] retrieves the value associated with the key 'name'.">value</span>
+        <span class="term" data-definition="A safe dictionary lookup method. dict.get(key, default) returns the value if the key exists, or the default value if not — never raises a KeyError."><code>.get()</code></span>
+      </div>
+    </div>
+
+    <!-- Screen 5: Nested Dicts and Comprehensions -->
+    <div class="screen">
+      <h2 class="screen-heading animate-in">Nested Dicts and Comprehensions</h2>
+      <p class="animate-in">Real-world data is rarely flat. APIs return <span class="term" data-definition="A dictionary whose values are themselves dictionaries (or lists). Real API responses often nest data several levels deep.">nested dicts</span>. Dict comprehensions let you transform key-value pairs compactly.</p>
+
+      <div class="step-cards animate-in">
+        <div class="step-card">
+          <div class="step-card-number">1</div>
+          <div class="step-card-content">
+            <strong>API returns:</strong>
+            <p><code>{"user": {"name": "Alice", "address": {"city": "NYC"}}}</code></p>
+          </div>
+        </div>
+        <div class="step-card">
+          <div class="step-card-number">2</div>
+          <div class="step-card-content">
+            <code>data["user"]</code> → the inner user dict
+          </div>
+        </div>
+        <div class="step-card">
+          <div class="step-card-number">3</div>
+          <div class="step-card-content">
+            <code>data["user"]["name"]</code> → "Alice"
+          </div>
+        </div>
+        <div class="step-card">
+          <div class="step-card-number">4</div>
+          <div class="step-card-content">
+            <code>data["user"]["address"]["city"]</code> → "NYC"
+          </div>
+        </div>
+        <div class="step-card">
+          <div class="step-card-number">5</div>
+          <div class="step-card-content">
+            <strong>Safer chained:</strong>
+            <p><code>data.get("user", {}).get("city", "unknown")</code></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="translation-block animate-in">
+        <div class="translation-code">
+          <span class="translation-label">PYTHON</span>
+          <pre><code><span class="code-line"><span class="code-property">scores</span> = {<span class="code-string">"Alice"</span>: <span class="code-number">92</span>, <span class="code-string">"Bob"</span>: <span class="code-number">45</span>, <span class="code-string">"Carol"</span>: <span class="code-number">88</span>, <span class="code-string">"Dave"</span>: <span class="code-number">30</span>}</span>
+<span class="code-line"></span>
+<span class="code-line"><span class="code-property">passing</span> = {</span>
+<span class="code-line">    name: score</span>
+<span class="code-line">    <span class="code-keyword">for</span> name, score <span class="code-keyword">in</span> scores.<span class="code-function">items</span>()</span>
+<span class="code-line">    <span class="code-keyword">if</span> score &gt;= <span class="code-number">60</span></span>
+<span class="code-line">}</span>
+<span class="code-line"><span class="code-comment"># Result: {"Alice": 92, "Carol": 88}</span></span></code></pre>
+        </div>
+        <div class="translation-english">
+          <span class="translation-label">PLAIN ENGLISH</span>
+          <div class="translation-lines">
+            <p class="tl">&nbsp;</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl"><code>scores.items()</code> → Loop through both keys AND values — gives pairs like ("Alice", 92)</p>
+            <p class="tl"><code>for name, score in ...</code> → Unpack each pair into two variables</p>
+            <p class="tl"><code>if score &gt;= 60</code> → Only include this pair if condition is true</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl">Pattern: {key: value for k, v in d.items() if condition}</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="callout callout-info animate-in">
+        <div class="callout-icon">💡</div>
+        <div class="callout-content">
+          <strong class="callout-title">Dict comprehensions mirror list comprehensions</strong>
+          <p>Just use <code>{}</code> and include <code>key: value</code>. When Claude filters a dict or transforms all values, this is the pattern.</p>
+        </div>
+      </div>
+
+      <div class="glossary-strip animate-in">
+        <span class="glossary-label">TERMS</span>
+        <span class="term" data-definition="A dictionary whose values are themselves dictionaries (or lists). Real API responses often nest data several levels deep.">nested dict</span>
+        <span class="term" data-definition="A compact syntax for building a new dictionary by transforming or filtering an existing one: {key: value for k, v in source.items() if condition}.">dict comprehension</span>
+        <span class="term" data-definition="A dictionary method that returns all key-value pairs as a sequence of tuples. Used in loops: for key, value in d.items(): — gives you access to both at once."><code>.items()</code></span>
+      </div>
+    </div>
+
+    <!-- Quiz -->
+    <div class="screen">
+      <h2 class="screen-heading animate-in">Check Your Understanding</h2>
+
+      <div class="quiz-container animate-in" id="quiz-module2">
+
+        <div class="quiz-question-block"
+             data-correct="opt-c"
+             data-explanation-right="Exactly! .get(key, default) is the one-liner safe pattern — returns the default if the key is missing, no crash, no extra if check needed."
+             data-explanation-wrong="Direct bracket access crashes with KeyError if the key is absent. .get() was designed for optional fields.">
+          <h3 class="quiz-question">You want to check if an optional "discount" field exists in a user dict. If missing, treat it as 0. Which code is correct?</h3>
+          <div class="quiz-options">
+            <button class="quiz-option" data-value="opt-a" onclick="selectOption(this)"><div class="quiz-option-radio"></div><span><code>discount = user["discount"]</code></span></button>
+            <button class="quiz-option" data-value="opt-b" onclick="selectOption(this)"><div class="quiz-option-radio"></div><span><code>if "discount" in user: discount = user["discount"]</code></span></button>
+            <button class="quiz-option" data-value="opt-c" onclick="selectOption(this)"><div class="quiz-option-radio"></div><span><code>discount = user.get("discount", 0)</code></span></button>
+            <button class="quiz-option" data-value="opt-d" onclick="selectOption(this)"><div class="quiz-option-radio"></div><span><code>discount = user.discount</code></span></button>
+          </div>
+          <div class="quiz-feedback"></div>
+        </div>
+
+        <div class="quiz-question-block"
+             data-correct="opt-c"
+             data-explanation-right="Right! Python checks each elif in order and stops at the first True. x &gt; 3 is True so it prints medium and skips the rest."
+             data-explanation-wrong="Python stops at the FIRST matching condition. Even though x &gt; 1 is also true, it is never checked — the elif chain exits at the first match.">
+          <h3 class="quiz-question">Trace this code — what does it print?
+            <pre style="margin-top: var(--space-3)"><code><span class="code-line">x = 5</span>
+<span class="code-line"><span class="code-keyword">if</span> x &gt; <span class="code-number">10</span>: <span class="code-function">print</span>(<span class="code-string">"big"</span>)</span>
+<span class="code-line"><span class="code-keyword">elif</span> x &gt; <span class="code-number">3</span>: <span class="code-function">print</span>(<span class="code-string">"medium"</span>)</span>
+<span class="code-line"><span class="code-keyword">elif</span> x &gt; <span class="code-number">1</span>: <span class="code-function">print</span>(<span class="code-string">"small"</span>)</span>
+<span class="code-line"><span class="code-keyword">else</span>: <span class="code-function">print</span>(<span class="code-string">"tiny"</span>)</span></code></pre>
+          </h3>
+          <div class="quiz-options">
+            <button class="quiz-option" data-value="opt-a" onclick="selectOption(this)"><div class="quiz-option-radio"></div><span>big</span></button>
+            <button class="quiz-option" data-value="opt-b" onclick="selectOption(this)"><div class="quiz-option-radio"></div><span>small</span></button>
+            <button class="quiz-option" data-value="opt-c" onclick="selectOption(this)"><div class="quiz-option-radio"></div><span>medium</span></button>
+            <button class="quiz-option" data-value="opt-d" onclick="selectOption(this)"><div class="quiz-option-radio"></div><span>medium and small (both conditions match)</span></button>
+          </div>
+          <div class="quiz-feedback"></div>
+        </div>
+
+        <div class="quiz-question-block"
+             data-correct="opt-a"
+             data-explanation-right="Right! When routing a single value to one of several fixed cases, match/case is cleaner and more readable than a long if/elif chain."
+             data-explanation-wrong="if/elif works but match/case was designed for exactly this routing pattern — one value, many named destinations.">
+          <h3 class="quiz-question">You are processing commands: create, update, delete, status. Each needs different code. Which Python structure is cleanest?</h3>
+          <div class="quiz-options">
+            <button class="quiz-option" data-value="opt-a" onclick="selectOption(this)"><div class="quiz-option-radio"></div><span><code>match command: case "create": ...</code></span></button>
+            <button class="quiz-option" data-value="opt-b" onclick="selectOption(this)"><div class="quiz-option-radio"></div><span>A long chain of <code>if command == "create": ... elif ...</code></span></button>
+            <button class="quiz-option" data-value="opt-c" onclick="selectOption(this)"><div class="quiz-option-radio"></div><span>A list comprehension</span></button>
+            <button class="quiz-option" data-value="opt-d" onclick="selectOption(this)"><div class="quiz-option-radio"></div><span>A while loop</span></button>
+          </div>
+          <div class="quiz-feedback"></div>
+        </div>
+
+        <button class="quiz-check-btn" onclick="checkQuiz('quiz-module2')">Check Answers</button>
+        <button class="quiz-reset-btn" onclick="resetQuiz('quiz-module2')">Try Again</button>
+      </div>
+    </div>
+
+  </div>
+</section>
+<section class="module" id="module-3">
+  <div class="module-content">
+    <div class="module-header animate-in">
+      <span class="module-number">03</span>
+      <h1 class="module-title">Keeping Things Moving</h1>
+      <p class="module-subtitle">Loops, functions, scope — the engine that runs every Python program</p>
+    </div>
+
+    <!-- Screen 1: While Loops -->
+    <div class="screen">
+      <h2 class="screen-heading animate-in">While Loops — Keep Going Until</h2>
+      <p class="animate-in">A <span class="term" data-definition="Repeats a block of code as long as a condition is True. Unlike for, it does not count through a collection">while loop</span> repeats a block of code as long as a condition is True. Unlike a for loop (which counts through a collection), a while loop keeps going until told to stop.</p>
+
+      <div class="flow-animation animate-in" id="flow-m3-while" data-steps='[
+        {"highlight":"flow-m3w-1","label":"Check condition: is count &lt; 5? Yes — enter loop body"},
+        {"highlight":"flow-m3w-2","label":"Run loop body: print(count), count += 1","packet":true,"from":"m3w-1","to":"m3w-2"},
+        {"highlight":"flow-m3w-1","label":"Check again: count &lt; 5? Still yes — keep going","packet":true,"from":"m3w-2","to":"m3w-1"},
+        {"highlight":"flow-m3w-3","label":"break encountered — exit loop immediately, no more checks","packet":true,"from":"m3w-2","to":"m3w-3"},
+        {"highlight":"flow-m3w-4","label":"continue — skip rest of this iteration, jump back to condition","packet":true,"from":"m3w-2","to":"m3w-4"},
+        {"highlight":"flow-m3w-1","label":"Condition becomes False — loop exits naturally"}
+      ]'>
+        <div class="flow-actors">
+          <div class="flow-actor" id="flow-m3w-1">
+            <div class="flow-actor-icon">🔍</div>
+            <span>Condition</span>
+          </div>
+          <div class="flow-actor" id="flow-m3w-2">
+            <div class="flow-actor-icon">⚙️</div>
+            <span>Loop Body</span>
+          </div>
+          <div class="flow-actor" id="flow-m3w-3">
+            <div class="flow-actor-icon">🚪</div>
+            <span>break</span>
+          </div>
+          <div class="flow-actor" id="flow-m3w-4">
+            <div class="flow-actor-icon">⏭️</div>
+            <span>continue</span>
+          </div>
+        </div>
+        <div class="flow-packet"></div>
+        <div class="flow-step-label">Click "Next Step" to begin</div>
+        <div class="flow-controls">
+          <button class="btn flow-next-btn">Next Step</button>
+          <button class="btn flow-reset-btn">Restart</button>
+          <span class="flow-progress"></span>
+        </div>
+      </div>
+
+      <div class="callout callout-warning animate-in">
+        <div class="callout-icon">⚠️</div>
+        <div class="callout-content">
+          <strong class="callout-title">Infinite loops</strong>
+          <p>Infinite loops happen when the condition never becomes False and there is no <span class="term" data-definition="Immediately exits the loop — jumps to the code after the loop">break</span>. Python runs forever until you force-stop it. Always make sure your loop has an exit condition.</p>
+        </div>
+      </div>
+
+      <div class="translation-block animate-in">
+        <div class="translation-code">
+          <span class="translation-label">PYTHON</span>
+          <pre><code><span class="code-line"><span class="code-property">count</span> = <span class="code-number">0</span></span>
+<span class="code-line"><span class="code-keyword">while</span> count &lt; <span class="code-number">5</span>:</span>
+<span class="code-line">    <span class="code-keyword">if</span> count == <span class="code-number">3</span>:</span>
+<span class="code-line">        count += <span class="code-number">1</span></span>
+<span class="code-line">        <span class="code-keyword">continue</span>   <span class="code-comment"># skip printing 3</span></span>
+<span class="code-line">    <span class="code-function">print</span>(count)</span>
+<span class="code-line">    count += <span class="code-number">1</span></span></code></pre>
+        </div>
+        <div class="translation-english">
+          <span class="translation-label">PLAIN ENGLISH</span>
+          <div class="translation-lines">
+            <p class="tl">&nbsp;</p>
+            <p class="tl"><code>while count &lt; 5:</code> → Keep repeating while count is less than 5</p>
+            <p class="tl"><code>if count == 3:</code> → Special case: when count hits 3</p>
+            <p class="tl"><code>count += 1</code> → Increment first (so count moves past 3)</p>
+            <p class="tl"><code>continue</code> → Skip rest of this iteration, jump back to the condition</p>
+            <p class="tl"><code>print(count)</code> → Normal path: print the number</p>
+            <p class="tl"><code>count += 1</code> → Increment counter (Python has no ++ operator)</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="glossary-strip animate-in">
+        <span class="glossary-label">TERMS</span>
+        <span class="term" data-definition="Repeats a block of code as long as a condition is True. Unlike for, it does not count through a collection">while loop</span>
+        <span class="term" data-definition="Immediately exits the loop — jumps to the code after the loop">break</span>
+        <span class="term" data-definition="Skips the rest of the current iteration and jumps back to the condition check">continue</span>
+        <span class="term" data-definition="A loop whose condition never becomes False. Will run until the program is force-stopped">infinite loop</span>
+      </div>
+    </div>
+
+    <!-- Screen 2: The Input Loop Pattern -->
+    <div class="screen">
+      <h2 class="screen-heading animate-in">The Input Loop Pattern</h2>
+      <p class="animate-in">The <code>while True</code> + <code>break</code> pattern is in almost every interactive script Claude writes. It keeps asking for input until the user decides to stop.</p>
+
+      <div class="chat-window animate-in" id="chat-m3-input">
+        <div class="chat-messages">
+          <div class="chat-message" data-sender="Loop Engine" style="display:none">
+            <div class="chat-avatar" style="background: var(--color-actor-1)">L</div>
+            <div class="chat-bubble">
+              <span class="chat-sender" style="color: var(--color-actor-1)">Loop Engine</span>
+              <p><code>while True:</code> starts — I run forever until someone breaks me out.</p>
+            </div>
+          </div>
+          <div class="chat-message" data-sender="Your Script" style="display:none">
+            <div class="chat-avatar" style="background: var(--color-actor-2)">S</div>
+            <div class="chat-bubble">
+              <span class="chat-sender" style="color: var(--color-actor-2)">Your Script</span>
+              <p>I call <code>input('Command: ').strip()</code> — waiting for the user to type.</p>
+            </div>
+          </div>
+          <div class="chat-message" data-sender="User" style="display:none">
+            <div class="chat-avatar" style="background: var(--color-actor-3)">U</div>
+            <div class="chat-bubble">
+              <span class="chat-sender" style="color: var(--color-actor-3)">User</span>
+              <p>I type: <code>add buy milk</code></p>
+            </div>
+          </div>
+          <div class="chat-message" data-sender="Your Script" style="display:none">
+            <div class="chat-avatar" style="background: var(--color-actor-2)">S</div>
+            <div class="chat-bubble">
+              <span class="chat-sender" style="color: var(--color-actor-2)">Your Script</span>
+              <p>I receive <code>'add buy milk'</code>. I add <code>'buy milk'</code> to the tasks list and print <code>'Added!'</code></p>
+            </div>
+          </div>
+          <div class="chat-message" data-sender="Loop Engine" style="display:none">
+            <div class="chat-avatar" style="background: var(--color-actor-1)">L</div>
+            <div class="chat-bubble">
+              <span class="chat-sender" style="color: var(--color-actor-1)">Loop Engine</span>
+              <p>Back to the top of <code>while True:</code> — waiting for next input.</p>
+            </div>
+          </div>
+          <div class="chat-message" data-sender="User" style="display:none">
+            <div class="chat-avatar" style="background: var(--color-actor-3)">U</div>
+            <div class="chat-bubble">
+              <span class="chat-sender" style="color: var(--color-actor-3)">User</span>
+              <p>I type: <code>quit</code></p>
+            </div>
+          </div>
+          <div class="chat-message" data-sender="Your Script" style="display:none">
+            <div class="chat-avatar" style="background: var(--color-actor-2)">S</div>
+            <div class="chat-bubble">
+              <span class="chat-sender" style="color: var(--color-actor-2)">Your Script</span>
+              <p>Command is <code>'quit'</code> — I call <code>break</code>.</p>
+            </div>
+          </div>
+          <div class="chat-message" data-sender="Loop Engine" style="display:none">
+            <div class="chat-avatar" style="background: var(--color-actor-1)">L</div>
+            <div class="chat-bubble">
+              <span class="chat-sender" style="color: var(--color-actor-1)">Loop Engine</span>
+              <p>Loop exits. Program ends. This <code>while True + break</code> pattern is in almost every CLI Claude writes.</p>
+            </div>
+          </div>
+        </div>
+        <div class="chat-typing" style="display:none">
+          <div class="chat-avatar" id="chat-m3-input-typing-avatar" style="background: var(--color-actor-1)">?</div>
+          <div class="chat-typing-dots">
+            <span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span>
+          </div>
+        </div>
+        <div class="chat-controls">
+          <button class="btn chat-next-btn">Next Message</button>
+          <button class="btn chat-all-btn">Play All</button>
+          <button class="btn chat-reset-btn">Replay</button>
+          <span class="chat-progress"></span>
+        </div>
+      </div>
+
+      <div class="translation-block animate-in">
+        <div class="translation-code">
+          <span class="translation-label">PYTHON</span>
+          <pre><code><span class="code-line"><span class="code-property">tasks</span> = []</span>
+<span class="code-line"><span class="code-keyword">while</span> <span class="code-keyword">True</span>:</span>
+<span class="code-line">    <span class="code-property">user_input</span> = <span class="code-function">input</span>(<span class="code-string">"Command: "</span>).<span class="code-function">strip</span>()</span>
+<span class="code-line">    <span class="code-keyword">if not</span> user_input:</span>
+<span class="code-line">        <span class="code-keyword">continue</span></span>
+<span class="code-line">    <span class="code-keyword">if</span> user_input == <span class="code-string">"quit"</span>:</span>
+<span class="code-line">        <span class="code-keyword">break</span></span>
+<span class="code-line">    tasks.<span class="code-function">append</span>(user_input)</span>
+<span class="code-line">    <span class="code-function">print</span>(<span class="code-function">f</span><span class="code-string">"Added: {user_input}"</span>)</span></code></pre>
+        </div>
+        <div class="translation-english">
+          <span class="translation-label">PLAIN ENGLISH</span>
+          <div class="translation-lines">
+            <p class="tl">&nbsp;</p>
+            <p class="tl"><code>while True:</code> → Run forever (intentional) — break controls exit</p>
+            <p class="tl"><code>.strip()</code> → Remove leading/trailing spaces from user input</p>
+            <p class="tl"><code>if not user_input: continue</code> → User pressed Enter without typing — skip and ask again</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl"><code>if user_input == "quit": break</code> → Exit condition: user typed "quit"</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl"><code>tasks.append(user_input)</code> → Add their input to our list</p>
+            <p class="tl">&nbsp;</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="callout callout-accent animate-in">
+        <div class="callout-icon">💡</div>
+        <div class="callout-content">
+          <strong class="callout-title">while True + break — Python's do-while</strong>
+          <p><code>while True + break</code> is Python's version of a do-while loop — something many other languages have built-in but Python does not. When you see this pattern in Claude code, it means: run at least once, stop when the condition inside says to.</p>
+        </div>
+      </div>
+
+      <div class="glossary-strip animate-in">
+        <span class="glossary-label">TERMS</span>
+        <span class="term" data-definition="A built-in function that shows a prompt and waits for the user to type. Always returns a string."><code>input()</code></span>
+      </div>
+    </div>
+
+    <!-- Screen 3: Functions — Packaging Work -->
+    <div class="screen">
+      <h2 class="screen-heading animate-in">Functions — Packaging Work</h2>
+      <p class="animate-in">A <span class="term" data-definition="A named block of code that can be called anytime. Define once with def, call by name. Functions accept inputs (parameters) and can return a result.">function</span> wraps a block of code into a named unit. Define it once, call it anytime. This is how Claude reuses logic across your program.</p>
+
+      <div class="flow-animation animate-in" id="flow-m3-func" data-steps='[
+        {"highlight":"flow-m3f-1","label":"Caller: calculate_discount(price=100, pct=0.2) — sending arguments"},
+        {"highlight":"flow-m3f-2","label":"Python jumps to the function definition","packet":true,"from":"m3f-1","to":"m3f-2"},
+        {"highlight":"flow-m3f-3","label":"Process: 100 * (1 - 0.2) = 80.0","packet":true,"from":"m3f-2","to":"m3f-3"},
+        {"highlight":"flow-m3f-4","label":"return 80.0 — value travels back to caller","packet":true,"from":"m3f-3","to":"m3f-4"},
+        {"highlight":"flow-m3f-1","label":"Caller receives 80.0. Call again with different args for a different result.","packet":true,"from":"m3f-4","to":"m3f-1"}
+      ]'>
+        <div class="flow-actors">
+          <div class="flow-actor" id="flow-m3f-1">
+            <div class="flow-actor-icon">📞</div>
+            <span>Caller</span>
+          </div>
+          <div class="flow-actor" id="flow-m3f-2">
+            <div class="flow-actor-icon">📋</div>
+            <span>Function Def</span>
+          </div>
+          <div class="flow-actor" id="flow-m3f-3">
+            <div class="flow-actor-icon">⚙️</div>
+            <span>Process</span>
+          </div>
+          <div class="flow-actor" id="flow-m3f-4">
+            <div class="flow-actor-icon">📤</div>
+            <span>Return</span>
+          </div>
+        </div>
+        <div class="flow-packet"></div>
+        <div class="flow-step-label">Click "Next Step" to begin</div>
+        <div class="flow-controls">
+          <button class="btn flow-next-btn">Next Step</button>
+          <button class="btn flow-reset-btn">Restart</button>
+          <span class="flow-progress"></span>
+        </div>
+      </div>
+
+      <div class="callout callout-info animate-in">
+        <div class="callout-icon">💡</div>
+        <div class="callout-content">
+          <strong class="callout-title">return vs print</strong>
+          <p>A function with no <code>return</code> statement gives back <code>None</code>. <code>print()</code> shows text on screen — it does not return anything. <code>return</code> sends a value to the caller. These are different operations.</p>
+        </div>
+      </div>
+
+      <div class="translation-block animate-in">
+        <div class="translation-code">
+          <span class="translation-label">PYTHON</span>
+          <pre><code><span class="code-line"><span class="code-keyword">def</span> <span class="code-function">calculate_discount</span>(price: <span class="code-property">float</span>, pct: <span class="code-property">float</span> = <span class="code-number">0.1</span>) -&gt; <span class="code-property">float</span>:</span>
+<span class="code-line">    <span class="code-string">"""Apply a discount to a price."""</span></span>
+<span class="code-line">    <span class="code-keyword">return</span> price * (<span class="code-number">1</span> - pct)</span>
+<span class="code-line"></span>
+<span class="code-line"><span class="code-property">sale</span>  = <span class="code-function">calculate_discount</span>(<span class="code-number">100</span>)          <span class="code-comment"># uses default pct=0.1</span></span>
+<span class="code-line"><span class="code-property">promo</span> = <span class="code-function">calculate_discount</span>(<span class="code-number">100</span>, <span class="code-number">0.25</span>)    <span class="code-comment"># pct=0.25</span></span>
+<span class="code-line"><span class="code-property">named</span> = <span class="code-function">calculate_discount</span>(price=<span class="code-number">200</span>, pct=<span class="code-number">0.15</span>)</span></code></pre>
+        </div>
+        <div class="translation-english">
+          <span class="translation-label">PLAIN ENGLISH</span>
+          <div class="translation-lines">
+            <p class="tl"><code>def</code> → Define a function. Everything indented below belongs to it</p>
+            <p class="tl"><code>price: float</code> → Type hint: this expects a float. Optional label, not enforced</p>
+            <p class="tl"><code>pct: float = 0.1</code> → Default parameter: if not provided, use 0.1</p>
+            <p class="tl"><code>-&gt; float</code> → Type hint: this function returns a float</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl"><code>return price * (1 - pct)</code> → Compute result and send it back to the caller</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl">Calling with <code>price=200</code> → Keyword argument: named by parameter name</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="glossary-strip animate-in">
+        <span class="glossary-label">TERMS</span>
+        <span class="term" data-definition="A named block of code that can be called anytime. Define once with def, call by name. Functions accept inputs (parameters) and can return a result.">function</span>
+        <span class="term" data-definition="A variable listed in the function definition. It receives the value passed by the caller.">parameter</span>
+        <span class="term" data-definition="The actual value you pass when calling a function. calculate_discount(100) — 100 is the argument.">argument</span>
+        <span class="term" data-definition="The value a function sends back to its caller via the return statement.">return value</span>
+        <span class="term" data-definition="An optional annotation on a parameter or return value showing its expected type: price: float, -> str. Python does not enforce these at runtime.">type hint</span>
+        <span class="term" data-definition="A parameter that has a fallback value used when the caller does not provide one: pct: float = 0.1">default parameter</span>
+      </div>
+    </div>
+
+    <!-- Screen 4: Args, Kwargs and Defaults -->
+    <div class="screen">
+      <h2 class="screen-heading animate-in">Args, Kwargs — Flexible Functions</h2>
+      <p class="animate-in"><code>*args</code> collects unlimited extra positional arguments into a tuple. <code>**kwargs</code> collects unlimited keyword arguments into a dict. Claude uses these to build flexible functions.</p>
+
+      <div class="translation-block animate-in">
+        <div class="translation-code">
+          <span class="translation-label">PYTHON</span>
+          <pre><code><span class="code-line"><span class="code-keyword">def</span> <span class="code-function">log_event</span>(level: <span class="code-property">str</span>, message: <span class="code-property">str</span>, *tags, **metadata):</span>
+<span class="code-line">    <span class="code-function">print</span>(<span class="code-function">f</span><span class="code-string">"[{level}] {message}"</span>)</span>
+<span class="code-line">    <span class="code-keyword">if</span> tags:</span>
+<span class="code-line">        <span class="code-function">print</span>(<span class="code-function">f</span><span class="code-string">"  Tags: {', '.join(tags)}"</span>)</span>
+<span class="code-line">    <span class="code-keyword">if</span> metadata:</span>
+<span class="code-line">        <span class="code-function">print</span>(<span class="code-function">f</span><span class="code-string">"  Data: {metadata}"</span>)</span>
+<span class="code-line"></span>
+<span class="code-line"><span class="code-function">log_event</span>(<span class="code-string">"INFO"</span>, <span class="code-string">"User signed in"</span>)</span>
+<span class="code-line"><span class="code-function">log_event</span>(<span class="code-string">"ERROR"</span>, <span class="code-string">"Payment failed"</span>, <span class="code-string">"billing"</span>, <span class="code-string">"stripe"</span>,</span>
+<span class="code-line">          user_id=<span class="code-number">42</span>, amount=<span class="code-number">99.99</span>)</span></code></pre>
+        </div>
+        <div class="translation-english">
+          <span class="translation-label">PLAIN ENGLISH</span>
+          <div class="translation-lines">
+            <p class="tl"><code>level: str, message: str</code> → Two required positional parameters</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl"><code>*tags</code> → Collect any extra positional arguments into a tuple called tags</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl"><code>**metadata</code> → Collect any extra keyword arguments into a dict called metadata</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl">First call: no tags, no metadata — both are empty</p>
+            <p class="tl">Second call: "billing" and "stripe" go into tags tuple; user_id and amount go into metadata dict</p>
+            <p class="tl">&nbsp;</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="badge-list animate-in">
+        <div class="badge-item">
+          <span class="badge">positional args</span>
+          <span class="badge-desc">Required values passed in order: <code>func(100, 0.25)</code></span>
+        </div>
+        <div class="badge-item">
+          <span class="badge">keyword args</span>
+          <span class="badge-desc">Named when calling: <code>func(price=100)</code></span>
+        </div>
+        <div class="badge-item">
+          <span class="badge">default args</span>
+          <span class="badge-desc">Have fallback values: <code>pct: float = 0.1</code></span>
+        </div>
+        <div class="badge-item">
+          <span class="badge">*args</span>
+          <span class="badge-desc">Catches unlimited extra positional args as a tuple</span>
+        </div>
+        <div class="badge-item">
+          <span class="badge">**kwargs</span>
+          <span class="badge-desc">Catches unlimited keyword args as a dict</span>
+        </div>
+      </div>
+
+      <div class="callout callout-info animate-in">
+        <div class="callout-icon">💡</div>
+        <div class="callout-content">
+          <strong class="callout-title">Lambda — one-line functions</strong>
+          <p><span class="term" data-definition="A compact one-line anonymous function. lambda x: x * 2 is equivalent to a 3-line def. Used for short callbacks like sort keys.">Lambda</span>: a compact one-line function. <code>double = lambda x: x * 2</code> is equivalent to a 3-line <code>def</code>. Claude uses lambdas for sort keys: <code>sorted(users, key=lambda u: u['score'])</code>. Now you can read those lines.</p>
+        </div>
+      </div>
+
+      <div class="glossary-strip animate-in">
+        <span class="glossary-label">TERMS</span>
+        <span class="term" data-definition="*args in a function definition collects all extra positional arguments passed by the caller into a tuple.">*args</span>
+        <span class="term" data-definition="**kwargs in a function definition collects all extra keyword arguments passed by the caller into a dictionary.">**kwargs</span>
+        <span class="term" data-definition="A compact one-line anonymous function. lambda x: x * 2 is equivalent to a 3-line def. Used for short callbacks like sort keys.">lambda</span>
+        <span class="term" data-definition="An argument passed by name rather than position: func(price=100). Makes calls more readable and allows passing in any order.">keyword argument</span>
+      </div>
+    </div>
+
+    <!-- Screen 5: Scope — What Can See What -->
+    <div class="screen">
+      <h2 class="screen-heading animate-in">Scope — What Can See What</h2>
+      <p class="animate-in">Variables have <span class="term" data-definition="The region of a program where a variable is visible and accessible. Python uses the LEGB rule to search scopes in order.">scope</span> — where they are visible. Python searches scopes in order: Local first, then Enclosing, then Global, then Built-in. This is called the <strong>LEGB rule</strong>.</p>
+
+      <div class="step-cards animate-in">
+        <div class="step-card">
+          <div class="step-card-number">1</div>
+          <div class="step-card-content">
+            <strong>Local</strong>
+            <p>Variables inside the current function. Exists only while the function runs.</p>
+          </div>
+        </div>
+        <div class="step-card">
+          <div class="step-card-number">2</div>
+          <div class="step-card-content">
+            <strong>Enclosing</strong>
+            <p>Outer function variables. Inner functions can read (not modify) them by default.</p>
+          </div>
+        </div>
+        <div class="step-card">
+          <div class="step-card-number">3</div>
+          <div class="step-card-content">
+            <strong>Global</strong>
+            <p>Module level, the whole file. Modify with the <code>global</code> keyword inside a function.</p>
+          </div>
+        </div>
+        <div class="step-card">
+          <div class="step-card-number">4</div>
+          <div class="step-card-content">
+            <strong>Built-in</strong>
+            <p>Python built-ins: <code>len</code>, <code>print</code>, <code>range</code> — always available everywhere.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="translation-block animate-in">
+        <div class="translation-code">
+          <span class="translation-label">PYTHON</span>
+          <pre><code><span class="code-line"><span class="code-property">total</span> = <span class="code-number">0</span>          <span class="code-comment"># global scope</span></span>
+<span class="code-line"></span>
+<span class="code-line"><span class="code-keyword">def</span> <span class="code-function">add_amount</span>(x):</span>
+<span class="code-line">    <span class="code-keyword">global</span> total   <span class="code-comment"># I mean the global, not a local</span></span>
+<span class="code-line">    total += x</span>
+<span class="code-line"></span>
+<span class="code-line"><span class="code-keyword">def</span> <span class="code-function">make_counter</span>():</span>
+<span class="code-line">    <span class="code-property">count</span> = <span class="code-number">0</span>      <span class="code-comment"># enclosing scope</span></span>
+<span class="code-line"></span>
+<span class="code-line">    <span class="code-keyword">def</span> <span class="code-function">increment</span>():</span>
+<span class="code-line">        <span class="code-keyword">nonlocal</span> count  <span class="code-comment"># modify the enclosing count</span></span>
+<span class="code-line">        count += <span class="code-number">1</span></span>
+<span class="code-line">        <span class="code-keyword">return</span> count</span>
+<span class="code-line"></span>
+<span class="code-line">    <span class="code-keyword">return</span> increment</span></code></pre>
+        </div>
+        <div class="translation-english">
+          <span class="translation-label">PLAIN ENGLISH</span>
+          <div class="translation-lines">
+            <p class="tl"><code>total = 0</code> at module level → global variable, visible everywhere in the file</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl"><code>global total</code> → Without this, <code>total += x</code> would create a new local variable and crash</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl"><code>count = 0</code> inside make_counter → local to make_counter, enclosing scope for increment</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl"><code>nonlocal count</code> → Modify the enclosing count, not create a new local one</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl"><code>return increment</code> → Return the inner function itself — used as a callable</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="glossary-strip animate-in">
+        <span class="glossary-label">TERMS</span>
+        <span class="term" data-definition="The region of a program where a variable is visible and accessible. Python uses the LEGB rule to search scopes in order.">scope</span>
+        <span class="term" data-definition="The LEGB rule: Python looks up names in Local, Enclosing, Global, Built-in order. First match wins.">LEGB rule</span>
+        <span class="term" data-definition="Declares that an assignment inside a function refers to the module-level variable, not a new local one.">global</span>
+        <span class="term" data-definition="Declares that an assignment inside an inner function refers to the enclosing function's variable, not a new local one.">nonlocal</span>
+      </div>
+    </div>
+
+    <!-- Quiz -->
+    <div class="screen">
+      <h2 class="screen-heading animate-in">Check Your Understanding</h2>
+
+      <div class="quiz-container animate-in" id="quiz-module3">
+
+        <div class="quiz-question-block"
+             data-correct="opt-b"
+             data-explanation-right="Correct! When i == 2, continue skips the print for that iteration. i was already incremented to 2 before the continue, so 2 is never printed. The sequence is 1, (skip 2), 3, 4."
+             data-explanation-wrong="Track when i is incremented. It becomes 2 BEFORE the continue check, so the value 2 is skipped. Sequence: 1, skip 2, 3, 4.">
+          <h3 class="quiz-question">Claude wrote this loop. What does it print?
+            <pre style="margin-top: var(--space-3)"><code><span class="code-line"><span class="code-property">i</span> = <span class="code-number">0</span></span>
+<span class="code-line"><span class="code-keyword">while</span> i &lt; <span class="code-number">4</span>:</span>
+<span class="code-line">    i += <span class="code-number">1</span></span>
+<span class="code-line">    <span class="code-keyword">if</span> i == <span class="code-number">2</span>:</span>
+<span class="code-line">        <span class="code-keyword">continue</span></span>
+<span class="code-line">    <span class="code-function">print</span>(i)</span></code></pre>
+          </h3>
+          <div class="quiz-options">
+            <button class="quiz-option" data-value="opt-a" onclick="selectOption(this)"><div class="quiz-option-radio"></div><span>1 2 3 4</span></button>
+            <button class="quiz-option" data-value="opt-b" onclick="selectOption(this)"><div class="quiz-option-radio"></div><span>1 3 4</span></button>
+            <button class="quiz-option" data-value="opt-c" onclick="selectOption(this)"><div class="quiz-option-radio"></div><span>1 2 3</span></button>
+            <button class="quiz-option" data-value="opt-d" onclick="selectOption(this)"><div class="quiz-option-radio"></div><span>2 3 4</span></button>
+          </div>
+          <div class="quiz-feedback"></div>
+        </div>
+
+        <div class="quiz-question-block"
+             data-correct="opt-c"
+             data-explanation-right="Correct! while True with a break is the standard Python pattern for open-ended input loops. It runs until the user explicitly triggers the exit condition."
+             data-explanation-wrong="That approach has problems — range(100) limits to 100 iterations, and calling input() in the while condition makes it hard to use the value elsewhere.">
+          <h3 class="quiz-question">You want to keep asking the user for input until they type "done." Which loop pattern is correct?</h3>
+          <div class="quiz-options">
+            <button class="quiz-option" data-value="opt-a" onclick="selectOption(this)"><div class="quiz-option-radio"></div><span><code>for i in range(100): if input() == "done": break</code></span></button>
+            <button class="quiz-option" data-value="opt-b" onclick="selectOption(this)"><div class="quiz-option-radio"></div><span><code>while input() != "done": pass</code></span></button>
+            <button class="quiz-option" data-value="opt-c" onclick="selectOption(this)"><div class="quiz-option-radio"></div><span><code>while True: cmd = input(); if cmd == "done": break</code></span></button>
+            <button class="quiz-option" data-value="opt-d" onclick="selectOption(this)"><div class="quiz-option-radio"></div><span><code>for cmd in input(): if cmd == "done": break</code></span></button>
+          </div>
+          <div class="quiz-feedback"></div>
+        </div>
+
+        <div class="quiz-question-block"
+             data-correct="opt-a"
+             data-explanation-right="Exactly! .sort() modifies the list in-place. key=lambda t: t['due_date'] tells Python to sort by extracting the due_date value from each task."
+             data-explanation-wrong=".sort() sorts in-place (modifies the original list). Use sorted() if you want a new list without changing the original. The lambda extracts the sort key from each item.">
+          <h3 class="quiz-question">You see <code>tasks.sort(key=lambda t: t["due_date"])</code> in Claude code. What does it do?</h3>
+          <div class="quiz-options">
+            <button class="quiz-option" data-value="opt-a" onclick="selectOption(this)"><div class="quiz-option-radio"></div><span>Sorts the tasks list in-place, ordering tasks by their due_date field</span></button>
+            <button class="quiz-option" data-value="opt-b" onclick="selectOption(this)"><div class="quiz-option-radio"></div><span>Filters tasks to only include those with a due_date</span></button>
+            <button class="quiz-option" data-value="opt-c" onclick="selectOption(this)"><div class="quiz-option-radio"></div><span>Returns a new sorted list (the original is unchanged)</span></button>
+            <button class="quiz-option" data-value="opt-d" onclick="selectOption(this)"><div class="quiz-option-radio"></div><span>Groups tasks by due_date</span></button>
+          </div>
+          <div class="quiz-feedback"></div>
+        </div>
+
+        <button class="quiz-check-btn" onclick="checkQuiz('quiz-module3')">Check Answers</button>
+        <button class="quiz-reset-btn" onclick="resetQuiz('quiz-module3')">Try Again</button>
+      </div>
+    </div>
+
+  </div>
+</section>
+<section class="module" id="module-4">
+  <div class="module-content">
+    <div class="module-header animate-in">
+      <span class="module-number">04</span>
+      <h1 class="module-title">Building with Objects</h1>
+      <p class="module-subtitle">Classes, inheritance, dataclasses — how Python bundles data and behavior</p>
+    </div>
+
+    <!-- Screen 1: Classes as Blueprints -->
+    <div class="screen">
+      <h2 class="screen-heading animate-in">Classes — Blueprints for Objects</h2>
+      <p class="animate-in">A <span class="term" data-definition="A blueprint that defines the structure and behavior shared by all instances of that type. Written with the class keyword.">class</span> is a cookie cutter. Each <span class="term" data-definition="A specific object created from a class blueprint. alice = User('Alice', ...) creates one instance. Multiple instances share the same blueprint but hold different data.">instance</span> is a cookie — same shape, different frosting.</p>
+
+      <p class="animate-in">Every library Claude uses — pandas, FastAPI, Pydantic — is built from classes. Reading a class stops feeling mysterious once you know this pattern.</p>
+
+      <div class="chat-window animate-in" id="chat-m4-class">
+        <div class="chat-messages">
+          <div class="chat-message" data-sender="Blueprint" style="display:none">
+            <div class="chat-avatar" style="background: var(--color-actor-1)">C</div>
+            <div class="chat-bubble">
+              <span class="chat-sender" style="color: var(--color-actor-1)">Blueprint</span>
+              <p>I am the User class. I define the structure: every User has a name, email, and role.</p>
+            </div>
+          </div>
+          <div class="chat-message" data-sender="Blueprint" style="display:none">
+            <div class="chat-avatar" style="background: var(--color-actor-1)">C</div>
+            <div class="chat-bubble">
+              <span class="chat-sender" style="color: var(--color-actor-1)">Blueprint</span>
+              <p>My <code>__init__</code> method runs when a new User is created. <code>self</code> refers to the specific instance being set up.</p>
+            </div>
+          </div>
+          <div class="chat-message" data-sender="Alice" style="display:none">
+            <div class="chat-avatar" style="background: var(--color-actor-2)">A</div>
+            <div class="chat-bubble">
+              <span class="chat-sender" style="color: var(--color-actor-2)">Alice</span>
+              <p>I am <code>alice = User('Alice', 'alice@co.com')</code>. My <code>self.name</code> is <code>'Alice'</code>.</p>
+            </div>
+          </div>
+          <div class="chat-message" data-sender="Bob" style="display:none">
+            <div class="chat-avatar" style="background: var(--color-actor-3)">B</div>
+            <div class="chat-bubble">
+              <span class="chat-sender" style="color: var(--color-actor-3)">Bob</span>
+              <p>I am <code>bob = User('Bob', 'bob@co.com')</code>. Same blueprint, different data.</p>
+            </div>
+          </div>
+          <div class="chat-message" data-sender="Blueprint" style="display:none">
+            <div class="chat-avatar" style="background: var(--color-actor-1)">C</div>
+            <div class="chat-bubble">
+              <span class="chat-sender" style="color: var(--color-actor-1)">Blueprint</span>
+              <p>When alice calls <code>greet()</code>, Python passes alice as <code>self</code> automatically. So <code>self.name</code> is <code>'Alice'</code> inside that call.</p>
+            </div>
+          </div>
+          <div class="chat-message" data-sender="Bob" style="display:none">
+            <div class="chat-avatar" style="background: var(--color-actor-3)">B</div>
+            <div class="chat-bubble">
+              <span class="chat-sender" style="color: var(--color-actor-3)">Bob</span>
+              <p>When I call <code>greet()</code>, <code>self</code> points to me. I get <code>'Hello, Bob!'</code> even though we use the same method code.</p>
+            </div>
+          </div>
+        </div>
+        <div class="chat-typing" style="display:none">
+          <div class="chat-avatar" id="chat-m4-class-typing-avatar" style="background: var(--color-actor-1)">?</div>
+          <div class="chat-typing-dots">
+            <span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span>
+          </div>
+        </div>
+        <div class="chat-controls">
+          <button class="btn chat-next-btn">Next Message</button>
+          <button class="btn chat-all-btn">Play All</button>
+          <button class="btn chat-reset-btn">Replay</button>
+          <span class="chat-progress"></span>
+        </div>
+      </div>
+
+      <div class="translation-block animate-in">
+        <div class="translation-code">
+          <span class="translation-label">PYTHON</span>
+          <pre><code><span class="code-line"><span class="code-keyword">class</span> <span class="code-function">User</span>:</span>
+<span class="code-line">    <span class="code-keyword">def</span> <span class="code-function">__init__</span>(<span class="code-property">self</span>, name: <span class="code-property">str</span>, email: <span class="code-property">str</span>):</span>
+<span class="code-line">        <span class="code-property">self</span>.name = name</span>
+<span class="code-line">        <span class="code-property">self</span>.email = email</span>
+<span class="code-line">        <span class="code-property">self</span>.role = <span class="code-string">"viewer"</span>    <span class="code-comment"># default</span></span>
+<span class="code-line"></span>
+<span class="code-line">    <span class="code-keyword">def</span> <span class="code-function">greet</span>(<span class="code-property">self</span>) -&gt; <span class="code-property">str</span>:</span>
+<span class="code-line">        <span class="code-keyword">return</span> <span class="code-string">f"Hello, {self.name}!"</span></span>
+<span class="code-line"></span>
+<span class="code-line"><span class="code-property">alice</span> = <span class="code-function">User</span>(<span class="code-string">"Alice"</span>, <span class="code-string">"alice@co.com"</span>)</span>
+<span class="code-line"><span class="code-function">print</span>(alice.<span class="code-function">greet</span>())   <span class="code-comment"># "Hello, Alice!"</span></span></code></pre>
+        </div>
+        <div class="translation-english">
+          <span class="translation-label">PLAIN ENGLISH</span>
+          <div class="translation-lines">
+            <p class="tl"><code>class User:</code> → Define a blueprint named User</p>
+            <p class="tl"><code>def __init__(self, name, email):</code> → Constructor: runs automatically when User(...) is called</p>
+            <p class="tl"><code>self.name = name</code> → Store name on this specific instance</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl"><code>self.role = "viewer"</code> → Default attribute — all new Users start as viewers</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl"><code>def greet(self):</code> → Instance method — self is always first, always means "this object"</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl"><code>alice = User("Alice", ...)</code> → Create one instance. Python passes alice as self automatically</p>
+            <p class="tl"><code>alice.greet()</code> → Calls greet on alice specifically</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="glossary-strip animate-in">
+        <span class="glossary-label">TERMS</span>
+        <span class="term" data-definition="A blueprint that defines the structure and behavior shared by all instances of that type. Written with the class keyword.">class</span>
+        <span class="term" data-definition="A specific object created from a class blueprint. alice = User('Alice', ...) creates one instance. Multiple instances share the same blueprint but hold different data.">instance</span>
+        <span class="term" data-definition="The special method that runs automatically when a new instance is created. Written as __init__(self, ...). Sets up the initial state of the object.">__init__</span>
+        <span class="term" data-definition="The first parameter of every instance method. Python automatically passes the current object as self — you never pass it manually when calling a method.">self</span>
+        <span class="term" data-definition="A variable stored on an instance with self.name = .... Each instance has its own copy of its attributes.">attribute</span>
+        <span class="term" data-definition="A function defined inside a class. Called on an instance with dot notation: alice.greet(). Python automatically passes the instance as the first argument (self).">method</span>
+      </div>
+    </div>
+
+    <!-- Screen 2: Inheritance -->
+    <div class="screen">
+      <h2 class="screen-heading animate-in">Inheritance — Is-A Relationships</h2>
+      <p class="animate-in">A <span class="term" data-definition="A class that inherits from another class. It gets all of the parent class attributes and methods, and can add or override them.">child class</span> inherits everything from its <span class="term" data-definition="The class being inherited from. Also called base class or superclass. Defines common attributes and methods shared by all children.">parent</span>. You only define what is different or new. <span class="term" data-definition="A built-in function that returns a reference to the parent class. Used to call overridden parent methods, especially super().__init__() in a child constructor.">super()</span> calls the parent version of a method.</p>
+
+      <div class="flow-animation animate-in" id="flow-m4-inherit" data-steps='[
+        {"highlight":"flow-m4i-1","label":"Product: base class with name, price, get_info()"},
+        {"highlight":"flow-m4i-2","label":"PhysicalProduct inherits Product — adds weight_kg and shipping_cost()","packet":true,"from":"flow-m4i-1","to":"flow-m4i-2"},
+        {"highlight":"flow-m4i-3","label":"DigitalProduct inherits Product — adds download_url, overrides get_info()","packet":true,"from":"flow-m4i-1","to":"flow-m4i-3"},
+        {"highlight":"flow-m4i-2","label":"PhysicalProduct calls super().__init__(name, price) to run Product setup first"},
+        {"highlight":"flow-m4i-3","label":"DigitalProduct.get_info() replaces Product.get_info() — same name, new behavior"}
+      ]'>
+        <div class="flow-actors">
+          <div class="flow-actor" id="flow-m4i-1">
+            <div class="flow-actor-icon">📦</div>
+            <span>Product</span>
+          </div>
+          <div class="flow-actor" id="flow-m4i-2">
+            <div class="flow-actor-icon">🏋️</div>
+            <span>PhysicalProduct</span>
+          </div>
+          <div class="flow-actor" id="flow-m4i-3">
+            <div class="flow-actor-icon">💾</div>
+            <span>DigitalProduct</span>
+          </div>
+        </div>
+        <div class="flow-packet"></div>
+        <div class="flow-step-label">Click "Next Step" to begin</div>
+        <div class="flow-controls">
+          <button class="btn flow-next-btn">Next Step</button>
+          <button class="btn flow-reset-btn">Restart</button>
+          <span class="flow-progress"></span>
+        </div>
+      </div>
+
+      <div class="translation-block animate-in">
+        <div class="translation-code">
+          <span class="translation-label">PYTHON</span>
+          <pre><code><span class="code-line"><span class="code-keyword">class</span> <span class="code-function">Product</span>:</span>
+<span class="code-line">    <span class="code-keyword">def</span> <span class="code-function">__init__</span>(<span class="code-property">self</span>, name: <span class="code-property">str</span>, price: <span class="code-property">float</span>):</span>
+<span class="code-line">        <span class="code-property">self</span>.name = name</span>
+<span class="code-line">        <span class="code-property">self</span>.price = price</span>
+<span class="code-line"></span>
+<span class="code-line">    <span class="code-keyword">def</span> <span class="code-function">get_info</span>(<span class="code-property">self</span>) -&gt; <span class="code-property">str</span>:</span>
+<span class="code-line">        <span class="code-keyword">return</span> <span class="code-string">f"{self.name}: ${self.price:.2f}"</span></span>
+<span class="code-line"></span>
+<span class="code-line"><span class="code-keyword">class</span> <span class="code-function">PhysicalProduct</span>(<span class="code-property">Product</span>):</span>
+<span class="code-line">    <span class="code-keyword">def</span> <span class="code-function">__init__</span>(<span class="code-property">self</span>, name, price, weight_kg: <span class="code-property">float</span>):</span>
+<span class="code-line">        <span class="code-function">super</span>().__init__(name, price)  <span class="code-comment"># run Product setup first</span></span>
+<span class="code-line">        <span class="code-property">self</span>.weight_kg = weight_kg</span>
+<span class="code-line"></span>
+<span class="code-line">    <span class="code-keyword">def</span> <span class="code-function">shipping_cost</span>(<span class="code-property">self</span>) -&gt; <span class="code-property">float</span>:</span>
+<span class="code-line">        <span class="code-keyword">return</span> <span class="code-property">self</span>.weight_kg * <span class="code-number">2.5</span></span></code></pre>
+        </div>
+        <div class="translation-english">
+          <span class="translation-label">PLAIN ENGLISH</span>
+          <div class="translation-lines">
+            <p class="tl">&nbsp;</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl"><code>class PhysicalProduct(Product):</code> → PhysicalProduct IS-A Product. Inherits everything Product has</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl"><code>super().__init__(name, price)</code> → Run the parent (Product) constructor first, then our extra setup</p>
+            <p class="tl"><code>self.weight_kg = weight_kg</code> → Add our own attribute after the parent is initialized</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl"><code>def shipping_cost(self):</code> → New method only PhysicalProduct has — Product does not know about it</p>
+            <p class="tl">A PhysicalProduct can call both get_info() (from Product) and shipping_cost() (its own)</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="callout callout-accent animate-in">
+        <div class="callout-icon">💡</div>
+        <div class="callout-content">
+          <strong class="callout-title">Library code is a class hierarchy</strong>
+          <p>Every library Claude pulls in is a class hierarchy. A pandas DataFrame, a FastAPI HTTPException, a Pydantic BaseModel — all classes with inheritance. Understanding this means library code stops being magic.</p>
+        </div>
+      </div>
+
+      <div class="glossary-strip animate-in">
+        <span class="glossary-label">TERMS</span>
+        <span class="term" data-definition="When a child class acquires all the attributes and methods of its parent class automatically. The child only needs to define what is new or different.">inheritance</span>
+        <span class="term" data-definition="A built-in function that returns a reference to the parent class. Used to call overridden parent methods, especially super().__init__() in a child constructor.">super()</span>
+        <span class="term" data-definition="When a child class defines a method with the same name as a parent method. The child version replaces the parent version for instances of the child class.">override</span>
+        <span class="term" data-definition="A class that inherits from another class. It gets all of the parent class attributes and methods, and can add or override them.">child class</span>
+        <span class="term" data-definition="The class being inherited from. Also called base class or superclass. Defines common attributes and methods shared by all children.">parent class</span>
+      </div>
+    </div>
+
+    <!-- Screen 3: Dataclasses and Properties -->
+    <div class="screen">
+      <h2 class="screen-heading animate-in">Dataclasses — Less Boilerplate</h2>
+      <p class="animate-in"><span class="term" data-definition="A decorator that auto-generates __init__, __repr__, and __eq__ methods from field annotations declared in the class body. Eliminates boilerplate for data-holding classes.">@dataclass</span> auto-generates the <code>__init__</code>, <code>__repr__</code>, and <code>__eq__</code> methods from your field annotations. One decorator replaces 15 lines of boilerplate.</p>
+
+      <div class="pattern-cards animate-in">
+        <div class="pattern-card">
+          <div class="pattern-card-icon">⚠️</div>
+          <h3 class="pattern-card-title">Without @dataclass</h3>
+          <p class="pattern-card-desc">Write <code>__init__</code> manually (8+ lines), <code>__repr__</code> for printing (3 lines), <code>__eq__</code> for comparisons (3 lines). Total: 15+ lines per class.</p>
+        </div>
+        <div class="pattern-card">
+          <div class="pattern-card-icon">✅</div>
+          <h3 class="pattern-card-title">With @dataclass</h3>
+          <p class="pattern-card-desc">Just list your fields with type annotations. The decorator generates everything else automatically.</p>
+        </div>
+      </div>
+
+      <div class="translation-block animate-in">
+        <div class="translation-code">
+          <span class="translation-label">PYTHON</span>
+          <pre><code><span class="code-line"><span class="code-keyword">from</span> dataclasses <span class="code-keyword">import</span> dataclass</span>
+<span class="code-line"></span>
+<span class="code-line">@<span class="code-function">dataclass</span></span>
+<span class="code-line"><span class="code-keyword">class</span> <span class="code-function">OrderItem</span>:</span>
+<span class="code-line">    product_name: <span class="code-property">str</span></span>
+<span class="code-line">    quantity: <span class="code-property">int</span></span>
+<span class="code-line">    unit_price: <span class="code-property">float</span></span>
+<span class="code-line"></span>
+<span class="code-line">    @<span class="code-function">property</span></span>
+<span class="code-line">    <span class="code-keyword">def</span> <span class="code-function">total</span>(<span class="code-property">self</span>) -&gt; <span class="code-property">float</span>:</span>
+<span class="code-line">        <span class="code-keyword">return</span> <span class="code-property">self</span>.quantity * <span class="code-property">self</span>.unit_price</span>
+<span class="code-line"></span>
+<span class="code-line"><span class="code-property">item</span> = <span class="code-function">OrderItem</span>(<span class="code-string">"Widget"</span>, <span class="code-number">3</span>, <span class="code-number">9.99</span>)</span>
+<span class="code-line"><span class="code-function">print</span>(item.total)  <span class="code-comment"># 29.97 (no parentheses!)</span></span>
+<span class="code-line"><span class="code-function">print</span>(item)        <span class="code-comment"># OrderItem(product_name='Widget', quantity=3, unit_price=9.99)</span></span></code></pre>
+        </div>
+        <div class="translation-english">
+          <span class="translation-label">PLAIN ENGLISH</span>
+          <div class="translation-lines">
+            <p class="tl">&nbsp;</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl"><code>@dataclass</code> → Decorator that auto-generates __init__, __repr__, and __eq__ from field annotations</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl"><code>product_name: str</code> → Field declaration — becomes self.product_name in the auto-generated __init__</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl"><code>@property</code> → Makes total behave like an attribute, not a method — call as item.total, not item.total()</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl"><code>print(item.total)</code> → No parentheses! @property makes it look like a plain attribute</p>
+            <p class="tl"><code>print(item)</code> → Dataclass auto-generates a nice readable representation</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="callout callout-warning animate-in">
+        <div class="callout-icon">⚠️</div>
+        <div class="callout-content">
+          <strong class="callout-title">Mutable defaults are a trap</strong>
+          <p>Never use mutable defaults like <code>tags: list = []</code> in a dataclass — the same list object is shared between ALL instances. Use <code>field(default_factory=list)</code> instead. Claude sometimes gets this wrong too.</p>
+        </div>
+      </div>
+
+      <div class="glossary-strip animate-in">
+        <span class="glossary-label">TERMS</span>
+        <span class="term" data-definition="A function or class that wraps another function or class to add behavior. Written with @ before a function definition. @dataclass and @property are built-in decorators.">decorator</span>
+        <span class="term" data-definition="A decorator that auto-generates __init__, __repr__, and __eq__ methods from field annotations declared in the class body. Eliminates boilerplate for data-holding classes.">@dataclass</span>
+        <span class="term" data-definition="A decorator that makes a method behave like a read-only attribute. @property means you call it without parentheses: item.total instead of item.total().">@property</span>
+        <span class="term" data-definition="A variable name followed by a type hint in a class body: product_name: str. Used by @dataclass to auto-generate __init__ parameters.">field annotation</span>
+      </div>
+    </div>
+
+    <!-- Screen 4: Dunder Methods -->
+    <div class="screen">
+      <h2 class="screen-heading animate-in">Dunder Methods — Python Secret Language</h2>
+      <p class="animate-in">Methods named with double underscores (<span class="term" data-definition="Methods whose names begin and end with double underscores, like __str__ or __len__. Python calls them automatically when you use operators or built-in functions on your object.">__like_this__</span>) are called automatically by Python when you use operators or built-in functions. They let your custom objects behave like native Python types.</p>
+
+      <div class="arch-diagram animate-in">
+        <div class="arch-zone-label">Python Operations → Dunder Methods</div>
+        <div class="arch-components">
+          <div class="arch-component" data-desc="Calls obj.__str__(). Define __str__ to control what print() shows for your object.">
+            <code>print(obj)</code>
+          </div>
+          <div class="arch-component" data-desc="Calls obj.__len__(). Return an integer representing the size of your object.">
+            <code>len(obj)</code>
+          </div>
+          <div class="arch-component" data-desc="Calls obj1.__eq__(obj2). Define __eq__ to control what equality means for your class.">
+            <code>obj1 == obj2</code>
+          </div>
+          <div class="arch-component" data-desc="Calls obj.__add__(other). Define __add__ to support the + operator.">
+            <code>obj + other</code>
+          </div>
+          <div class="arch-component" data-desc="Calls obj.__contains__(item). Define __contains__ to support the in keyword.">
+            <code>item in obj</code>
+          </div>
+          <div class="arch-component" data-desc="Calls obj.__iter__(). Define __iter__ to make your object iterable in for loops.">
+            <code>for x in obj</code>
+          </div>
+        </div>
+        <div class="arch-description">Click any operation to see which method it calls</div>
+      </div>
+
+      <div class="translation-block animate-in">
+        <div class="translation-code">
+          <span class="translation-label">PYTHON</span>
+          <pre><code><span class="code-line"><span class="code-keyword">class</span> <span class="code-function">Cart</span>:</span>
+<span class="code-line">    <span class="code-keyword">def</span> <span class="code-function">__init__</span>(<span class="code-property">self</span>):</span>
+<span class="code-line">        <span class="code-property">self</span>._items = []</span>
+<span class="code-line"></span>
+<span class="code-line">    <span class="code-keyword">def</span> <span class="code-function">add</span>(<span class="code-property">self</span>, item: <span class="code-property">str</span>):</span>
+<span class="code-line">        <span class="code-property">self</span>._items.<span class="code-function">append</span>(item)</span>
+<span class="code-line"></span>
+<span class="code-line">    <span class="code-keyword">def</span> <span class="code-function">__len__</span>(<span class="code-property">self</span>) -&gt; <span class="code-property">int</span>:</span>
+<span class="code-line">        <span class="code-keyword">return</span> <span class="code-function">len</span>(<span class="code-property">self</span>._items)</span>
+<span class="code-line"></span>
+<span class="code-line">    <span class="code-keyword">def</span> <span class="code-function">__str__</span>(<span class="code-property">self</span>) -&gt; <span class="code-property">str</span>:</span>
+<span class="code-line">        <span class="code-keyword">return</span> <span class="code-string">f"Cart with {len(self)} items"</span></span>
+<span class="code-line"></span>
+<span class="code-line">    <span class="code-keyword">def</span> <span class="code-function">__contains__</span>(<span class="code-property">self</span>, item: <span class="code-property">str</span>) -&gt; <span class="code-property">bool</span>:</span>
+<span class="code-line">        <span class="code-keyword">return</span> item <span class="code-keyword">in</span> <span class="code-property">self</span>._items</span>
+<span class="code-line"></span>
+<span class="code-line"><span class="code-property">cart</span> = <span class="code-function">Cart</span>()</span>
+<span class="code-line">cart.<span class="code-function">add</span>(<span class="code-string">"apple"</span>)</span>
+<span class="code-line">cart.<span class="code-function">add</span>(<span class="code-string">"bread"</span>)</span>
+<span class="code-line"><span class="code-function">print</span>(<span class="code-function">len</span>(cart))         <span class="code-comment"># 2</span></span>
+<span class="code-line"><span class="code-function">print</span>(cart)              <span class="code-comment"># "Cart with 2 items"</span></span>
+<span class="code-line"><span class="code-function">print</span>(<span class="code-string">"apple"</span> <span class="code-keyword">in</span> cart)   <span class="code-comment"># True</span></span></code></pre>
+        </div>
+        <div class="translation-english">
+          <span class="translation-label">PLAIN ENGLISH</span>
+          <div class="translation-lines">
+            <p class="tl">&nbsp;</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl"><code>__len__</code> → len(cart) calls this automatically. Return the integer size</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl"><code>__str__</code> → print(cart) calls this. Return a human-readable string</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl"><code>__contains__</code> → "apple" in cart calls this. Return True or False</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl">These hooks make Cart feel like a native Python type</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="callout callout-info animate-in">
+        <div class="callout-icon">💡</div>
+        <div class="callout-content">
+          <strong class="callout-title">Dunders demystified</strong>
+          <p>The double underscores are called dunders (double underscores). You say <code>__str__</code> as dunder-str. When Claude generates a class with <code>__repr__</code> or <code>__post_init__</code>, these are the same mechanism — hooking into Python operations.</p>
+        </div>
+      </div>
+
+      <div class="glossary-strip animate-in">
+        <span class="glossary-label">TERMS</span>
+        <span class="term" data-definition="Methods whose names begin and end with double underscores, like __str__ or __len__. Python calls them automatically when you use operators or built-in functions on your object.">dunder method</span>
+        <span class="term" data-definition="Called by print() and str(). Define it to return a human-readable string representation of your object.">__str__</span>
+        <span class="term" data-definition="Called by the == operator. Define it to specify what equality means for instances of your class.">__eq__</span>
+        <span class="term" data-definition="Called by the len() built-in function. Define it to return an integer representing the size or length of your object.">__len__</span>
+      </div>
+    </div>
+
+    <!-- Quiz -->
+    <div class="screen">
+      <h2 class="screen-heading animate-in">Check Your Understanding</h2>
+
+      <div class="quiz-container animate-in" id="quiz-module4">
+
+        <div class="quiz-question-block"
+             data-correct="opt-c"
+             data-right="__eq__ is called whenever == is used between two objects. Implement it to define what equal means for your class."
+             data-wrong="__str__ controls printing, __init__ sets up the object. __eq__ is what controls the == operator.">
+          <h3 class="quiz-question">Two Product instances should be equal if they have the same <code>sku</code> field. Which dunder method do you implement?</h3>
+          <div class="quiz-options">
+            <button class="quiz-option" data-value="opt-a" onclick="selectOption(this)"><div class="quiz-option-radio"></div><span><code>__str__</code></span></button>
+            <button class="quiz-option" data-value="opt-b" onclick="selectOption(this)"><div class="quiz-option-radio"></div><span><code>__init__</code></span></button>
+            <button class="quiz-option" data-value="opt-c" onclick="selectOption(this)"><div class="quiz-option-radio"></div><span><code>__eq__</code></span></button>
+            <button class="quiz-option" data-value="opt-d" onclick="selectOption(this)"><div class="quiz-option-radio"></div><span><code>__hash__</code></span></button>
+          </div>
+          <div class="quiz-feedback"></div>
+        </div>
+
+        <div class="quiz-question-block"
+             data-correct="opt-b"
+             data-right="Right! super().__init__() calls the parent constructor. This ensures all of Animal's setup (like self.name) runs before Dog adds its own attributes."
+             data-wrong="super() gives a reference to the parent class. Calling __init__() on it runs the parent setup — essential for inherited attributes to exist.">
+          <h3 class="quiz-question"><code>class Dog(Animal):</code> — in <code>__init__</code>, Dog calls <code>super().__init__(name)</code>. What does this do?</h3>
+          <div class="quiz-options">
+            <button class="quiz-option" data-value="opt-a" onclick="selectOption(this)"><div class="quiz-option-radio"></div><span>Creates a new Animal instance</span></button>
+            <button class="quiz-option" data-value="opt-b" onclick="selectOption(this)"><div class="quiz-option-radio"></div><span>Runs Animal's <code>__init__</code> to set up inherited attributes</span></button>
+            <button class="quiz-option" data-value="opt-c" onclick="selectOption(this)"><div class="quiz-option-radio"></div><span>Copies all of Animal's methods into Dog</span></button>
+            <button class="quiz-option" data-value="opt-d" onclick="selectOption(this)"><div class="quiz-option-radio"></div><span>Makes Dog and Animal equal</span></button>
+          </div>
+          <div class="quiz-feedback"></div>
+        </div>
+
+        <!-- Q3: Drag and drop -->
+        <div class="dnd-container animate-in">
+          <h3 class="quiz-question">Match each concept to its description:</h3>
+          <div class="dnd-chips">
+            <div class="dnd-chip" draggable="true" data-answer="@dataclass">@dataclass</div>
+            <div class="dnd-chip" draggable="true" data-answer="@property">@property</div>
+            <div class="dnd-chip" draggable="true" data-answer="super()">super()</div>
+            <div class="dnd-chip" draggable="true" data-answer="__init__">__init__</div>
+          </div>
+          <div class="dnd-zones">
+            <div class="dnd-zone" data-correct="@dataclass">
+              <p class="dnd-zone-label">Auto-generates constructor and repr from field annotations</p>
+              <div class="dnd-zone-target">Drop here</div>
+            </div>
+            <div class="dnd-zone" data-correct="@property">
+              <p class="dnd-zone-label">Makes a method look like a plain attribute — no parentheses needed</p>
+              <div class="dnd-zone-target">Drop here</div>
+            </div>
+            <div class="dnd-zone" data-correct="super()">
+              <p class="dnd-zone-label">Reference to the parent class for calling parent methods</p>
+              <div class="dnd-zone-target">Drop here</div>
+            </div>
+            <div class="dnd-zone" data-correct="__init__">
+              <p class="dnd-zone-label">The constructor — runs automatically when a new instance is created</p>
+              <div class="dnd-zone-target">Drop here</div>
+            </div>
+          </div>
+        </div>
+
+        <button class="quiz-check-btn" onclick="checkQuiz('quiz-module4')">Check Answers</button>
+        <button class="quiz-reset-btn" onclick="resetQuiz('quiz-module4')">Try Again</button>
+      </div>
+    </div>
+
+  </div>
+</section>
+<section class="module" id="module-5" style="background: var(--color-bg-warm)">
+  <div class="module-content">
+    <div class="module-header animate-in">
+      <span class="module-number">05</span>
+      <h1 class="module-title">The Outside World</h1>
+      <p class="module-subtitle">Files, JSON, exceptions — how Python reads from and writes to the world beyond your script</p>
+    </div>
+
+    <!-- Screen 1: Files with Context Managers -->
+    <div class="screen">
+      <h2 class="screen-heading animate-in">Files — The Library Borrowing System</h2>
+
+      <p class="animate-in">A context manager is like a library borrowing system — the book is checked out, used, and automatically returned when you are done. Even if you forget. Even if something goes wrong.</p>
+
+      <div class="flow-animation animate-in" id="flow-m5-ctx" data-steps='[
+        {"highlight":"flow-m5c-1","label":"Your code: with open(&quot;data.txt&quot;) as f:"},
+        {"highlight":"flow-m5c-2","label":"Context manager calls __enter__: opens the file, returns file object f","packet":true,"from":"m5c-1","to":"m5c-2"},
+        {"highlight":"flow-m5c-3","label":"File is open — you can read or write inside the indented block","packet":true,"from":"m5c-2","to":"m5c-3"},
+        {"highlight":"flow-m5c-4","label":"Block ends (or exception occurs) — __exit__ fires: file closes automatically","packet":true,"from":"m5c-3","to":"m5c-4"},
+        {"highlight":"flow-m5c-1","label":"Code continues after the with block — file is guaranteed closed"}
+      ]'>
+        <div class="flow-actors">
+          <div class="flow-actor" id="flow-m5c-1">
+            <div class="flow-actor-icon">📄</div>
+            <span>Your Code</span>
+          </div>
+          <div class="flow-actor" id="flow-m5c-2">
+            <div class="flow-actor-icon">🔑</div>
+            <span>__enter__</span>
+          </div>
+          <div class="flow-actor" id="flow-m5c-3">
+            <div class="flow-actor-icon">📂</div>
+            <span>File Open</span>
+          </div>
+          <div class="flow-actor" id="flow-m5c-4">
+            <div class="flow-actor-icon">🔒</div>
+            <span>__exit__</span>
+          </div>
+        </div>
+        <div class="flow-packet"></div>
+        <div class="flow-step-label">Click "Next Step" to begin</div>
+        <div class="flow-controls">
+          <button class="btn flow-next-btn">Next Step</button>
+          <button class="btn flow-reset-btn">Restart</button>
+          <span class="flow-progress"></span>
+        </div>
+      </div>
+
+      <div class="translation-block animate-in">
+        <div class="translation-code">
+          <span class="translation-label">PYTHON</span>
+          <pre><code><span class="code-line"><span class="code-keyword">from</span> pathlib <span class="code-keyword">import</span> Path</span>
+<span class="code-line"></span>
+<span class="code-line"><span class="code-property">data_file</span> = <span class="code-function">Path</span>(<span class="code-string">"tasks.txt"</span>)</span>
+<span class="code-line"></span>
+<span class="code-line"><span class="code-comment"># Write</span></span>
+<span class="code-line"><span class="code-keyword">with</span> <span class="code-function">open</span>(data_file, <span class="code-string">"w"</span>) <span class="code-keyword">as</span> f:</span>
+<span class="code-line">    f.<span class="code-function">write</span>(<span class="code-string">"Buy milk\n"</span>)</span>
+<span class="code-line">    f.<span class="code-function">write</span>(<span class="code-string">"Call Alice\n"</span>)</span>
+<span class="code-line"></span>
+<span class="code-line"><span class="code-comment"># Read</span></span>
+<span class="code-line"><span class="code-keyword">with</span> <span class="code-function">open</span>(data_file, <span class="code-string">"r"</span>) <span class="code-keyword">as</span> f:</span>
+<span class="code-line">    <span class="code-keyword">for</span> line <span class="code-keyword">in</span> f:</span>
+<span class="code-line">        <span class="code-function">print</span>(line.<span class="code-function">strip</span>())</span></code></pre>
+        </div>
+        <div class="translation-english">
+          <span class="translation-label">PLAIN ENGLISH</span>
+          <div class="translation-lines">
+            <p class="tl">&nbsp;</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl"><code>Path("tasks.txt")</code> → A cross-platform path object — works the same on Mac, Windows, Linux</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl"><code>open(data_file, "w")</code> → Open for writing — creates if not exists, overwrites if it does</p>
+            <p class="tl"><code>with ... as f:</code> → Context manager: f is the open file. When the block ends, f closes automatically</p>
+            <p class="tl"><code>f.write("text\n")</code> → Write text. \n is a newline character</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl"><code>open(data_file, "r")</code> → Open for reading. "r" is the default mode</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl"><code>for line in f:</code> → Iterate through the file line by line — memory efficient</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="callout callout-accent animate-in">
+        <div class="callout-icon">💡</div>
+        <div class="callout-content">
+          <p>Almost every practical script Claude writes for you touches files. The <code>with open(...)</code> pattern guarantees the file closes cleanly — no leaked file handles, no data corruption. Even if your code raises an exception inside the block.</p>
+        </div>
+      </div>
+
+      <p class="animate-in">
+        Glossary:
+        <span class="term" data-definition="An object that defines __enter__ and __exit__ methods. Used with the with statement — __enter__ runs at the start, __exit__ runs at the end (or on exception). Files are the most common example.">context manager</span> ·
+        <span class="term" data-definition="A Python statement that wraps a block of code with setup and teardown logic from a context manager. Guarantees cleanup even if an exception occurs.">with statement</span> ·
+        <span class="term" data-definition="A module providing object-oriented path handling. Path objects represent file system paths and work identically on Windows, Mac, and Linux.">pathlib.Path</span> ·
+        <span class="term" data-definition="The second argument to open(). 'r' reads, 'w' writes (overwrites), 'a' appends, 'rb' reads binary. Default is 'r'.">file mode</span>
+      </p>
+    </div>
+
+    <!-- Screen 2: JSON -->
+    <div class="screen">
+      <h2 class="screen-heading animate-in">JSON — Python Meets the Web</h2>
+
+      <p class="animate-in">JSON is how data travels on the internet. Python dicts and JSON look almost identical. The json module converts between them instantly.</p>
+
+      <div class="callout callout-accent animate-in">
+        <div class="callout-icon">💡</div>
+        <div class="callout-content">
+          <p>When Claude writes code to handle an API response, every response is JSON. The moment you call <code>response.json()</code>, Python converts the JSON text to a Python dict — and you can access it with all the dict skills from Module 2.</p>
+        </div>
+      </div>
+
+      <div class="translation-block animate-in">
+        <div class="translation-code">
+          <span class="translation-label">PYTHON</span>
+          <pre><code><span class="code-line"><span class="code-keyword">import</span> json</span>
+<span class="code-line"></span>
+<span class="code-line"><span class="code-property">user</span> = {</span>
+<span class="code-line">    <span class="code-string">"name"</span>: <span class="code-string">"Alice"</span>,</span>
+<span class="code-line">    <span class="code-string">"score"</span>: <span class="code-number">95</span>,</span>
+<span class="code-line">    <span class="code-string">"tags"</span>: [<span class="code-string">"admin"</span>, <span class="code-string">"active"</span>]</span>
+<span class="code-line">}</span>
+<span class="code-line"></span>
+<span class="code-line"><span class="code-comment"># Python dict → JSON string</span></span>
+<span class="code-line"><span class="code-property">json_str</span> = json.<span class="code-function">dumps</span>(user, indent=<span class="code-number">2</span>)</span>
+<span class="code-line"></span>
+<span class="code-line"><span class="code-comment"># JSON string → Python dict</span></span>
+<span class="code-line"><span class="code-property">loaded</span> = json.<span class="code-function">loads</span>(json_str)</span>
+<span class="code-line"></span>
+<span class="code-line"><span class="code-comment"># Write to file</span></span>
+<span class="code-line"><span class="code-keyword">with</span> <span class="code-function">open</span>(<span class="code-string">"user.json"</span>, <span class="code-string">"w"</span>) <span class="code-keyword">as</span> f:</span>
+<span class="code-line">    json.<span class="code-function">dump</span>(user, f, indent=<span class="code-number">2</span>)</span>
+<span class="code-line"></span>
+<span class="code-line"><span class="code-comment"># Read from file</span></span>
+<span class="code-line"><span class="code-keyword">with</span> <span class="code-function">open</span>(<span class="code-string">"user.json"</span>, <span class="code-string">"r"</span>) <span class="code-keyword">as</span> f:</span>
+<span class="code-line">    <span class="code-property">data</span> = json.<span class="code-function">load</span>(f)</span></code></pre>
+        </div>
+        <div class="translation-english">
+          <span class="translation-label">PLAIN ENGLISH</span>
+          <div class="translation-lines">
+            <p class="tl">&nbsp;</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl"><code>json.dumps(user)</code> → "dump to string" — converts Python dict to a JSON-formatted string</p>
+            <p class="tl"><code>indent=2</code> → Pretty-print with 2-space indentation — readable to humans and tools</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl"><code>json.loads(json_str)</code> → "load from string" — converts JSON string back to Python dict</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl"><code>json.dump(user, f)</code> → Write JSON directly to an open file (no intermediate string)</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl"><code>json.load(f)</code> → Read JSON directly from a file — returns a Python dict</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="pattern-cards animate-in">
+        <div class="pattern-card">
+          <div class="pattern-card-icon">📡</div>
+          <h3 class="pattern-card-title">1. API response arrives</h3>
+          <p class="pattern-card-desc">Raw JSON text comes back from the server as a string.</p>
+        </div>
+        <div class="pattern-card">
+          <div class="pattern-card-icon">🔄</div>
+          <h3 class="pattern-card-title">2. json.loads() converts</h3>
+          <p class="pattern-card-desc">JSON text becomes a Python dict you can work with.</p>
+        </div>
+        <div class="pattern-card">
+          <div class="pattern-card-icon">🔑</div>
+          <h3 class="pattern-card-title">3. Access data</h3>
+          <p class="pattern-card-desc"><code>data["user"]["name"]</code> — normal dict access.</p>
+        </div>
+        <div class="pattern-card">
+          <div class="pattern-card-icon">✏️</div>
+          <h3 class="pattern-card-title">4. Modify as dict</h3>
+          <p class="pattern-card-desc">Update values using all your dict skills from Module 2.</p>
+        </div>
+        <div class="pattern-card">
+          <div class="pattern-card-icon">📤</div>
+          <h3 class="pattern-card-title">5. json.dumps() converts back</h3>
+          <p class="pattern-card-desc">Python dict becomes JSON text for storage or sending.</p>
+        </div>
+      </div>
+
+      <p class="animate-in">
+        Glossary:
+        <span class="term" data-definition="JavaScript Object Notation — a text format for structured data. Uses key-value pairs like Python dicts and supports strings, numbers, booleans, arrays, and nested objects.">JSON</span> ·
+        <span class="term" data-definition="'dump to string' — converts a Python dict (or list) to a JSON-formatted string. Pass indent=2 for pretty-printing.">json.dumps()</span> ·
+        <span class="term" data-definition="'load from string' — converts a JSON-formatted string to a Python dict or list. Raises json.JSONDecodeError if the string is not valid JSON.">json.loads()</span> ·
+        <span class="term" data-definition="The process of converting a data structure (like a Python dict) into a format that can be stored or transmitted (like a JSON string). json.dumps() serializes; json.loads() deserializes.">serialization</span>
+      </p>
+    </div>
+
+    <!-- Screen 3: Try/Except -->
+    <div class="screen">
+      <h2 class="screen-heading animate-in">Try/Except — Expecting the Unexpected</h2>
+
+      <p class="animate-in">External resources fail. Files go missing. APIs go down. try/except lets your program handle these failures gracefully instead of crashing.</p>
+
+      <div class="flow-animation animate-in" id="flow-m5-try" data-steps='[
+        {"highlight":"flow-m5t-1","label":"Python enters the try block — attempting the risky operation"},
+        {"highlight":"flow-m5t-1","label":"Attempt: open config.json and read it"},
+        {"highlight":"flow-m5t-2","label":"ERROR! File not found — Python jumps to except block","packet":true,"from":"m5t-1","to":"m5t-2"},
+        {"highlight":"flow-m5t-2","label":"except FileNotFoundError: handle it — use defaults instead of crashing"},
+        {"highlight":"flow-m5t-4","label":"finally always runs — log the attempt, release any resources","packet":true,"from":"m5t-2","to":"m5t-4"},
+        {"highlight":"flow-m5t-3","label":"(Success path: else block runs when try succeeds with no exception)"}
+      ]'>
+        <div class="flow-actors">
+          <div class="flow-actor" id="flow-m5t-1">
+            <div class="flow-actor-icon">🎯</div>
+            <span>try block</span>
+          </div>
+          <div class="flow-actor" id="flow-m5t-2">
+            <div class="flow-actor-icon">🛡️</div>
+            <span>except block</span>
+          </div>
+          <div class="flow-actor" id="flow-m5t-3">
+            <div class="flow-actor-icon">✅</div>
+            <span>else block</span>
+          </div>
+          <div class="flow-actor" id="flow-m5t-4">
+            <div class="flow-actor-icon">🔁</div>
+            <span>finally block</span>
+          </div>
+        </div>
+        <div class="flow-packet"></div>
+        <div class="flow-step-label">Click "Next Step" to begin</div>
+        <div class="flow-controls">
+          <button class="btn flow-next-btn">Next Step</button>
+          <button class="btn flow-reset-btn">Restart</button>
+          <span class="flow-progress"></span>
+        </div>
+      </div>
+
+      <div class="translation-block animate-in">
+        <div class="translation-code">
+          <span class="translation-label">PYTHON</span>
+          <pre><code><span class="code-line"><span class="code-keyword">try</span>:</span>
+<span class="code-line">    <span class="code-keyword">with</span> <span class="code-function">open</span>(<span class="code-string">"config.json"</span>, <span class="code-string">"r"</span>) <span class="code-keyword">as</span> f:</span>
+<span class="code-line">        <span class="code-property">config</span> = json.<span class="code-function">load</span>(f)</span>
+<span class="code-line"><span class="code-keyword">except</span> <span class="code-function">FileNotFoundError</span>:</span>
+<span class="code-line">    <span class="code-property">config</span> = {<span class="code-string">"debug"</span>: <span class="code-keyword">False</span>, <span class="code-string">"timeout"</span>: <span class="code-number">30</span>}</span>
+<span class="code-line">    <span class="code-function">print</span>(<span class="code-string">"Config not found — using defaults"</span>)</span>
+<span class="code-line"><span class="code-keyword">except</span> json.<span class="code-function">JSONDecodeError</span> <span class="code-keyword">as</span> e:</span>
+<span class="code-line">    <span class="code-function">print</span>(<span class="code-string">f"Invalid JSON: {e}"</span>)</span>
+<span class="code-line">    <span class="code-property">config</span> = {}</span>
+<span class="code-line"><span class="code-keyword">else</span>:</span>
+<span class="code-line">    <span class="code-function">print</span>(<span class="code-string">"Config loaded successfully"</span>)</span>
+<span class="code-line"><span class="code-keyword">finally</span>:</span>
+<span class="code-line">    <span class="code-function">print</span>(<span class="code-string">"Setup complete"</span>)   <span class="code-comment"># always runs</span></span></code></pre>
+        </div>
+        <div class="translation-english">
+          <span class="translation-label">PLAIN ENGLISH</span>
+          <div class="translation-lines">
+            <p class="tl"><code>try:</code> → Attempt this code — it might fail</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl"><code>except FileNotFoundError:</code> → If the file does not exist, handle it here (no crash)</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl"><code>except json.JSONDecodeError as e:</code> → If JSON is malformed, handle it here. e holds error details</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl"><code>else:</code> → Runs ONLY if the try block completed with no exception</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl"><code>finally:</code> → Runs no matter what — success, failure, or any exception. Use for cleanup</p>
+          </div>
+        </div>
+      </div>
+
+      <p class="animate-in">
+        Glossary:
+        <span class="term" data-definition="An event that disrupts normal program flow — a signal that something went wrong. Python raises exceptions automatically (FileNotFoundError, TypeError) or you can raise them manually.">exception</span> ·
+        <span class="term" data-definition="A control flow structure: try the risky code, except catches specific errors, else runs on success, finally always runs. Use it to handle failures gracefully.">try/except</span> ·
+        <span class="term" data-definition="Raised when open() cannot find the file at the given path. A subclass of OSError. Handle it to provide a default when config files or data files are missing.">FileNotFoundError</span> ·
+        <span class="term" data-definition="An optional clause in a try/except block that always runs — regardless of whether an exception occurred. Use it for cleanup: closing connections, logging, releasing resources.">finally</span>
+      </p>
+    </div>
+
+    <!-- Screen 4: Exception Hierarchy -->
+    <div class="screen">
+      <h2 class="screen-heading animate-in">The Exception Hierarchy</h2>
+
+      <p class="animate-in">Python exceptions form a tree. Catching a parent type catches all its children. Knowing the hierarchy helps you write precise error handling.</p>
+
+      <div class="arch-diagram animate-in">
+        <div class="arch-zone">
+          <div class="arch-zone-label">Python Exception Hierarchy (click to explore)</div>
+          <div class="arch-components">
+            <div class="arch-component" data-desc="Root of all Python exceptions. Rarely caught directly — reserved for system events like KeyboardInterrupt (Ctrl+C).">
+              <div class="arch-component-icon">🌳</div>
+              <div class="arch-component-label">BaseException</div>
+            </div>
+            <div class="arch-component" data-desc="Base class for all regular exceptions. Catching Exception catches almost everything except system events.">
+              <div class="arch-component-icon">📦</div>
+              <div class="arch-component-label">Exception</div>
+            </div>
+            <div class="arch-component" data-desc="Raised when a value has the right type but wrong content: int('hello'), or a list index out of range conceptually.">
+              <div class="arch-component-icon">❌</div>
+              <div class="arch-component-label">ValueError</div>
+            </div>
+            <div class="arch-component" data-desc="Raised when an operation is applied to the wrong type: 'hello' + 5, or calling a non-callable.">
+              <div class="arch-component-icon">🔀</div>
+              <div class="arch-component-label">TypeError</div>
+            </div>
+            <div class="arch-component" data-desc="Raised when a dictionary key does not exist: d['missing_key'].">
+              <div class="arch-component-icon">🗝️</div>
+              <div class="arch-component-label">KeyError</div>
+            </div>
+            <div class="arch-component" data-desc="Raised when a file does not exist. A subclass of OSError — catch FileNotFoundError for precision, OSError for any file system error.">
+              <div class="arch-component-icon">📂</div>
+              <div class="arch-component-label">FileNotFoundError</div>
+            </div>
+            <div class="arch-component" data-desc="Raised when a list index is out of range: my_list[100] on a 3-item list.">
+              <div class="arch-component-icon">📋</div>
+              <div class="arch-component-label">IndexError</div>
+            </div>
+            <div class="arch-component" data-desc="Raised when you access an attribute that does not exist: obj.nonexistent_method.">
+              <div class="arch-component-icon">🔍</div>
+              <div class="arch-component-label">AttributeError</div>
+            </div>
+          </div>
+        </div>
+        <div class="arch-description">Click any exception to learn when it appears</div>
+      </div>
+
+      <div class="callout callout-info animate-in">
+        <div class="callout-icon">🔗</div>
+        <div class="callout-content">
+          <p>Custom exceptions let you create domain-specific error types. A payment app might define <code>PaymentDeclined(ValueError)</code>. Claude often generates these in larger applications — now you know they are just subclasses of <span class="term" data-definition="Base class for all regular exceptions. Catching Exception catches almost everything except system events like KeyboardInterrupt.">Exception</span>.</p>
+        </div>
+      </div>
+
+      <p class="animate-in">
+        Glossary:
+        <span class="term" data-definition="The tree of exception types in Python. Parent types are broad (Exception, OSError); children are specific (FileNotFoundError, PermissionError). Catching a parent type catches all its children.">exception hierarchy</span> ·
+        <span class="term" data-definition="Raised when a value has the right type but wrong content: int('hello') raises ValueError because 'hello' is a string but not a valid integer string.">ValueError</span> ·
+        <span class="term" data-definition="Raised when an operation is applied to the wrong type: 'hello' + 5 raises TypeError because you cannot add a string and an integer.">TypeError</span> ·
+        <span class="term" data-definition="Raised when a dictionary key does not exist. Use .get(key, default) to avoid KeyError, or catch it with except KeyError.">KeyError</span>
+      </p>
+    </div>
+
+    <!-- Quiz -->
+    <div class="screen">
+      <h2 class="screen-heading animate-in">Check Your Understanding</h2>
+
+      <div class="quiz-container animate-in" id="quiz-module5">
+
+        <!-- Q1 -->
+        <div class="quiz-question-block"
+             data-correct="opt-b"
+             data-explanation-right=".get() with a default is the cleanest solution — one line, no try/except needed. This is the everyday fix for optional dict keys."
+             data-explanation-wrong="That works but is more code than needed. .get(key, default) handles optional keys in a single expression.">
+          <h3 class="quiz-question">Claude wrote code with <code>user["premium_tier"]</code> from an API response. Some users do not have this field. What is the safest fix?</h3>
+          <div class="quiz-options">
+            <button class="quiz-option" data-value="opt-a">
+              <div class="quiz-option-radio"></div>
+              <span>Wrap in <code>try: ... except KeyError:</code></span>
+            </button>
+            <button class="quiz-option" data-value="opt-b">
+              <div class="quiz-option-radio"></div>
+              <span>Change to <code>user.get("premium_tier", "free")</code></span>
+            </button>
+            <button class="quiz-option" data-value="opt-c">
+              <div class="quiz-option-radio"></div>
+              <span>Add <code>if "premium_tier" in user:</code> before every access</span>
+            </button>
+            <button class="quiz-option" data-value="opt-d">
+              <div class="quiz-option-radio"></div>
+              <span>Ask the API to always include this field</span>
+            </button>
+          </div>
+          <div class="quiz-feedback"></div>
+        </div>
+
+        <!-- Q2 -->
+        <div class="quiz-question-block"
+             data-correct="opt-c"
+             data-explanation-right="Correct! When an exception occurs, the except block catches it and the else block is skipped. finally ALWAYS runs regardless of success or failure."
+             data-explanation-wrong="else only runs when try completes WITHOUT an exception. finally always runs — that is its entire purpose.">
+          <h3 class="quiz-question">Trace this code. When the file does not exist, which blocks run?
+            <pre style="margin-top:0.5rem"><code>try:
+    f = open("missing.txt")
+    data = f.read()
+except FileNotFoundError:
+    data = "default"
+else:
+    print("File loaded")
+finally:
+    print("Done")</code></pre>
+          </h3>
+          <div class="quiz-options">
+            <button class="quiz-option" data-value="opt-a">
+              <div class="quiz-option-radio"></div>
+              <span>Just the except block</span>
+            </button>
+            <button class="quiz-option" data-value="opt-b">
+              <div class="quiz-option-radio"></div>
+              <span>except block and else block</span>
+            </button>
+            <button class="quiz-option" data-value="opt-c">
+              <div class="quiz-option-radio"></div>
+              <span>except block and finally block</span>
+            </button>
+            <button class="quiz-option" data-value="opt-d">
+              <div class="quiz-option-radio"></div>
+              <span>Just the finally block</span>
+            </button>
+          </div>
+          <div class="quiz-feedback"></div>
+        </div>
+
+        <!-- Q3 -->
+        <div class="quiz-question-block"
+             data-correct="opt-a"
+             data-explanation-right="Right! Mode 'a' appends — new content is added to the end. Mode 'w' is destructive: it truncates the file to zero length before writing."
+             data-explanation-wrong="Mode 'w' overwrites — it deletes existing content. Mode 'a' for append adds to the end of the existing file.">
+          <h3 class="quiz-question">You want to append new log entries without overwriting old ones. Which file mode?</h3>
+          <div class="quiz-options">
+            <button class="quiz-option" data-value="opt-a">
+              <div class="quiz-option-radio"></div>
+              <span><code>open("log.txt", "a")</code></span>
+            </button>
+            <button class="quiz-option" data-value="opt-b">
+              <div class="quiz-option-radio"></div>
+              <span><code>open("log.txt", "w")</code></span>
+            </button>
+            <button class="quiz-option" data-value="opt-c">
+              <div class="quiz-option-radio"></div>
+              <span><code>open("log.txt", "r")</code></span>
+            </button>
+            <button class="quiz-option" data-value="opt-d">
+              <div class="quiz-option-radio"></div>
+              <span><code>open("log.txt", "rw")</code></span>
+            </button>
+          </div>
+          <div class="quiz-feedback"></div>
+        </div>
+
+        <button class="quiz-check-btn">Check Answers</button>
+        <button class="quiz-reset-btn">Try Again</button>
+      </div>
+    </div>
+
+  </div>
+</section>
+<section class="module" id="module-6">
+  <div class="module-content">
+    <div class="module-header animate-in">
+      <span class="module-number">06</span>
+      <h1 class="module-title">Trusting Your Code</h1>
+      <p class="module-subtitle">pytest, fixtures, parametrize, mocking — how to verify your code works (and catch when Claude gets it wrong)</p>
+    </div>
+
+    <!-- Screen 1: Why Tests Exist -->
+    <div class="screen">
+      <h2 class="screen-heading animate-in">Why Tests Exist</h2>
+
+      <p class="animate-in">Tests are a ratchet wrench — each green test is a click that locks in your progress. You cannot accidentally slip backward.</p>
+
+      <div class="chat-window animate-in" id="chat-m6-tests">
+        <div class="chat-messages">
+          <div class="chat-message" data-sender="You" style="display:none">
+            <div class="chat-avatar" style="background: var(--color-actor-2)">D</div>
+            <div class="chat-bubble">
+              <span class="chat-sender" style="color: var(--color-actor-2)">You</span>
+              <p>I refactored the discount calculation function. Should be faster now.</p>
+            </div>
+          </div>
+          <div class="chat-message" data-sender="Test Suite" style="display:none">
+            <div class="chat-avatar" style="background: var(--color-actor-5)">T</div>
+            <div class="chat-bubble">
+              <span class="chat-sender" style="color: var(--color-actor-5)">Test Suite</span>
+              <p>Running 47 tests...</p>
+            </div>
+          </div>
+          <div class="chat-message" data-sender="Test Suite" style="display:none">
+            <div class="chat-avatar" style="background: var(--color-actor-5)">T</div>
+            <div class="chat-bubble">
+              <span class="chat-sender" style="color: var(--color-actor-5)">Test Suite</span>
+              <p>FAILED: test_zero_discount_returns_full_price</p>
+            </div>
+          </div>
+          <div class="chat-message" data-sender="You" style="display:none">
+            <div class="chat-avatar" style="background: var(--color-actor-2)">D</div>
+            <div class="chat-bubble">
+              <span class="chat-sender" style="color: var(--color-actor-2)">You</span>
+              <p>Wait — my refactor broke the zero-discount case?</p>
+            </div>
+          </div>
+          <div class="chat-message" data-sender="The Code" style="display:none">
+            <div class="chat-avatar" style="background: var(--color-actor-3)">C</div>
+            <div class="chat-bubble">
+              <span class="chat-sender" style="color: var(--color-actor-3)">The Code</span>
+              <p>Yes. The new formula divides by discount_pct. When pct=0, that is a ZeroDivisionError.</p>
+            </div>
+          </div>
+          <div class="chat-message" data-sender="Test Suite" style="display:none">
+            <div class="chat-avatar" style="background: var(--color-actor-5)">T</div>
+            <div class="chat-bubble">
+              <span class="chat-sender" style="color: var(--color-actor-5)">Test Suite</span>
+              <p>Without me, you would have shipped this. With me, you caught it in 3 seconds.</p>
+            </div>
+          </div>
+          <div class="chat-message" data-sender="You" style="display:none">
+            <div class="chat-avatar" style="background: var(--color-actor-2)">D</div>
+            <div class="chat-bubble">
+              <span class="chat-sender" style="color: var(--color-actor-2)">You</span>
+              <p>So tests do not just find bugs now — they prevent future regressions too.</p>
+            </div>
+          </div>
+          <div class="chat-message" data-sender="Test Suite" style="display:none">
+            <div class="chat-avatar" style="background: var(--color-actor-5)">T</div>
+            <div class="chat-bubble">
+              <span class="chat-sender" style="color: var(--color-actor-5)">Test Suite</span>
+              <p>Each green test is a ratchet click. Progress is locked in. You cannot accidentally slip backward.</p>
+            </div>
+          </div>
+        </div>
+        <div class="chat-typing" style="display:none">
+          <div class="chat-avatar" id="chat-m6-tests-typing-avatar" style="background: var(--color-actor-5)">T</div>
+          <div class="chat-typing-dots">
+            <span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span>
+          </div>
+        </div>
+        <div class="chat-controls">
+          <button class="btn chat-next-btn">Next Message</button>
+          <button class="btn chat-all-btn">Play All</button>
+          <button class="btn chat-reset-btn">Replay</button>
+          <span class="chat-progress"></span>
+        </div>
+      </div>
+
+      <div class="callout callout-accent animate-in">
+        <div class="callout-icon">💡</div>
+        <div class="callout-content">
+          <p>When Claude generates tests alongside code, it is creating a record of intended behavior. The test says: this function should do X. If anyone changes the function and breaks X, the test fails loudly. Tests are a contract written in executable form.</p>
+        </div>
+      </div>
+
+      <p class="animate-in">
+        Glossary:
+        <span class="term" data-definition="A piece of code that verifies another piece of code behaves correctly. Tests run automatically and report pass or fail — no manual checking needed.">test</span> ·
+        <span class="term" data-definition="A bug that was fixed but later reappeared — usually because a code change accidentally re-introduced the old broken behavior. Tests prevent regressions by catching them immediately.">regression</span> ·
+        <span class="term" data-definition="The most popular Python testing framework. Run it with `pytest` in your terminal. It auto-discovers test files and functions, runs them, and reports results.">pytest</span> ·
+        <span class="term" data-definition="All the tests for a project or module, run together. A passing test suite means all known intended behaviors are working.">test suite</span>
+      </p>
+    </div>
+
+    <!-- Screen 2: Writing Assertions -->
+    <div class="screen">
+      <h2 class="screen-heading animate-in">Writing Assertions</h2>
+
+      <p class="animate-in">A pytest test is any function whose name starts with <code>test_</code>. Inside, you use <code>assert</code> to state what you expect. If the assertion fails, pytest tells you exactly what the actual value was.</p>
+
+      <div class="step-cards animate-in">
+        <div class="step-card">
+          <div class="step-card-number">1</div>
+          <div class="step-card-content">
+            <strong>File naming</strong>
+            <p>pytest automatically discovers files named <code>test_*.py</code> or <code>*_test.py</code></p>
+          </div>
+        </div>
+        <div class="step-card">
+          <div class="step-card-number">2</div>
+          <div class="step-card-content">
+            <strong>Function naming</strong>
+            <p>Any function starting with <code>test_</code> is a test. No class or registration needed.</p>
+          </div>
+        </div>
+        <div class="step-card">
+          <div class="step-card-number">3</div>
+          <div class="step-card-content">
+            <strong>assert</strong>
+            <p><code>assert expected_value == actual_value</code>. If False, pytest shows both values.</p>
+          </div>
+        </div>
+        <div class="step-card">
+          <div class="step-card-number">4</div>
+          <div class="step-card-content">
+            <strong>pytest.raises()</strong>
+            <p>Wrap code that SHOULD raise an exception. The test fails if no exception is raised.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="translation-block animate-in">
+        <div class="translation-code">
+          <span class="translation-label">PYTHON</span>
+          <pre><code><span class="code-line"><span class="code-comment"># test_calculator.py</span></span>
+<span class="code-line"><span class="code-keyword">from</span> calculator <span class="code-keyword">import</span> add, divide</span>
+<span class="code-line"></span>
+<span class="code-line"><span class="code-keyword">def</span> <span class="code-function">test_add_positive_numbers</span>():</span>
+<span class="code-line">    <span class="code-property">result</span> = <span class="code-function">add</span>(<span class="code-number">3</span>, <span class="code-number">4</span>)</span>
+<span class="code-line">    <span class="code-keyword">assert</span> result == <span class="code-number">7</span></span>
+<span class="code-line"></span>
+<span class="code-line"><span class="code-keyword">def</span> <span class="code-function">test_divide_by_zero_raises</span>():</span>
+<span class="code-line">    <span class="code-keyword">import</span> pytest</span>
+<span class="code-line">    <span class="code-keyword">with</span> pytest.<span class="code-function">raises</span>(<span class="code-function">ZeroDivisionError</span>):</span>
+<span class="code-line">        <span class="code-function">divide</span>(<span class="code-number">10</span>, <span class="code-number">0</span>)</span>
+<span class="code-line"></span>
+<span class="code-line"><span class="code-keyword">def</span> <span class="code-function">test_add_returns_correct_type</span>():</span>
+<span class="code-line">    <span class="code-property">result</span> = <span class="code-function">add</span>(<span class="code-number">1.5</span>, <span class="code-number">2.5</span>)</span>
+<span class="code-line">    <span class="code-keyword">assert</span> <span class="code-function">isinstance</span>(result, <span class="code-property">float</span>)</span>
+<span class="code-line">    <span class="code-keyword">assert</span> result == <span class="code-number">4.0</span></span></code></pre>
+        </div>
+        <div class="translation-english">
+          <span class="translation-label">PLAIN ENGLISH</span>
+          <div class="translation-lines">
+            <p class="tl">&nbsp;</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl"><code>def test_add_positive_numbers():</code> → Any function starting with test_ is picked up by pytest automatically</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl"><code>assert result == 7</code> → "I expect result to equal 7. If not, stop and show me what it actually was."</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl"><code>def test_divide_by_zero_raises():</code> → A test specifically for error-handling behavior</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl"><code>with pytest.raises(ZeroDivisionError):</code> → "I expect this code to raise ZeroDivisionError. No exception = test failure."</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl"><code>def test_add_returns_correct_type():</code> → A separate test for the return type</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl"><code>assert isinstance(result, float)</code> → Check the type, not just the value</p>
+            <p class="tl">&nbsp;</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="callout callout-warning animate-in">
+        <div class="callout-icon">⚠️</div>
+        <div class="callout-content">
+          <p>Common trap: tests that pass but test nothing. <code>def test_something(): result = run(); assert result</code> — this only checks that result is truthy. A real assertion checks the specific expected value: <code>assert result == expected</code>.</p>
+        </div>
+      </div>
+
+      <p class="animate-in">
+        Glossary:
+        <span class="term" data-definition="A Python statement that checks a condition is True. If it is False, Python raises AssertionError. pytest catches this and reports the test as failed, showing the actual vs expected values.">assert</span> ·
+        <span class="term" data-definition="A context manager from pytest. Wraps code that is expected to raise a specific exception type. If no exception is raised (or the wrong type is raised), the test fails.">pytest.raises()</span> ·
+        <span class="term" data-definition="A statement in a test that checks a specific expected condition. Good assertions check exact values, not just truthiness.">assertion</span> ·
+        <span class="term" data-definition="The automatic process by which pytest finds test files (test_*.py or *_test.py) and test functions (def test_*) without any manual registration.">test discovery</span>
+      </p>
+    </div>
+
+    <!-- Screen 3: Fixtures and Parametrize -->
+    <div class="screen">
+      <h2 class="screen-heading animate-in">Fixtures — Shared Setup</h2>
+
+      <p class="animate-in">Fixtures eliminate repeated setup code. Write the setup once, mark it with <code>@pytest.fixture</code>, and pytest injects it automatically into every test that requests it.</p>
+
+      <div class="flow-animation animate-in" id="flow-m6-fix" data-steps='[
+        {"highlight":"flow-m6f-1","label":"test_active_user: 5 lines of user setup code"},
+        {"highlight":"flow-m6f-2","label":"test_admin_check: same 5 lines of user setup — duplicated","packet":true,"from":"m6f-1","to":"m6f-2"},
+        {"highlight":"flow-m6f-3","label":"test_can_view: same 5 lines again — third copy","packet":true,"from":"m6f-2","to":"m6f-3"},
+        {"highlight":"flow-m6f-4","label":"Extract to @pytest.fixture: write setup ONCE, all tests receive it as a parameter","packet":true,"from":"m6f-3","to":"m6f-4"},
+        {"highlight":"flow-m6f-4","label":"Each test declares the fixture by name: def test_active(sample_user): — pytest injects it automatically"}
+      ]'>
+        <div class="flow-actors">
+          <div class="flow-actor" id="flow-m6f-1">
+            <div class="flow-actor-icon">🔵</div>
+            <span>Test A</span>
+          </div>
+          <div class="flow-actor" id="flow-m6f-2">
+            <div class="flow-actor-icon">🟢</div>
+            <span>Test B</span>
+          </div>
+          <div class="flow-actor" id="flow-m6f-3">
+            <div class="flow-actor-icon">🟡</div>
+            <span>Test C</span>
+          </div>
+          <div class="flow-actor" id="flow-m6f-4">
+            <div class="flow-actor-icon">✨</div>
+            <span>Fixture</span>
+          </div>
+        </div>
+        <div class="flow-packet"></div>
+        <div class="flow-step-label">Click "Next Step" to begin</div>
+        <div class="flow-controls">
+          <button class="btn flow-next-btn">Next Step</button>
+          <button class="btn flow-reset-btn">Restart</button>
+          <span class="flow-progress"></span>
+        </div>
+      </div>
+
+      <div class="translation-block animate-in">
+        <div class="translation-code">
+          <span class="translation-label">PYTHON</span>
+          <pre><code><span class="code-line"><span class="code-keyword">import</span> pytest</span>
+<span class="code-line"><span class="code-keyword">from</span> app <span class="code-keyword">import</span> User, is_admin</span>
+<span class="code-line"></span>
+<span class="code-line">@pytest.<span class="code-function">fixture</span></span>
+<span class="code-line"><span class="code-keyword">def</span> <span class="code-function">sample_user</span>():</span>
+<span class="code-line">    <span class="code-keyword">return</span> <span class="code-function">User</span>(name=<span class="code-string">"Alice"</span>, role=<span class="code-string">"admin"</span>, active=<span class="code-keyword">True</span>)</span>
+<span class="code-line"></span>
+<span class="code-line"><span class="code-keyword">def</span> <span class="code-function">test_user_is_active</span>(sample_user):</span>
+<span class="code-line">    <span class="code-keyword">assert</span> sample_user.active <span class="code-keyword">is True</span></span>
+<span class="code-line"></span>
+<span class="code-line"><span class="code-keyword">def</span> <span class="code-function">test_admin_check</span>(sample_user):</span>
+<span class="code-line">    <span class="code-keyword">assert</span> <span class="code-function">is_admin</span>(sample_user) <span class="code-keyword">is True</span></span>
+<span class="code-line"></span>
+<span class="code-line">@pytest.mark.<span class="code-function">parametrize</span>(<span class="code-string">"a,b,expected"</span>, [</span>
+<span class="code-line">    (<span class="code-number">1</span>, <span class="code-number">2</span>, <span class="code-number">3</span>),</span>
+<span class="code-line">    (<span class="code-number">0</span>, <span class="code-number">0</span>, <span class="code-number">0</span>),</span>
+<span class="code-line">    (<span class="code-number">-1</span>, <span class="code-number">1</span>, <span class="code-number">0</span>),</span>
+<span class="code-line">])</span>
+<span class="code-line"><span class="code-keyword">def</span> <span class="code-function">test_add</span>(a, b, expected):</span>
+<span class="code-line">    <span class="code-keyword">from</span> calculator <span class="code-keyword">import</span> add</span>
+<span class="code-line">    <span class="code-keyword">assert</span> <span class="code-function">add</span>(a, b) == expected</span></code></pre>
+        </div>
+        <div class="translation-english">
+          <span class="translation-label">PLAIN ENGLISH</span>
+          <div class="translation-lines">
+            <p class="tl">&nbsp;</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl"><code>@pytest.fixture</code> → Marks a function as a fixture. pytest calls it and passes the return value to any test that lists it as a parameter</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl"><code>def test_user_is_active(sample_user):</code> → pytest sees sample_user in the signature and runs the fixture automatically</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl"><code>@pytest.mark.parametrize("a,b,expected", [...])</code> → Run this test multiple times with different inputs — no copy-pasting</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl">The table <code>(1,2,3), (0,0,0), (-1,1,0)</code> runs the test 3 times, once per row, producing 3 separate test results</p>
+            <p class="tl">&nbsp;</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="callout callout-info animate-in">
+        <div class="callout-icon">🔗</div>
+        <div class="callout-content">
+          <p>Parametrize is how Claude writes efficient tests. Instead of <code>test_add_positives</code>, <code>test_add_zeros</code>, <code>test_add_negatives</code> — three separate functions — it writes one parametrized test. When you see that decorator, it means one function tests many cases.</p>
+        </div>
+      </div>
+
+      <p class="animate-in">
+        Glossary:
+        <span class="term" data-definition="A function that provides setup data or objects to tests. Marked with @pytest.fixture. pytest calls it automatically and passes its return value to any test that declares it as a parameter.">fixture</span> ·
+        <span class="term" data-definition="A decorator that marks a function as a pytest fixture. The function runs before each test that requests it, and its return value is injected as the parameter value.">@pytest.fixture</span> ·
+        <span class="term" data-definition="A decorator that runs one test function multiple times with different argument values. Each row in the argument list becomes a separate test run with its own pass/fail result.">@pytest.mark.parametrize</span> ·
+        <span class="term" data-definition="The lifetime of a fixture — how often it is created. Default is 'function' (once per test). 'module' shares one instance per file. 'session' shares one across the entire test run.">scope</span>
+      </p>
+    </div>
+
+    <!-- Screen 4: Mocking -->
+    <div class="screen">
+      <h2 class="screen-heading animate-in">Mocking — Stub the World</h2>
+
+      <p class="animate-in">Mocking replaces real dependencies (APIs, databases, files) with fake versions during tests. Your code runs in isolation, with full control over what the fakes return.</p>
+
+      <div class="chat-window animate-in" id="chat-m6-mock">
+        <div class="chat-messages">
+          <div class="chat-message" data-sender="Your Code" style="display:none">
+            <div class="chat-avatar" style="background: var(--color-actor-2)">C</div>
+            <div class="chat-bubble">
+              <span class="chat-sender" style="color: var(--color-actor-2)">Your Code</span>
+              <p>I call fetch_weather('Tokyo') — normally this hits the real weather API.</p>
+            </div>
+          </div>
+          <div class="chat-message" data-sender="Real API" style="display:none">
+            <div class="chat-avatar" style="background: var(--color-actor-1)">A</div>
+            <div class="chat-bubble">
+              <span class="chat-sender" style="color: var(--color-actor-1)">Real API</span>
+              <p>That costs money, takes time, and fails when offline. Bad for automated tests.</p>
+            </div>
+          </div>
+          <div class="chat-message" data-sender="Mock" style="display:none">
+            <div class="chat-avatar" style="background: var(--color-actor-5)">M</div>
+            <div class="chat-bubble">
+              <span class="chat-sender" style="color: var(--color-actor-5)">Mock</span>
+              <p>I intercept that call with unittest.mock.patch. Your code never knows the difference.</p>
+            </div>
+          </div>
+          <div class="chat-message" data-sender="Your Code" style="display:none">
+            <div class="chat-avatar" style="background: var(--color-actor-2)">C</div>
+            <div class="chat-bubble">
+              <span class="chat-sender" style="color: var(--color-actor-2)">Your Code</span>
+              <p>I called fetch_weather('Tokyo') and got a response.</p>
+            </div>
+          </div>
+          <div class="chat-message" data-sender="Mock" style="display:none">
+            <div class="chat-avatar" style="background: var(--color-actor-5)">M</div>
+            <div class="chat-bubble">
+              <span class="chat-sender" style="color: var(--color-actor-5)">Mock</span>
+              <p>I returned {'temp': 22, 'condition': 'sunny'} — a fake response I control perfectly.</p>
+            </div>
+          </div>
+          <div class="chat-message" data-sender="Your Code" style="display:none">
+            <div class="chat-avatar" style="background: var(--color-actor-2)">C</div>
+            <div class="chat-bubble">
+              <span class="chat-sender" style="color: var(--color-actor-2)">Your Code</span>
+              <p>My logic processed it: formatted the display, returned the result string.</p>
+            </div>
+          </div>
+          <div class="chat-message" data-sender="Mock" style="display:none">
+            <div class="chat-avatar" style="background: var(--color-actor-5)">M</div>
+            <div class="chat-bubble">
+              <span class="chat-sender" style="color: var(--color-actor-5)">Mock</span>
+              <p>Your test verified the behavior without touching the real API once. This is isolation.</p>
+            </div>
+          </div>
+        </div>
+        <div class="chat-typing" style="display:none">
+          <div class="chat-avatar" id="chat-m6-mock-typing-avatar" style="background: var(--color-actor-5)">M</div>
+          <div class="chat-typing-dots">
+            <span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span>
+          </div>
+        </div>
+        <div class="chat-controls">
+          <button class="btn chat-next-btn">Next Message</button>
+          <button class="btn chat-all-btn">Play All</button>
+          <button class="btn chat-reset-btn">Replay</button>
+          <span class="chat-progress"></span>
+        </div>
+      </div>
+
+      <div class="translation-block animate-in">
+        <div class="translation-code">
+          <span class="translation-label">PYTHON</span>
+          <pre><code><span class="code-line"><span class="code-keyword">from</span> unittest.mock <span class="code-keyword">import</span> patch</span>
+<span class="code-line"><span class="code-keyword">import</span> pytest</span>
+<span class="code-line"><span class="code-keyword">from</span> weather_app <span class="code-keyword">import</span> get_weather_summary</span>
+<span class="code-line"></span>
+<span class="code-line"><span class="code-keyword">def</span> <span class="code-function">test_weather_sunny</span>():</span>
+<span class="code-line">    <span class="code-property">fake_data</span> = {<span class="code-string">"temp"</span>: <span class="code-number">22</span>, <span class="code-string">"condition"</span>: <span class="code-string">"sunny"</span>}</span>
+<span class="code-line"></span>
+<span class="code-line">    <span class="code-keyword">with</span> <span class="code-function">patch</span>(<span class="code-string">"weather_app.fetch_weather"</span>) <span class="code-keyword">as</span> mock_fetch:</span>
+<span class="code-line">        mock_fetch.return_value = fake_data</span>
+<span class="code-line">        <span class="code-property">result</span> = <span class="code-function">get_weather_summary</span>(<span class="code-string">"Tokyo"</span>)</span>
+<span class="code-line"></span>
+<span class="code-line">    <span class="code-keyword">assert</span> <span class="code-string">"sunny"</span> <span class="code-keyword">in</span> result</span>
+<span class="code-line">    mock_fetch.<span class="code-function">assert_called_once_with</span>(<span class="code-string">"Tokyo"</span>)</span></code></pre>
+        </div>
+        <div class="translation-english">
+          <span class="translation-label">PLAIN ENGLISH</span>
+          <div class="translation-lines">
+            <p class="tl">&nbsp;</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl"><code>patch("weather_app.fetch_weather")</code> → Replace fetch_weather in weather_app with a fake for the duration of the with block</p>
+            <p class="tl"><code>mock_fetch.return_value = fake_data</code> → When your code calls the fake, it returns this value</p>
+            <p class="tl"><code>get_weather_summary("Tokyo")</code> → Your real function runs — but the API call is intercepted</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl"><code>assert "sunny" in result</code> → Verify the output contains the expected content</p>
+            <p class="tl"><code>mock_fetch.assert_called_once_with("Tokyo")</code> → Verify the mock was called exactly once with exactly this argument</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="callout callout-warning animate-in">
+        <div class="callout-icon">⚠️</div>
+        <div class="callout-content">
+          <p>A test that patches the wrong path silently passes for the wrong reason. Always patch where the name is USED, not where it is defined. If weather_app.py does <code>from requests import get</code>, patch <code>weather_app.get</code>, not <code>requests.get</code>.</p>
+        </div>
+      </div>
+
+      <p class="animate-in">
+        Glossary:
+        <span class="term" data-definition="A fake object that replaces a real dependency (API, database, file) during a test. Mocks record how they were called so you can assert on their usage.">mock</span> ·
+        <span class="term" data-definition="A function from unittest.mock that temporarily replaces a named object with a Mock. Used as a context manager (with patch(...) as m:) or decorator. Always patch where the name is used, not where it is defined.">patch</span> ·
+        <span class="term" data-definition="A method on Mock objects that verifies the mock was called exactly one time with exactly the specified arguments. Raises AssertionError if the call count or arguments do not match.">assert_called_once_with()</span> ·
+        <span class="term" data-definition="Running a unit of code (a function, class) with all external dependencies replaced by mocks or stubs. Isolation means the test only verifies that one unit — not its dependencies.">test isolation</span>
+      </p>
+    </div>
+
+    <!-- Quiz -->
+    <div class="screen">
+      <h2 class="screen-heading animate-in">Check Your Understanding</h2>
+
+      <div class="quiz-container animate-in" id="quiz-module6">
+
+        <!-- Q1 -->
+        <div class="quiz-question-block"
+             data-correct="opt-c"
+             data-explanation-right="Exactly! Mocking replaces the real Stripe call with a fake that returns exactly the declined response you want to test. No real money, no network needed, deterministic every time."
+             data-explanation-wrong="Mocking is the right tool here. patch('app.stripe.charge') with a fake declined response lets you test the error handling path deterministically.">
+          <h3 class="quiz-question">Claude wrote a function that calls the Stripe payment API. You want to test that it handles declined cards correctly without charging anyone. How?</h3>
+          <div class="quiz-options">
+            <button class="quiz-option" data-value="opt-a">
+              <div class="quiz-option-radio"></div>
+              <span>Use a real Stripe test card number</span>
+            </button>
+            <button class="quiz-option" data-value="opt-b">
+              <div class="quiz-option-radio"></div>
+              <span>Skip the test — payment functions cannot be tested</span>
+            </button>
+            <button class="quiz-option" data-value="opt-c">
+              <div class="quiz-option-radio"></div>
+              <span>Mock the Stripe API call to return a declined response</span>
+            </button>
+            <button class="quiz-option" data-value="opt-d">
+              <div class="quiz-option-radio"></div>
+              <span>Test manually by clicking through the UI</span>
+            </button>
+          </div>
+          <div class="quiz-feedback"></div>
+        </div>
+
+        <!-- Q2 -->
+        <div class="quiz-question-block"
+             data-correct="opt-b"
+             data-explanation-right="Correct! Everything before yield is setup (runs before the test). Everything after yield is teardown (runs after the test). yield hands control to the test."
+             data-explanation-wrong="In fixtures, yield is the boundary: setup above it, teardown below it. A return would exit the fixture with no teardown capability.">
+          <h3 class="quiz-question">In a pytest fixture that uses <code>yield</code>, what separates setup from teardown?</h3>
+          <div class="quiz-options">
+            <button class="quiz-option" data-value="opt-a">
+              <div class="quiz-option-radio"></div>
+              <span>The return statement</span>
+            </button>
+            <button class="quiz-option" data-value="opt-b">
+              <div class="quiz-option-radio"></div>
+              <span>The yield statement</span>
+            </button>
+            <button class="quiz-option" data-value="opt-c">
+              <div class="quiz-option-radio"></div>
+              <span>The end of the fixture function</span>
+            </button>
+            <button class="quiz-option" data-value="opt-d">
+              <div class="quiz-option-radio"></div>
+              <span>A finally block</span>
+            </button>
+          </div>
+          <div class="quiz-feedback"></div>
+        </div>
+
+        <!-- Q3 -->
+        <div class="quiz-question-block"
+             data-correct="opt-a"
+             data-explanation-right="Right! parametrize runs the test once for each value. Each run is independent — if price=50 fails, the others still run. You get 5 separate test results."
+             data-explanation-wrong="Five separate functions works but is repetitive. A loop inside a test is worse: if one value fails, pytest reports a single failure with no detail about which value caused it.">
+          <h3 class="quiz-question">You want to run <code>test_discount</code> with five different price inputs. What is the most efficient approach?</h3>
+          <div class="quiz-options">
+            <button class="quiz-option" data-value="opt-a">
+              <div class="quiz-option-radio"></div>
+              <span><code>@pytest.mark.parametrize("price", [0, 10, 50, 99, 100])</code> on one function</span>
+            </button>
+            <button class="quiz-option" data-value="opt-b">
+              <div class="quiz-option-radio"></div>
+              <span>Write five separate test functions for each price</span>
+            </button>
+            <button class="quiz-option" data-value="opt-c">
+              <div class="quiz-option-radio"></div>
+              <span>Loop inside the test: <code>for price in [...]: assert ...</code></span>
+            </button>
+            <button class="quiz-option" data-value="opt-d">
+              <div class="quiz-option-radio"></div>
+              <span>Use a fixture that returns a list of prices</span>
+            </button>
+          </div>
+          <div class="quiz-feedback"></div>
+        </div>
+
+        <!-- Q4 -->
+        <div class="quiz-question-block"
+             data-correct="opt-b"
+             data-explanation-right="Correct! assert result passes for any truthy value — a non-empty string, a non-zero number. It does not verify that result is actually correct. A real assertion checks the specific expected value."
+             data-explanation-wrong="assert result only checks truthiness — not correctness. Good tests assert specific values: assert result['status'] == 'processed', not just assert result.">
+          <h3 class="quiz-question">You spot this test Claude generated: <code>def test_process(): result = process_data(sample); assert result</code>. What is wrong with it?</h3>
+          <div class="quiz-options">
+            <button class="quiz-option" data-value="opt-a">
+              <div class="quiz-option-radio"></div>
+              <span>Nothing — assert result checks that result is not None</span>
+            </button>
+            <button class="quiz-option" data-value="opt-b">
+              <div class="quiz-option-radio"></div>
+              <span>The assertion only checks that result is truthy — not what result actually contains</span>
+            </button>
+            <button class="quiz-option" data-value="opt-c">
+              <div class="quiz-option-radio"></div>
+              <span>The test should use assertEqual instead of assert</span>
+            </button>
+            <button class="quiz-option" data-value="opt-d">
+              <div class="quiz-option-radio"></div>
+              <span>Missing a fixture</span>
+            </button>
+          </div>
+          <div class="quiz-feedback"></div>
+        </div>
+
+        <button class="quiz-check-btn">Check Answers</button>
+        <button class="quiz-reset-btn">Try Again</button>
+      </div>
+    </div>
+
+  </div>
+</section>
+  </main>
+
+</body>
+</html>

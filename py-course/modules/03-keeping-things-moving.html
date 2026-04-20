@@ -1,0 +1,521 @@
+<section class="module" id="module-3">
+  <div class="module-content">
+    <div class="module-header animate-in">
+      <span class="module-number">03</span>
+      <h1 class="module-title">Keeping Things Moving</h1>
+      <p class="module-subtitle">Loops, functions, scope — the engine that runs every Python program</p>
+    </div>
+
+    <!-- Screen 1: While Loops -->
+    <div class="screen">
+      <h2 class="screen-heading animate-in">While Loops — Keep Going Until</h2>
+      <p class="animate-in">A <span class="term" data-definition="Repeats a block of code as long as a condition is True. Unlike for, it does not count through a collection">while loop</span> repeats a block of code as long as a condition is True. Unlike a for loop (which counts through a collection), a while loop keeps going until told to stop.</p>
+
+      <div class="flow-animation animate-in" id="flow-m3-while" data-steps='[
+        {"highlight":"flow-m3w-1","label":"Check condition: is count &lt; 5? Yes — enter loop body"},
+        {"highlight":"flow-m3w-2","label":"Run loop body: print(count), count += 1","packet":true,"from":"m3w-1","to":"m3w-2"},
+        {"highlight":"flow-m3w-1","label":"Check again: count &lt; 5? Still yes — keep going","packet":true,"from":"m3w-2","to":"m3w-1"},
+        {"highlight":"flow-m3w-3","label":"break encountered — exit loop immediately, no more checks","packet":true,"from":"m3w-2","to":"m3w-3"},
+        {"highlight":"flow-m3w-4","label":"continue — skip rest of this iteration, jump back to condition","packet":true,"from":"m3w-2","to":"m3w-4"},
+        {"highlight":"flow-m3w-1","label":"Condition becomes False — loop exits naturally"}
+      ]'>
+        <div class="flow-actors">
+          <div class="flow-actor" id="flow-m3w-1">
+            <div class="flow-actor-icon">🔍</div>
+            <span>Condition</span>
+          </div>
+          <div class="flow-actor" id="flow-m3w-2">
+            <div class="flow-actor-icon">⚙️</div>
+            <span>Loop Body</span>
+          </div>
+          <div class="flow-actor" id="flow-m3w-3">
+            <div class="flow-actor-icon">🚪</div>
+            <span>break</span>
+          </div>
+          <div class="flow-actor" id="flow-m3w-4">
+            <div class="flow-actor-icon">⏭️</div>
+            <span>continue</span>
+          </div>
+        </div>
+        <div class="flow-packet"></div>
+        <div class="flow-step-label">Click "Next Step" to begin</div>
+        <div class="flow-controls">
+          <button class="btn flow-next-btn">Next Step</button>
+          <button class="btn flow-reset-btn">Restart</button>
+          <span class="flow-progress"></span>
+        </div>
+      </div>
+
+      <div class="callout callout-warning animate-in">
+        <div class="callout-icon">⚠️</div>
+        <div class="callout-content">
+          <strong class="callout-title">Infinite loops</strong>
+          <p>Infinite loops happen when the condition never becomes False and there is no <span class="term" data-definition="Immediately exits the loop — jumps to the code after the loop">break</span>. Python runs forever until you force-stop it. Always make sure your loop has an exit condition.</p>
+        </div>
+      </div>
+
+      <div class="translation-block animate-in">
+        <div class="translation-code">
+          <span class="translation-label">PYTHON</span>
+          <pre><code><span class="code-line"><span class="code-property">count</span> = <span class="code-number">0</span></span>
+<span class="code-line"><span class="code-keyword">while</span> count &lt; <span class="code-number">5</span>:</span>
+<span class="code-line">    <span class="code-keyword">if</span> count == <span class="code-number">3</span>:</span>
+<span class="code-line">        count += <span class="code-number">1</span></span>
+<span class="code-line">        <span class="code-keyword">continue</span>   <span class="code-comment"># skip printing 3</span></span>
+<span class="code-line">    <span class="code-function">print</span>(count)</span>
+<span class="code-line">    count += <span class="code-number">1</span></span></code></pre>
+        </div>
+        <div class="translation-english">
+          <span class="translation-label">PLAIN ENGLISH</span>
+          <div class="translation-lines">
+            <p class="tl">&nbsp;</p>
+            <p class="tl"><code>while count &lt; 5:</code> → Keep repeating while count is less than 5</p>
+            <p class="tl"><code>if count == 3:</code> → Special case: when count hits 3</p>
+            <p class="tl"><code>count += 1</code> → Increment first (so count moves past 3)</p>
+            <p class="tl"><code>continue</code> → Skip rest of this iteration, jump back to the condition</p>
+            <p class="tl"><code>print(count)</code> → Normal path: print the number</p>
+            <p class="tl"><code>count += 1</code> → Increment counter (Python has no ++ operator)</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="glossary-strip animate-in">
+        <span class="glossary-label">TERMS</span>
+        <span class="term" data-definition="Repeats a block of code as long as a condition is True. Unlike for, it does not count through a collection">while loop</span>
+        <span class="term" data-definition="Immediately exits the loop — jumps to the code after the loop">break</span>
+        <span class="term" data-definition="Skips the rest of the current iteration and jumps back to the condition check">continue</span>
+        <span class="term" data-definition="A loop whose condition never becomes False. Will run until the program is force-stopped">infinite loop</span>
+      </div>
+    </div>
+
+    <!-- Screen 2: The Input Loop Pattern -->
+    <div class="screen">
+      <h2 class="screen-heading animate-in">The Input Loop Pattern</h2>
+      <p class="animate-in">The <code>while True</code> + <code>break</code> pattern is in almost every interactive script Claude writes. It keeps asking for input until the user decides to stop.</p>
+
+      <div class="chat-window animate-in" id="chat-m3-input">
+        <div class="chat-messages">
+          <div class="chat-message" data-sender="Loop Engine" style="display:none">
+            <div class="chat-avatar" style="background: var(--color-actor-1)">L</div>
+            <div class="chat-bubble">
+              <span class="chat-sender" style="color: var(--color-actor-1)">Loop Engine</span>
+              <p><code>while True:</code> starts — I run forever until someone breaks me out.</p>
+            </div>
+          </div>
+          <div class="chat-message" data-sender="Your Script" style="display:none">
+            <div class="chat-avatar" style="background: var(--color-actor-2)">S</div>
+            <div class="chat-bubble">
+              <span class="chat-sender" style="color: var(--color-actor-2)">Your Script</span>
+              <p>I call <code>input('Command: ').strip()</code> — waiting for the user to type.</p>
+            </div>
+          </div>
+          <div class="chat-message" data-sender="User" style="display:none">
+            <div class="chat-avatar" style="background: var(--color-actor-3)">U</div>
+            <div class="chat-bubble">
+              <span class="chat-sender" style="color: var(--color-actor-3)">User</span>
+              <p>I type: <code>add buy milk</code></p>
+            </div>
+          </div>
+          <div class="chat-message" data-sender="Your Script" style="display:none">
+            <div class="chat-avatar" style="background: var(--color-actor-2)">S</div>
+            <div class="chat-bubble">
+              <span class="chat-sender" style="color: var(--color-actor-2)">Your Script</span>
+              <p>I receive <code>'add buy milk'</code>. I add <code>'buy milk'</code> to the tasks list and print <code>'Added!'</code></p>
+            </div>
+          </div>
+          <div class="chat-message" data-sender="Loop Engine" style="display:none">
+            <div class="chat-avatar" style="background: var(--color-actor-1)">L</div>
+            <div class="chat-bubble">
+              <span class="chat-sender" style="color: var(--color-actor-1)">Loop Engine</span>
+              <p>Back to the top of <code>while True:</code> — waiting for next input.</p>
+            </div>
+          </div>
+          <div class="chat-message" data-sender="User" style="display:none">
+            <div class="chat-avatar" style="background: var(--color-actor-3)">U</div>
+            <div class="chat-bubble">
+              <span class="chat-sender" style="color: var(--color-actor-3)">User</span>
+              <p>I type: <code>quit</code></p>
+            </div>
+          </div>
+          <div class="chat-message" data-sender="Your Script" style="display:none">
+            <div class="chat-avatar" style="background: var(--color-actor-2)">S</div>
+            <div class="chat-bubble">
+              <span class="chat-sender" style="color: var(--color-actor-2)">Your Script</span>
+              <p>Command is <code>'quit'</code> — I call <code>break</code>.</p>
+            </div>
+          </div>
+          <div class="chat-message" data-sender="Loop Engine" style="display:none">
+            <div class="chat-avatar" style="background: var(--color-actor-1)">L</div>
+            <div class="chat-bubble">
+              <span class="chat-sender" style="color: var(--color-actor-1)">Loop Engine</span>
+              <p>Loop exits. Program ends. This <code>while True + break</code> pattern is in almost every CLI Claude writes.</p>
+            </div>
+          </div>
+        </div>
+        <div class="chat-typing" style="display:none">
+          <div class="chat-avatar" id="chat-m3-input-typing-avatar" style="background: var(--color-actor-1)">?</div>
+          <div class="chat-typing-dots">
+            <span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span>
+          </div>
+        </div>
+        <div class="chat-controls">
+          <button class="btn chat-next-btn">Next Message</button>
+          <button class="btn chat-all-btn">Play All</button>
+          <button class="btn chat-reset-btn">Replay</button>
+          <span class="chat-progress"></span>
+        </div>
+      </div>
+
+      <div class="translation-block animate-in">
+        <div class="translation-code">
+          <span class="translation-label">PYTHON</span>
+          <pre><code><span class="code-line"><span class="code-property">tasks</span> = []</span>
+<span class="code-line"><span class="code-keyword">while</span> <span class="code-keyword">True</span>:</span>
+<span class="code-line">    <span class="code-property">user_input</span> = <span class="code-function">input</span>(<span class="code-string">"Command: "</span>).<span class="code-function">strip</span>()</span>
+<span class="code-line">    <span class="code-keyword">if not</span> user_input:</span>
+<span class="code-line">        <span class="code-keyword">continue</span></span>
+<span class="code-line">    <span class="code-keyword">if</span> user_input == <span class="code-string">"quit"</span>:</span>
+<span class="code-line">        <span class="code-keyword">break</span></span>
+<span class="code-line">    tasks.<span class="code-function">append</span>(user_input)</span>
+<span class="code-line">    <span class="code-function">print</span>(<span class="code-function">f</span><span class="code-string">"Added: {user_input}"</span>)</span></code></pre>
+        </div>
+        <div class="translation-english">
+          <span class="translation-label">PLAIN ENGLISH</span>
+          <div class="translation-lines">
+            <p class="tl">&nbsp;</p>
+            <p class="tl"><code>while True:</code> → Run forever (intentional) — break controls exit</p>
+            <p class="tl"><code>.strip()</code> → Remove leading/trailing spaces from user input</p>
+            <p class="tl"><code>if not user_input: continue</code> → User pressed Enter without typing — skip and ask again</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl"><code>if user_input == "quit": break</code> → Exit condition: user typed "quit"</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl"><code>tasks.append(user_input)</code> → Add their input to our list</p>
+            <p class="tl">&nbsp;</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="callout callout-accent animate-in">
+        <div class="callout-icon">💡</div>
+        <div class="callout-content">
+          <strong class="callout-title">while True + break — Python's do-while</strong>
+          <p><code>while True + break</code> is Python's version of a do-while loop — something many other languages have built-in but Python does not. When you see this pattern in Claude code, it means: run at least once, stop when the condition inside says to.</p>
+        </div>
+      </div>
+
+      <div class="glossary-strip animate-in">
+        <span class="glossary-label">TERMS</span>
+        <span class="term" data-definition="A built-in function that shows a prompt and waits for the user to type. Always returns a string."><code>input()</code></span>
+      </div>
+    </div>
+
+    <!-- Screen 3: Functions — Packaging Work -->
+    <div class="screen">
+      <h2 class="screen-heading animate-in">Functions — Packaging Work</h2>
+      <p class="animate-in">A <span class="term" data-definition="A named block of code that can be called anytime. Define once with def, call by name. Functions accept inputs (parameters) and can return a result.">function</span> wraps a block of code into a named unit. Define it once, call it anytime. This is how Claude reuses logic across your program.</p>
+
+      <div class="flow-animation animate-in" id="flow-m3-func" data-steps='[
+        {"highlight":"flow-m3f-1","label":"Caller: calculate_discount(price=100, pct=0.2) — sending arguments"},
+        {"highlight":"flow-m3f-2","label":"Python jumps to the function definition","packet":true,"from":"m3f-1","to":"m3f-2"},
+        {"highlight":"flow-m3f-3","label":"Process: 100 * (1 - 0.2) = 80.0","packet":true,"from":"m3f-2","to":"m3f-3"},
+        {"highlight":"flow-m3f-4","label":"return 80.0 — value travels back to caller","packet":true,"from":"m3f-3","to":"m3f-4"},
+        {"highlight":"flow-m3f-1","label":"Caller receives 80.0. Call again with different args for a different result.","packet":true,"from":"m3f-4","to":"m3f-1"}
+      ]'>
+        <div class="flow-actors">
+          <div class="flow-actor" id="flow-m3f-1">
+            <div class="flow-actor-icon">📞</div>
+            <span>Caller</span>
+          </div>
+          <div class="flow-actor" id="flow-m3f-2">
+            <div class="flow-actor-icon">📋</div>
+            <span>Function Def</span>
+          </div>
+          <div class="flow-actor" id="flow-m3f-3">
+            <div class="flow-actor-icon">⚙️</div>
+            <span>Process</span>
+          </div>
+          <div class="flow-actor" id="flow-m3f-4">
+            <div class="flow-actor-icon">📤</div>
+            <span>Return</span>
+          </div>
+        </div>
+        <div class="flow-packet"></div>
+        <div class="flow-step-label">Click "Next Step" to begin</div>
+        <div class="flow-controls">
+          <button class="btn flow-next-btn">Next Step</button>
+          <button class="btn flow-reset-btn">Restart</button>
+          <span class="flow-progress"></span>
+        </div>
+      </div>
+
+      <div class="callout callout-info animate-in">
+        <div class="callout-icon">💡</div>
+        <div class="callout-content">
+          <strong class="callout-title">return vs print</strong>
+          <p>A function with no <code>return</code> statement gives back <code>None</code>. <code>print()</code> shows text on screen — it does not return anything. <code>return</code> sends a value to the caller. These are different operations.</p>
+        </div>
+      </div>
+
+      <div class="translation-block animate-in">
+        <div class="translation-code">
+          <span class="translation-label">PYTHON</span>
+          <pre><code><span class="code-line"><span class="code-keyword">def</span> <span class="code-function">calculate_discount</span>(price: <span class="code-property">float</span>, pct: <span class="code-property">float</span> = <span class="code-number">0.1</span>) -&gt; <span class="code-property">float</span>:</span>
+<span class="code-line">    <span class="code-string">"""Apply a discount to a price."""</span></span>
+<span class="code-line">    <span class="code-keyword">return</span> price * (<span class="code-number">1</span> - pct)</span>
+<span class="code-line"></span>
+<span class="code-line"><span class="code-property">sale</span>  = <span class="code-function">calculate_discount</span>(<span class="code-number">100</span>)          <span class="code-comment"># uses default pct=0.1</span></span>
+<span class="code-line"><span class="code-property">promo</span> = <span class="code-function">calculate_discount</span>(<span class="code-number">100</span>, <span class="code-number">0.25</span>)    <span class="code-comment"># pct=0.25</span></span>
+<span class="code-line"><span class="code-property">named</span> = <span class="code-function">calculate_discount</span>(price=<span class="code-number">200</span>, pct=<span class="code-number">0.15</span>)</span></code></pre>
+        </div>
+        <div class="translation-english">
+          <span class="translation-label">PLAIN ENGLISH</span>
+          <div class="translation-lines">
+            <p class="tl"><code>def</code> → Define a function. Everything indented below belongs to it</p>
+            <p class="tl"><code>price: float</code> → Type hint: this expects a float. Optional label, not enforced</p>
+            <p class="tl"><code>pct: float = 0.1</code> → Default parameter: if not provided, use 0.1</p>
+            <p class="tl"><code>-&gt; float</code> → Type hint: this function returns a float</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl"><code>return price * (1 - pct)</code> → Compute result and send it back to the caller</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl">Calling with <code>price=200</code> → Keyword argument: named by parameter name</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="glossary-strip animate-in">
+        <span class="glossary-label">TERMS</span>
+        <span class="term" data-definition="A named block of code that can be called anytime. Define once with def, call by name. Functions accept inputs (parameters) and can return a result.">function</span>
+        <span class="term" data-definition="A variable listed in the function definition. It receives the value passed by the caller.">parameter</span>
+        <span class="term" data-definition="The actual value you pass when calling a function. calculate_discount(100) — 100 is the argument.">argument</span>
+        <span class="term" data-definition="The value a function sends back to its caller via the return statement.">return value</span>
+        <span class="term" data-definition="An optional annotation on a parameter or return value showing its expected type: price: float, -> str. Python does not enforce these at runtime.">type hint</span>
+        <span class="term" data-definition="A parameter that has a fallback value used when the caller does not provide one: pct: float = 0.1">default parameter</span>
+      </div>
+    </div>
+
+    <!-- Screen 4: Args, Kwargs and Defaults -->
+    <div class="screen">
+      <h2 class="screen-heading animate-in">Args, Kwargs — Flexible Functions</h2>
+      <p class="animate-in"><code>*args</code> collects unlimited extra positional arguments into a tuple. <code>**kwargs</code> collects unlimited keyword arguments into a dict. Claude uses these to build flexible functions.</p>
+
+      <div class="translation-block animate-in">
+        <div class="translation-code">
+          <span class="translation-label">PYTHON</span>
+          <pre><code><span class="code-line"><span class="code-keyword">def</span> <span class="code-function">log_event</span>(level: <span class="code-property">str</span>, message: <span class="code-property">str</span>, *tags, **metadata):</span>
+<span class="code-line">    <span class="code-function">print</span>(<span class="code-function">f</span><span class="code-string">"[{level}] {message}"</span>)</span>
+<span class="code-line">    <span class="code-keyword">if</span> tags:</span>
+<span class="code-line">        <span class="code-function">print</span>(<span class="code-function">f</span><span class="code-string">"  Tags: {', '.join(tags)}"</span>)</span>
+<span class="code-line">    <span class="code-keyword">if</span> metadata:</span>
+<span class="code-line">        <span class="code-function">print</span>(<span class="code-function">f</span><span class="code-string">"  Data: {metadata}"</span>)</span>
+<span class="code-line"></span>
+<span class="code-line"><span class="code-function">log_event</span>(<span class="code-string">"INFO"</span>, <span class="code-string">"User signed in"</span>)</span>
+<span class="code-line"><span class="code-function">log_event</span>(<span class="code-string">"ERROR"</span>, <span class="code-string">"Payment failed"</span>, <span class="code-string">"billing"</span>, <span class="code-string">"stripe"</span>,</span>
+<span class="code-line">          user_id=<span class="code-number">42</span>, amount=<span class="code-number">99.99</span>)</span></code></pre>
+        </div>
+        <div class="translation-english">
+          <span class="translation-label">PLAIN ENGLISH</span>
+          <div class="translation-lines">
+            <p class="tl"><code>level: str, message: str</code> → Two required positional parameters</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl"><code>*tags</code> → Collect any extra positional arguments into a tuple called tags</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl"><code>**metadata</code> → Collect any extra keyword arguments into a dict called metadata</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl">First call: no tags, no metadata — both are empty</p>
+            <p class="tl">Second call: "billing" and "stripe" go into tags tuple; user_id and amount go into metadata dict</p>
+            <p class="tl">&nbsp;</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="badge-list animate-in">
+        <div class="badge-item">
+          <span class="badge">positional args</span>
+          <span class="badge-desc">Required values passed in order: <code>func(100, 0.25)</code></span>
+        </div>
+        <div class="badge-item">
+          <span class="badge">keyword args</span>
+          <span class="badge-desc">Named when calling: <code>func(price=100)</code></span>
+        </div>
+        <div class="badge-item">
+          <span class="badge">default args</span>
+          <span class="badge-desc">Have fallback values: <code>pct: float = 0.1</code></span>
+        </div>
+        <div class="badge-item">
+          <span class="badge">*args</span>
+          <span class="badge-desc">Catches unlimited extra positional args as a tuple</span>
+        </div>
+        <div class="badge-item">
+          <span class="badge">**kwargs</span>
+          <span class="badge-desc">Catches unlimited keyword args as a dict</span>
+        </div>
+      </div>
+
+      <div class="callout callout-info animate-in">
+        <div class="callout-icon">💡</div>
+        <div class="callout-content">
+          <strong class="callout-title">Lambda — one-line functions</strong>
+          <p><span class="term" data-definition="A compact one-line anonymous function. lambda x: x * 2 is equivalent to a 3-line def. Used for short callbacks like sort keys.">Lambda</span>: a compact one-line function. <code>double = lambda x: x * 2</code> is equivalent to a 3-line <code>def</code>. Claude uses lambdas for sort keys: <code>sorted(users, key=lambda u: u['score'])</code>. Now you can read those lines.</p>
+        </div>
+      </div>
+
+      <div class="glossary-strip animate-in">
+        <span class="glossary-label">TERMS</span>
+        <span class="term" data-definition="*args in a function definition collects all extra positional arguments passed by the caller into a tuple.">*args</span>
+        <span class="term" data-definition="**kwargs in a function definition collects all extra keyword arguments passed by the caller into a dictionary.">**kwargs</span>
+        <span class="term" data-definition="A compact one-line anonymous function. lambda x: x * 2 is equivalent to a 3-line def. Used for short callbacks like sort keys.">lambda</span>
+        <span class="term" data-definition="An argument passed by name rather than position: func(price=100). Makes calls more readable and allows passing in any order.">keyword argument</span>
+      </div>
+    </div>
+
+    <!-- Screen 5: Scope — What Can See What -->
+    <div class="screen">
+      <h2 class="screen-heading animate-in">Scope — What Can See What</h2>
+      <p class="animate-in">Variables have <span class="term" data-definition="The region of a program where a variable is visible and accessible. Python uses the LEGB rule to search scopes in order.">scope</span> — where they are visible. Python searches scopes in order: Local first, then Enclosing, then Global, then Built-in. This is called the <strong>LEGB rule</strong>.</p>
+
+      <div class="step-cards animate-in">
+        <div class="step-card">
+          <div class="step-card-number">1</div>
+          <div class="step-card-content">
+            <strong>Local</strong>
+            <p>Variables inside the current function. Exists only while the function runs.</p>
+          </div>
+        </div>
+        <div class="step-card">
+          <div class="step-card-number">2</div>
+          <div class="step-card-content">
+            <strong>Enclosing</strong>
+            <p>Outer function variables. Inner functions can read (not modify) them by default.</p>
+          </div>
+        </div>
+        <div class="step-card">
+          <div class="step-card-number">3</div>
+          <div class="step-card-content">
+            <strong>Global</strong>
+            <p>Module level, the whole file. Modify with the <code>global</code> keyword inside a function.</p>
+          </div>
+        </div>
+        <div class="step-card">
+          <div class="step-card-number">4</div>
+          <div class="step-card-content">
+            <strong>Built-in</strong>
+            <p>Python built-ins: <code>len</code>, <code>print</code>, <code>range</code> — always available everywhere.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="translation-block animate-in">
+        <div class="translation-code">
+          <span class="translation-label">PYTHON</span>
+          <pre><code><span class="code-line"><span class="code-property">total</span> = <span class="code-number">0</span>          <span class="code-comment"># global scope</span></span>
+<span class="code-line"></span>
+<span class="code-line"><span class="code-keyword">def</span> <span class="code-function">add_amount</span>(x):</span>
+<span class="code-line">    <span class="code-keyword">global</span> total   <span class="code-comment"># I mean the global, not a local</span></span>
+<span class="code-line">    total += x</span>
+<span class="code-line"></span>
+<span class="code-line"><span class="code-keyword">def</span> <span class="code-function">make_counter</span>():</span>
+<span class="code-line">    <span class="code-property">count</span> = <span class="code-number">0</span>      <span class="code-comment"># enclosing scope</span></span>
+<span class="code-line"></span>
+<span class="code-line">    <span class="code-keyword">def</span> <span class="code-function">increment</span>():</span>
+<span class="code-line">        <span class="code-keyword">nonlocal</span> count  <span class="code-comment"># modify the enclosing count</span></span>
+<span class="code-line">        count += <span class="code-number">1</span></span>
+<span class="code-line">        <span class="code-keyword">return</span> count</span>
+<span class="code-line"></span>
+<span class="code-line">    <span class="code-keyword">return</span> increment</span></code></pre>
+        </div>
+        <div class="translation-english">
+          <span class="translation-label">PLAIN ENGLISH</span>
+          <div class="translation-lines">
+            <p class="tl"><code>total = 0</code> at module level → global variable, visible everywhere in the file</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl"><code>global total</code> → Without this, <code>total += x</code> would create a new local variable and crash</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl"><code>count = 0</code> inside make_counter → local to make_counter, enclosing scope for increment</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl"><code>nonlocal count</code> → Modify the enclosing count, not create a new local one</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl"><code>return increment</code> → Return the inner function itself — used as a callable</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="glossary-strip animate-in">
+        <span class="glossary-label">TERMS</span>
+        <span class="term" data-definition="The region of a program where a variable is visible and accessible. Python uses the LEGB rule to search scopes in order.">scope</span>
+        <span class="term" data-definition="The LEGB rule: Python looks up names in Local, Enclosing, Global, Built-in order. First match wins.">LEGB rule</span>
+        <span class="term" data-definition="Declares that an assignment inside a function refers to the module-level variable, not a new local one.">global</span>
+        <span class="term" data-definition="Declares that an assignment inside an inner function refers to the enclosing function's variable, not a new local one.">nonlocal</span>
+      </div>
+    </div>
+
+    <!-- Quiz -->
+    <div class="screen">
+      <h2 class="screen-heading animate-in">Check Your Understanding</h2>
+
+      <div class="quiz-container animate-in" id="quiz-module3">
+
+        <div class="quiz-question-block"
+             data-correct="opt-b"
+             data-explanation-right="Correct! When i == 2, continue skips the print for that iteration. i was already incremented to 2 before the continue, so 2 is never printed. The sequence is 1, (skip 2), 3, 4."
+             data-explanation-wrong="Track when i is incremented. It becomes 2 BEFORE the continue check, so the value 2 is skipped. Sequence: 1, skip 2, 3, 4.">
+          <h3 class="quiz-question">Claude wrote this loop. What does it print?
+            <pre style="margin-top: var(--space-3)"><code><span class="code-line"><span class="code-property">i</span> = <span class="code-number">0</span></span>
+<span class="code-line"><span class="code-keyword">while</span> i &lt; <span class="code-number">4</span>:</span>
+<span class="code-line">    i += <span class="code-number">1</span></span>
+<span class="code-line">    <span class="code-keyword">if</span> i == <span class="code-number">2</span>:</span>
+<span class="code-line">        <span class="code-keyword">continue</span></span>
+<span class="code-line">    <span class="code-function">print</span>(i)</span></code></pre>
+          </h3>
+          <div class="quiz-options">
+            <button class="quiz-option" data-value="opt-a" onclick="selectOption(this)"><div class="quiz-option-radio"></div><span>1 2 3 4</span></button>
+            <button class="quiz-option" data-value="opt-b" onclick="selectOption(this)"><div class="quiz-option-radio"></div><span>1 3 4</span></button>
+            <button class="quiz-option" data-value="opt-c" onclick="selectOption(this)"><div class="quiz-option-radio"></div><span>1 2 3</span></button>
+            <button class="quiz-option" data-value="opt-d" onclick="selectOption(this)"><div class="quiz-option-radio"></div><span>2 3 4</span></button>
+          </div>
+          <div class="quiz-feedback"></div>
+        </div>
+
+        <div class="quiz-question-block"
+             data-correct="opt-c"
+             data-explanation-right="Correct! while True with a break is the standard Python pattern for open-ended input loops. It runs until the user explicitly triggers the exit condition."
+             data-explanation-wrong="That approach has problems — range(100) limits to 100 iterations, and calling input() in the while condition makes it hard to use the value elsewhere.">
+          <h3 class="quiz-question">You want to keep asking the user for input until they type "done." Which loop pattern is correct?</h3>
+          <div class="quiz-options">
+            <button class="quiz-option" data-value="opt-a" onclick="selectOption(this)"><div class="quiz-option-radio"></div><span><code>for i in range(100): if input() == "done": break</code></span></button>
+            <button class="quiz-option" data-value="opt-b" onclick="selectOption(this)"><div class="quiz-option-radio"></div><span><code>while input() != "done": pass</code></span></button>
+            <button class="quiz-option" data-value="opt-c" onclick="selectOption(this)"><div class="quiz-option-radio"></div><span><code>while True: cmd = input(); if cmd == "done": break</code></span></button>
+            <button class="quiz-option" data-value="opt-d" onclick="selectOption(this)"><div class="quiz-option-radio"></div><span><code>for cmd in input(): if cmd == "done": break</code></span></button>
+          </div>
+          <div class="quiz-feedback"></div>
+        </div>
+
+        <div class="quiz-question-block"
+             data-correct="opt-a"
+             data-explanation-right="Exactly! .sort() modifies the list in-place. key=lambda t: t['due_date'] tells Python to sort by extracting the due_date value from each task."
+             data-explanation-wrong=".sort() sorts in-place (modifies the original list). Use sorted() if you want a new list without changing the original. The lambda extracts the sort key from each item.">
+          <h3 class="quiz-question">You see <code>tasks.sort(key=lambda t: t["due_date"])</code> in Claude code. What does it do?</h3>
+          <div class="quiz-options">
+            <button class="quiz-option" data-value="opt-a" onclick="selectOption(this)"><div class="quiz-option-radio"></div><span>Sorts the tasks list in-place, ordering tasks by their due_date field</span></button>
+            <button class="quiz-option" data-value="opt-b" onclick="selectOption(this)"><div class="quiz-option-radio"></div><span>Filters tasks to only include those with a due_date</span></button>
+            <button class="quiz-option" data-value="opt-c" onclick="selectOption(this)"><div class="quiz-option-radio"></div><span>Returns a new sorted list (the original is unchanged)</span></button>
+            <button class="quiz-option" data-value="opt-d" onclick="selectOption(this)"><div class="quiz-option-radio"></div><span>Groups tasks by due_date</span></button>
+          </div>
+          <div class="quiz-feedback"></div>
+        </div>
+
+        <button class="quiz-check-btn" onclick="checkQuiz('quiz-module3')">Check Answers</button>
+        <button class="quiz-reset-btn" onclick="resetQuiz('quiz-module3')">Try Again</button>
+      </div>
+    </div>
+
+  </div>
+</section>

@@ -1,0 +1,394 @@
+<section class="module" id="module-1">
+  <div class="module-content">
+    <div class="module-header animate-in">
+      <span class="module-number">01</span>
+      <h1 class="module-title">The Shape of Python</h1>
+      <p class="module-subtitle">Variables, strings, lists, tuples — the building blocks Claude uses in every script</p>
+    </div>
+
+    <!-- Screen 1: Names & Values -->
+    <div class="screen">
+      <h2 class="screen-heading animate-in">Names &amp; Values</h2>
+
+      <p class="animate-in">When you ask Claude to store a username or count, this is exactly what it writes. Variables are the simplest idea in programming — and the most powerful.</p>
+
+      <h3 class="animate-in">Variables are Luggage Tags</h3>
+      <p class="animate-in">Variables don't contain data — they point to data. Like a luggage tag: the tag isn't the suitcase, it's a label attached to one.</p>
+
+      <div class="translation-block animate-in">
+        <div class="translation-code">
+          <span class="translation-label">PYTHON</span>
+          <pre><code><span class="code-line"><span class="code-property">user_name</span> = <span class="code-string">"Alice"</span></span>
+<span class="code-line"><span class="code-property">score</span> = <span class="code-number">42</span></span>
+<span class="code-line"><span class="code-property">is_active</span> = <span class="code-keyword">True</span></span>
+<span class="code-line"><span class="code-property">last_login</span> = <span class="code-keyword">None</span></span></code></pre>
+        </div>
+        <div class="translation-english">
+          <span class="translation-label">PLAIN ENGLISH</span>
+          <div class="translation-lines">
+            <p class="tl">Create a label "user_name" pointing to the text Alice</p>
+            <p class="tl">Label "score" pointing to the number 42</p>
+            <p class="tl">A yes/no flag — True means yes, this user is active</p>
+            <p class="tl">Intentionally empty — this user has never logged in. <span class="term" data-definition="Python way of saying intentionally no value. Not zero, not empty string — just absent">None</span> is not zero, it means "no value yet"</p>
+          </div>
+        </div>
+      </div>
+
+      <p class="animate-in">
+        Glossary: <span class="term" data-definition="A named label that points to a value in memory — like a Post-it note with a name, stuck to a piece of data">variable</span> ·
+        <span class="term" data-definition="Naming where words are separated by underscores: user_name, is_active. Python standard style">snake_case</span> ·
+        <span class="term" data-definition="Python way of saying intentionally no value. Not zero, not empty string — just absent">None</span>
+      </p>
+
+      <div class="callout callout-info animate-in">
+        <div class="callout-icon">🐍</div>
+        <div class="callout-content">
+          <p>Python uses <span class="term" data-definition="Naming where words are separated by underscores: user_name, is_active. Python standard style">snake_case</span> (underscores between words) for variable names. JavaScript uses camelCase. When you tell Claude to store a user name, it automatically writes <code>user_name</code> in Python.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Screen 2: Strings Are More Than Text -->
+    <div class="screen">
+      <h2 class="screen-heading animate-in">Strings Are More Than Text</h2>
+
+      <h3 class="animate-in">Strings Have Superpowers</h3>
+      <p class="animate-in">A <span class="term" data-definition="Any sequence of text characters in Python. Defined with quotes: 'hello' or &quot;hello&quot;. Even '42' in quotes is a string, not a number.">string</span> is any text in Python. What makes it powerful is the dozens of <span class="term" data-definition="A function built into a type. .strip() is a method of strings — a verb that belongs to text. Call it with dot notation: text.strip()">methods</span> built right in — verbs you can call on any text.</p>
+
+      <div class="flow-animation animate-in" id="flow-m1-strings" data-steps="[
+        {&quot;highlight&quot;:&quot;flow-m1s-1&quot;,&quot;label&quot;:&quot;Raw input from a signup form: email with extra spaces&quot;},
+        {&quot;highlight&quot;:&quot;flow-m1s-2&quot;,&quot;label&quot;:&quot;.strip() removes leading and trailing whitespace&quot;,&quot;packet&quot;:true,&quot;from&quot;:&quot;m1s-1&quot;,&quot;to&quot;:&quot;m1s-2&quot;},
+        {&quot;highlight&quot;:&quot;flow-m1s-3&quot;,&quot;label&quot;:&quot;.lower() normalizes to lowercase for storage&quot;,&quot;packet&quot;:true,&quot;from&quot;:&quot;m1s-2&quot;,&quot;to&quot;:&quot;m1s-3&quot;},
+        {&quot;highlight&quot;:&quot;flow-m1s-4&quot;,&quot;label&quot;:&quot;f-string builds personalized greeting: f&apos;Welcome, {name}!&apos;&quot;,&quot;packet&quot;:true,&quot;from&quot;:&quot;m1s-3&quot;,&quot;to&quot;:&quot;m1s-4&quot;},
+        {&quot;highlight&quot;:&quot;flow-m1s-4&quot;,&quot;label&quot;:&quot;Result: clean, normalized email and personalized greeting ready to display&quot;}
+      ]">
+        <div class="flow-actors">
+          <div class="flow-actor" id="flow-m1s-1">
+            <div class="flow-actor-icon">📥</div>
+            <span>Raw Input</span>
+          </div>
+          <div class="flow-actor" id="flow-m1s-2">
+            <div class="flow-actor-icon">✂️</div>
+            <span>.strip()</span>
+          </div>
+          <div class="flow-actor" id="flow-m1s-3">
+            <div class="flow-actor-icon">🔡</div>
+            <span>.lower()</span>
+          </div>
+          <div class="flow-actor" id="flow-m1s-4">
+            <div class="flow-actor-icon">📝</div>
+            <span>f-string</span>
+          </div>
+        </div>
+        <div class="flow-packet"></div>
+        <div class="flow-step-label">Click "Next Step" to begin</div>
+        <div class="flow-controls">
+          <button class="btn flow-next-btn">Next Step</button>
+          <button class="btn flow-reset-btn">Restart</button>
+          <span class="flow-progress"></span>
+        </div>
+      </div>
+
+      <div class="callout callout-accent animate-in">
+        <div class="callout-icon">💡</div>
+        <div class="callout-content">
+          <p>The <code>f</code> in <span class="term" data-definition="A string prefixed with f. Anything in {} curly braces gets replaced with the value of that expression. f'Score: {42}' becomes 'Score: 42'">f-string</span> stands for formatted. The <code>{}</code> curly braces are windows into your code — whatever is inside gets substituted with its value. Claude uses f-strings constantly.</p>
+        </div>
+      </div>
+
+      <p class="animate-in">
+        Glossary: <span class="term" data-definition="Any sequence of text characters in Python. Defined with quotes: 'hello' or &quot;hello&quot;. Even '42' in quotes is a string, not a number.">string</span> ·
+        <span class="term" data-definition="A function built into a type. .strip() is a method of strings — a verb that belongs to text. Call it with dot notation: text.strip()">method</span> ·
+        <span class="term" data-definition="A string prefixed with f. Anything in {} curly braces gets replaced with the value of that expression. f'Score: {42}' becomes 'Score: 42'">f-string</span>
+      </p>
+    </div>
+
+    <!-- Screen 3: Lists vs Tuples -->
+    <div class="screen">
+      <h2 class="screen-heading animate-in">Lists vs Tuples</h2>
+
+      <h3 class="animate-in">Lists vs Tuples — Change vs Permanence</h3>
+      <p class="animate-in">Both hold sequences of items. The difference is mutability — whether the contents can change after creation.</p>
+
+      <div class="chat-window animate-in" id="chat-m1-lists">
+        <div class="chat-messages">
+          <div class="chat-message" data-sender="List" style="display:none">
+            <div class="chat-avatar" style="background: var(--color-actor-1)">L</div>
+            <div class="chat-bubble">
+              <span class="chat-sender" style="color: var(--color-actor-1)">List</span>
+              <p>I hold your to-do tasks. Add with <code>.append('buy milk')</code>, remove with <code>.pop()</code>. I grow and shrink.</p>
+            </div>
+          </div>
+          <div class="chat-message" data-sender="Tuple" style="display:none">
+            <div class="chat-avatar" style="background: var(--color-actor-2)">T</div>
+            <div class="chat-bubble">
+              <span class="chat-sender" style="color: var(--color-actor-2)">Tuple</span>
+              <p>I hold your GPS coordinates <code>(37.7, -122.4)</code>. Set at creation, never changed. Immutability is my feature.</p>
+            </div>
+          </div>
+          <div class="chat-message" data-sender="List" style="display:none">
+            <div class="chat-avatar" style="background: var(--color-actor-1)">L</div>
+            <div class="chat-bubble">
+              <span class="chat-sender" style="color: var(--color-actor-1)">List</span>
+              <p>I can be sorted with <code>.sort()</code> or <code>sorted(me)</code>. I can be sliced, filtered, comprehended.</p>
+            </div>
+          </div>
+          <div class="chat-message" data-sender="Tuple" style="display:none">
+            <div class="chat-avatar" style="background: var(--color-actor-2)">T</div>
+            <div class="chat-bubble">
+              <span class="chat-sender" style="color: var(--color-actor-2)">Tuple</span>
+              <p>I am faster and use less memory. When data should be fixed — use me. RGB colors. Database rows. Use List when it changes.</p>
+            </div>
+          </div>
+          <div class="chat-message" data-sender="List" style="display:none">
+            <div class="chat-avatar" style="background: var(--color-actor-1)">L</div>
+            <div class="chat-bubble">
+              <span class="chat-sender" style="color: var(--color-actor-1)">List</span>
+              <p>Try <code>my_list[0] = 'new'</code> — works fine!</p>
+            </div>
+          </div>
+          <div class="chat-message" data-sender="Tuple" style="display:none">
+            <div class="chat-avatar" style="background: var(--color-actor-2)">T</div>
+            <div class="chat-bubble">
+              <span class="chat-sender" style="color: var(--color-actor-2)">Tuple</span>
+              <p>Try <code>my_tuple[0] = 'new'</code> — TypeError! That is intentional protection.</p>
+            </div>
+          </div>
+        </div>
+        <div class="chat-typing" style="display:none">
+          <div class="chat-avatar" id="chat-m1-lists-typing-avatar" style="background: var(--color-actor-1)">?</div>
+          <div class="chat-typing-dots">
+            <span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span>
+          </div>
+        </div>
+        <div class="chat-controls">
+          <button class="btn chat-next-btn">Next Message</button>
+          <button class="btn chat-all-btn">Play All</button>
+          <button class="btn chat-reset-btn">Replay</button>
+          <span class="chat-progress"></span>
+        </div>
+      </div>
+
+      <div class="callout callout-warning animate-in">
+        <div class="callout-icon">⚠️</div>
+        <div class="callout-content">
+          <p>Common mistake: trying to modify a tuple. Python will throw a TypeError. This is a feature — tuples protect data that should never change after creation.</p>
+        </div>
+      </div>
+
+      <p class="animate-in">
+        Glossary: <span class="term" data-definition="An ordered, changeable collection of items. Written with square brackets: [1, 2, 3]. You can add, remove, and reorder items.">list</span> ·
+        <span class="term" data-definition="An ordered, fixed collection. Written with parentheses: (37.7, -122.4). Once created, cannot be changed.">tuple</span> ·
+        <span class="term" data-definition="Can be changed after creation. Lists are mutable — you can append, remove, or reorder items.">mutable</span> ·
+        <span class="term" data-definition="Cannot be changed after creation. Tuples and strings are immutable — once made, they stay the same forever.">immutable</span>
+      </p>
+    </div>
+
+    <!-- Screen 4: Reading Lists -->
+    <div class="screen">
+      <h2 class="screen-heading animate-in">Reading Lists</h2>
+
+      <h3 class="animate-in">Indexing and Slicing</h3>
+      <p class="animate-in">Once you have a list, you need to read specific items. Python gives you powerful tools for this — including counting from the back.</p>
+
+      <div class="translation-block animate-in">
+        <div class="translation-code">
+          <span class="translation-label">PYTHON</span>
+          <pre><code><span class="code-line"><span class="code-property">tasks</span> = [<span class="code-string">"buy milk"</span>, <span class="code-string">"write report"</span>, <span class="code-string">"call Alice"</span>, <span class="code-string">"review PR"</span>]</span>
+<span class="code-line"></span>
+<span class="code-line"><span class="code-property">first</span> = tasks[<span class="code-number">0</span>]      <span class="code-comment"># "buy milk"</span></span>
+<span class="code-line"><span class="code-property">last</span>  = tasks[<span class="code-number">-1</span>]     <span class="code-comment"># "review PR"</span></span>
+<span class="code-line"><span class="code-property">two</span>   = tasks[<span class="code-number">1</span>:<span class="code-number">3</span>]    <span class="code-comment"># ["write report", "call Alice"]</span></span>
+<span class="code-line"><span class="code-property">rev</span>   = tasks[::<span class="code-number">-1</span>]   <span class="code-comment"># reversed list</span></span></code></pre>
+        </div>
+        <div class="translation-english">
+          <span class="translation-label">PLAIN ENGLISH</span>
+          <div class="translation-lines">
+            <p class="tl"><span class="term" data-definition="The position of an item in a list. Python starts at 0. tasks[0] is the first item, tasks[1] is the second.">Index</span> 0 is the first item. Python counts from 0, not 1</p>
+            <p class="tl"><span class="term" data-definition="Count from the end of the list. -1 is always the last item, no matter how long the list is.">Negative index</span>: count from the back. -1 is always the last item</p>
+            <p class="tl"><span class="term" data-definition="A way to grab a chunk of a list. tasks[1:3] means from index 1 up to (not including) index 3.">Slice</span> from index 1 up to (not including) index 3</p>
+            <p class="tl">Slice with step -1: walk backward through the whole list — reverses it</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="callout callout-info animate-in">
+        <div class="callout-icon">🔢</div>
+        <div class="callout-content">
+          <p>Python counts from 0. The first item is at position 0. After a few days this feels natural — and you start finding 1-based indexing strange.</p>
+        </div>
+      </div>
+
+      <p class="animate-in">
+        Glossary: <span class="term" data-definition="The position of an item in a list. Python starts at 0. tasks[0] is the first item, tasks[1] is the second.">index</span> ·
+        <span class="term" data-definition="A way to grab a chunk of a list. tasks[1:3] means from index 1 up to (not including) index 3.">slice</span> ·
+        <span class="term" data-definition="Count from the end of the list. -1 is always the last item, no matter how long the list is.">negative index</span>
+      </p>
+    </div>
+
+    <!-- Screen 5: List Comprehensions -->
+    <div class="screen">
+      <h2 class="screen-heading animate-in">List Comprehensions</h2>
+
+      <h3 class="animate-in">Comprehensions — Lists Built in One Line</h3>
+      <p class="animate-in">Comprehensions are Python's compact way to build a new list from an existing one — with optional filtering and transformation. Claude uses them constantly.</p>
+
+      <div class="flow-animation animate-in" id="flow-m1-comp" data-steps="[
+        {&quot;highlight&quot;:&quot;flow-m1c-1&quot;,&quot;label&quot;:&quot;Source list [1,2,3,4,5,6,7,8] enters&quot;},
+        {&quot;highlight&quot;:&quot;flow-m1c-2&quot;,&quot;label&quot;:&quot;Filter keeps only even numbers (if n % 2 == 0)&quot;,&quot;packet&quot;:true,&quot;from&quot;:&quot;m1c-1&quot;,&quot;to&quot;:&quot;m1c-2&quot;},
+        {&quot;highlight&quot;:&quot;flow-m1c-2&quot;,&quot;label&quot;:&quot;[2,4,6,8] pass through&quot;},
+        {&quot;highlight&quot;:&quot;flow-m1c-3&quot;,&quot;label&quot;:&quot;Transform squares each (n * n)&quot;,&quot;packet&quot;:true,&quot;from&quot;:&quot;m1c-2&quot;,&quot;to&quot;:&quot;m1c-3&quot;},
+        {&quot;highlight&quot;:&quot;flow-m1c-4&quot;,&quot;label&quot;:&quot;Result: [4, 16, 36, 64]&quot;,&quot;packet&quot;:true,&quot;from&quot;:&quot;m1c-3&quot;,&quot;to&quot;:&quot;m1c-4&quot;}
+      ]">
+        <div class="flow-actors">
+          <div class="flow-actor" id="flow-m1c-1">
+            <div class="flow-actor-icon">📋</div>
+            <span>Source List</span>
+          </div>
+          <div class="flow-actor" id="flow-m1c-2">
+            <div class="flow-actor-icon">🔍</div>
+            <span>Filter</span>
+          </div>
+          <div class="flow-actor" id="flow-m1c-3">
+            <div class="flow-actor-icon">⚡</div>
+            <span>Transform</span>
+          </div>
+          <div class="flow-actor" id="flow-m1c-4">
+            <div class="flow-actor-icon">✅</div>
+            <span>Result</span>
+          </div>
+        </div>
+        <div class="flow-packet"></div>
+        <div class="flow-step-label">Click "Next Step" to begin</div>
+        <div class="flow-controls">
+          <button class="btn flow-next-btn">Next Step</button>
+          <button class="btn flow-reset-btn">Restart</button>
+          <span class="flow-progress"></span>
+        </div>
+      </div>
+
+      <div class="translation-block animate-in">
+        <div class="translation-code">
+          <span class="translation-label">PYTHON</span>
+          <pre><code><span class="code-line"><span class="code-property">numbers</span> = [<span class="code-number">1</span>, <span class="code-number">2</span>, <span class="code-number">3</span>, <span class="code-number">4</span>, <span class="code-number">5</span>, <span class="code-number">6</span>, <span class="code-number">7</span>, <span class="code-number">8</span>]</span>
+<span class="code-line"></span>
+<span class="code-line"><span class="code-comment"># Long way</span></span>
+<span class="code-line"><span class="code-property">result</span> = []</span>
+<span class="code-line"><span class="code-keyword">for</span> n <span class="code-keyword">in</span> numbers:</span>
+<span class="code-line">    <span class="code-keyword">if</span> n % <span class="code-number">2</span> == <span class="code-number">0</span>:</span>
+<span class="code-line">        result.<span class="code-function">append</span>(n * n)</span>
+<span class="code-line"></span>
+<span class="code-line"><span class="code-comment"># Comprehension — same result</span></span>
+<span class="code-line"><span class="code-property">result</span> = [n * n <span class="code-keyword">for</span> n <span class="code-keyword">in</span> numbers <span class="code-keyword">if</span> n % <span class="code-number">2</span> == <span class="code-number">0</span>]</span></code></pre>
+        </div>
+        <div class="translation-english">
+          <span class="translation-label">PLAIN ENGLISH</span>
+          <div class="translation-lines">
+            <p class="tl">Long way: make empty list, loop, check if even, square it, add it</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl">Short way: [expression for item in source if condition]</p>
+            <p class="tl">Both produce [4, 16, 36, 64]</p>
+            <p class="tl">Claude writes the short form — now you can read it</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="callout callout-accent animate-in">
+        <div class="callout-icon">💡</div>
+        <div class="callout-content">
+          <p>When you ask Claude to filter a list and transform each item, it almost always writes a comprehension. <code>[x * 2 for x in items if x &gt; 0]</code> means: go through items, keep the positive ones, double each one.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quiz -->
+    <div class="screen">
+      <h2 class="screen-heading animate-in">Check Your Understanding</h2>
+
+      <div class="quiz-container animate-in" id="quiz-module1">
+
+        <!-- Q1 -->
+        <div class="quiz-question-block"
+             data-correct="opt-b"
+             data-explanation-right="Exactly! List comprehensions with if are how Python filters. .endswith() checks if a string ends with that suffix."
+             data-explanation-wrong="Python lists have no .filter() method. The Pythonic way to filter is a comprehension with an if clause: [item for item in collection if condition]">
+          <h3 class="quiz-question">You have a list of filenames. Which expression gives only the <code>.py</code> files?</h3>
+          <div class="quiz-options">
+            <button class="quiz-option" data-value="opt-a">
+              <div class="quiz-option-radio"></div>
+              <span><code>files.filter(".py")</code></span>
+            </button>
+            <button class="quiz-option" data-value="opt-b">
+              <div class="quiz-option-radio"></div>
+              <span><code>[f for f in files if f.endswith(".py")]</code></span>
+            </button>
+            <button class="quiz-option" data-value="opt-c">
+              <div class="quiz-option-radio"></div>
+              <span><code>files.find(".py")</code></span>
+            </button>
+            <button class="quiz-option" data-value="opt-d">
+              <div class="quiz-option-radio"></div>
+              <span><code>for f in files: if ".py" in f</code></span>
+            </button>
+          </div>
+          <div class="quiz-feedback"></div>
+        </div>
+
+        <!-- Q2 -->
+        <div class="quiz-question-block"
+             data-correct="opt-c"
+             data-explanation-right="Correct! Empty lists, strings, and dicts are falsy in Python. `if cart_items:` is the idiomatic Pythonic check."
+             data-explanation-wrong="len() > 0 works but is not the Python idiom. Empty collections are falsy — if my_list: is the native way to ask if a list has items.">
+          <h3 class="quiz-question">Your code has <code>if cart_items:</code> to check if the cart has items. A colleague says use <code>len(cart_items) &gt; 0</code>. Who is right?</h3>
+          <div class="quiz-options">
+            <button class="quiz-option" data-value="opt-a">
+              <div class="quiz-option-radio"></div>
+              <span>The colleague — <code>len()</code> is more explicit</span>
+            </button>
+            <button class="quiz-option" data-value="opt-b">
+              <div class="quiz-option-radio"></div>
+              <span>Neither — use <code>cart_items != []</code></span>
+            </button>
+            <button class="quiz-option" data-value="opt-c">
+              <div class="quiz-option-radio"></div>
+              <span>You — empty lists are falsy in Python, so <code>if cart_items:</code> is correct and idiomatic</span>
+            </button>
+            <button class="quiz-option" data-value="opt-d">
+              <div class="quiz-option-radio"></div>
+              <span>Both work identically, <code>len()</code> is faster</span>
+            </button>
+          </div>
+          <div class="quiz-feedback"></div>
+        </div>
+
+        <!-- Q3: Drag-and-drop -->
+        <div class="dnd-container animate-in">
+          <h3 class="quiz-question">Match each Python type to its property:</h3>
+          <div class="dnd-chips">
+            <div class="dnd-chip" draggable="true" data-answer="list">list</div>
+            <div class="dnd-chip" draggable="true" data-answer="tuple">tuple</div>
+            <div class="dnd-chip" draggable="true" data-answer="str">str</div>
+          </div>
+          <div class="dnd-zones">
+            <div class="dnd-zone" data-correct="list">
+              <p class="dnd-zone-label">Mutable (changeable after creation)</p>
+              <div class="dnd-zone-target">Drop here</div>
+            </div>
+            <div class="dnd-zone" data-correct="tuple">
+              <p class="dnd-zone-label">Immutable, ordered, used for fixed records like coordinates</p>
+              <div class="dnd-zone-target">Drop here</div>
+            </div>
+            <div class="dnd-zone" data-correct="str">
+              <p class="dnd-zone-label">Immutable sequence of characters</p>
+              <div class="dnd-zone-target">Drop here</div>
+            </div>
+          </div>
+        </div>
+
+        <button class="quiz-check-btn">Check Answers</button>
+        <button class="quiz-reset-btn">Try Again</button>
+      </div>
+    </div>
+
+  </div>
+</section>

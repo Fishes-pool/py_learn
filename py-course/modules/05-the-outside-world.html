@@ -1,0 +1,456 @@
+<section class="module" id="module-5" style="background: var(--color-bg-warm)">
+  <div class="module-content">
+    <div class="module-header animate-in">
+      <span class="module-number">05</span>
+      <h1 class="module-title">The Outside World</h1>
+      <p class="module-subtitle">Files, JSON, exceptions — how Python reads from and writes to the world beyond your script</p>
+    </div>
+
+    <!-- Screen 1: Files with Context Managers -->
+    <div class="screen">
+      <h2 class="screen-heading animate-in">Files — The Library Borrowing System</h2>
+
+      <p class="animate-in">A context manager is like a library borrowing system — the book is checked out, used, and automatically returned when you are done. Even if you forget. Even if something goes wrong.</p>
+
+      <div class="flow-animation animate-in" id="flow-m5-ctx" data-steps='[
+        {"highlight":"flow-m5c-1","label":"Your code: with open(&quot;data.txt&quot;) as f:"},
+        {"highlight":"flow-m5c-2","label":"Context manager calls __enter__: opens the file, returns file object f","packet":true,"from":"m5c-1","to":"m5c-2"},
+        {"highlight":"flow-m5c-3","label":"File is open — you can read or write inside the indented block","packet":true,"from":"m5c-2","to":"m5c-3"},
+        {"highlight":"flow-m5c-4","label":"Block ends (or exception occurs) — __exit__ fires: file closes automatically","packet":true,"from":"m5c-3","to":"m5c-4"},
+        {"highlight":"flow-m5c-1","label":"Code continues after the with block — file is guaranteed closed"}
+      ]'>
+        <div class="flow-actors">
+          <div class="flow-actor" id="flow-m5c-1">
+            <div class="flow-actor-icon">📄</div>
+            <span>Your Code</span>
+          </div>
+          <div class="flow-actor" id="flow-m5c-2">
+            <div class="flow-actor-icon">🔑</div>
+            <span>__enter__</span>
+          </div>
+          <div class="flow-actor" id="flow-m5c-3">
+            <div class="flow-actor-icon">📂</div>
+            <span>File Open</span>
+          </div>
+          <div class="flow-actor" id="flow-m5c-4">
+            <div class="flow-actor-icon">🔒</div>
+            <span>__exit__</span>
+          </div>
+        </div>
+        <div class="flow-packet"></div>
+        <div class="flow-step-label">Click "Next Step" to begin</div>
+        <div class="flow-controls">
+          <button class="btn flow-next-btn">Next Step</button>
+          <button class="btn flow-reset-btn">Restart</button>
+          <span class="flow-progress"></span>
+        </div>
+      </div>
+
+      <div class="translation-block animate-in">
+        <div class="translation-code">
+          <span class="translation-label">PYTHON</span>
+          <pre><code><span class="code-line"><span class="code-keyword">from</span> pathlib <span class="code-keyword">import</span> Path</span>
+<span class="code-line"></span>
+<span class="code-line"><span class="code-property">data_file</span> = <span class="code-function">Path</span>(<span class="code-string">"tasks.txt"</span>)</span>
+<span class="code-line"></span>
+<span class="code-line"><span class="code-comment"># Write</span></span>
+<span class="code-line"><span class="code-keyword">with</span> <span class="code-function">open</span>(data_file, <span class="code-string">"w"</span>) <span class="code-keyword">as</span> f:</span>
+<span class="code-line">    f.<span class="code-function">write</span>(<span class="code-string">"Buy milk\n"</span>)</span>
+<span class="code-line">    f.<span class="code-function">write</span>(<span class="code-string">"Call Alice\n"</span>)</span>
+<span class="code-line"></span>
+<span class="code-line"><span class="code-comment"># Read</span></span>
+<span class="code-line"><span class="code-keyword">with</span> <span class="code-function">open</span>(data_file, <span class="code-string">"r"</span>) <span class="code-keyword">as</span> f:</span>
+<span class="code-line">    <span class="code-keyword">for</span> line <span class="code-keyword">in</span> f:</span>
+<span class="code-line">        <span class="code-function">print</span>(line.<span class="code-function">strip</span>())</span></code></pre>
+        </div>
+        <div class="translation-english">
+          <span class="translation-label">PLAIN ENGLISH</span>
+          <div class="translation-lines">
+            <p class="tl">&nbsp;</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl"><code>Path("tasks.txt")</code> → A cross-platform path object — works the same on Mac, Windows, Linux</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl"><code>open(data_file, "w")</code> → Open for writing — creates if not exists, overwrites if it does</p>
+            <p class="tl"><code>with ... as f:</code> → Context manager: f is the open file. When the block ends, f closes automatically</p>
+            <p class="tl"><code>f.write("text\n")</code> → Write text. \n is a newline character</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl"><code>open(data_file, "r")</code> → Open for reading. "r" is the default mode</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl"><code>for line in f:</code> → Iterate through the file line by line — memory efficient</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="callout callout-accent animate-in">
+        <div class="callout-icon">💡</div>
+        <div class="callout-content">
+          <p>Almost every practical script Claude writes for you touches files. The <code>with open(...)</code> pattern guarantees the file closes cleanly — no leaked file handles, no data corruption. Even if your code raises an exception inside the block.</p>
+        </div>
+      </div>
+
+      <p class="animate-in">
+        Glossary:
+        <span class="term" data-definition="An object that defines __enter__ and __exit__ methods. Used with the with statement — __enter__ runs at the start, __exit__ runs at the end (or on exception). Files are the most common example.">context manager</span> ·
+        <span class="term" data-definition="A Python statement that wraps a block of code with setup and teardown logic from a context manager. Guarantees cleanup even if an exception occurs.">with statement</span> ·
+        <span class="term" data-definition="A module providing object-oriented path handling. Path objects represent file system paths and work identically on Windows, Mac, and Linux.">pathlib.Path</span> ·
+        <span class="term" data-definition="The second argument to open(). 'r' reads, 'w' writes (overwrites), 'a' appends, 'rb' reads binary. Default is 'r'.">file mode</span>
+      </p>
+    </div>
+
+    <!-- Screen 2: JSON -->
+    <div class="screen">
+      <h2 class="screen-heading animate-in">JSON — Python Meets the Web</h2>
+
+      <p class="animate-in">JSON is how data travels on the internet. Python dicts and JSON look almost identical. The json module converts between them instantly.</p>
+
+      <div class="callout callout-accent animate-in">
+        <div class="callout-icon">💡</div>
+        <div class="callout-content">
+          <p>When Claude writes code to handle an API response, every response is JSON. The moment you call <code>response.json()</code>, Python converts the JSON text to a Python dict — and you can access it with all the dict skills from Module 2.</p>
+        </div>
+      </div>
+
+      <div class="translation-block animate-in">
+        <div class="translation-code">
+          <span class="translation-label">PYTHON</span>
+          <pre><code><span class="code-line"><span class="code-keyword">import</span> json</span>
+<span class="code-line"></span>
+<span class="code-line"><span class="code-property">user</span> = {</span>
+<span class="code-line">    <span class="code-string">"name"</span>: <span class="code-string">"Alice"</span>,</span>
+<span class="code-line">    <span class="code-string">"score"</span>: <span class="code-number">95</span>,</span>
+<span class="code-line">    <span class="code-string">"tags"</span>: [<span class="code-string">"admin"</span>, <span class="code-string">"active"</span>]</span>
+<span class="code-line">}</span>
+<span class="code-line"></span>
+<span class="code-line"><span class="code-comment"># Python dict → JSON string</span></span>
+<span class="code-line"><span class="code-property">json_str</span> = json.<span class="code-function">dumps</span>(user, indent=<span class="code-number">2</span>)</span>
+<span class="code-line"></span>
+<span class="code-line"><span class="code-comment"># JSON string → Python dict</span></span>
+<span class="code-line"><span class="code-property">loaded</span> = json.<span class="code-function">loads</span>(json_str)</span>
+<span class="code-line"></span>
+<span class="code-line"><span class="code-comment"># Write to file</span></span>
+<span class="code-line"><span class="code-keyword">with</span> <span class="code-function">open</span>(<span class="code-string">"user.json"</span>, <span class="code-string">"w"</span>) <span class="code-keyword">as</span> f:</span>
+<span class="code-line">    json.<span class="code-function">dump</span>(user, f, indent=<span class="code-number">2</span>)</span>
+<span class="code-line"></span>
+<span class="code-line"><span class="code-comment"># Read from file</span></span>
+<span class="code-line"><span class="code-keyword">with</span> <span class="code-function">open</span>(<span class="code-string">"user.json"</span>, <span class="code-string">"r"</span>) <span class="code-keyword">as</span> f:</span>
+<span class="code-line">    <span class="code-property">data</span> = json.<span class="code-function">load</span>(f)</span></code></pre>
+        </div>
+        <div class="translation-english">
+          <span class="translation-label">PLAIN ENGLISH</span>
+          <div class="translation-lines">
+            <p class="tl">&nbsp;</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl"><code>json.dumps(user)</code> → "dump to string" — converts Python dict to a JSON-formatted string</p>
+            <p class="tl"><code>indent=2</code> → Pretty-print with 2-space indentation — readable to humans and tools</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl"><code>json.loads(json_str)</code> → "load from string" — converts JSON string back to Python dict</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl"><code>json.dump(user, f)</code> → Write JSON directly to an open file (no intermediate string)</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl"><code>json.load(f)</code> → Read JSON directly from a file — returns a Python dict</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="pattern-cards animate-in">
+        <div class="pattern-card">
+          <div class="pattern-card-icon">📡</div>
+          <h3 class="pattern-card-title">1. API response arrives</h3>
+          <p class="pattern-card-desc">Raw JSON text comes back from the server as a string.</p>
+        </div>
+        <div class="pattern-card">
+          <div class="pattern-card-icon">🔄</div>
+          <h3 class="pattern-card-title">2. json.loads() converts</h3>
+          <p class="pattern-card-desc">JSON text becomes a Python dict you can work with.</p>
+        </div>
+        <div class="pattern-card">
+          <div class="pattern-card-icon">🔑</div>
+          <h3 class="pattern-card-title">3. Access data</h3>
+          <p class="pattern-card-desc"><code>data["user"]["name"]</code> — normal dict access.</p>
+        </div>
+        <div class="pattern-card">
+          <div class="pattern-card-icon">✏️</div>
+          <h3 class="pattern-card-title">4. Modify as dict</h3>
+          <p class="pattern-card-desc">Update values using all your dict skills from Module 2.</p>
+        </div>
+        <div class="pattern-card">
+          <div class="pattern-card-icon">📤</div>
+          <h3 class="pattern-card-title">5. json.dumps() converts back</h3>
+          <p class="pattern-card-desc">Python dict becomes JSON text for storage or sending.</p>
+        </div>
+      </div>
+
+      <p class="animate-in">
+        Glossary:
+        <span class="term" data-definition="JavaScript Object Notation — a text format for structured data. Uses key-value pairs like Python dicts and supports strings, numbers, booleans, arrays, and nested objects.">JSON</span> ·
+        <span class="term" data-definition="'dump to string' — converts a Python dict (or list) to a JSON-formatted string. Pass indent=2 for pretty-printing.">json.dumps()</span> ·
+        <span class="term" data-definition="'load from string' — converts a JSON-formatted string to a Python dict or list. Raises json.JSONDecodeError if the string is not valid JSON.">json.loads()</span> ·
+        <span class="term" data-definition="The process of converting a data structure (like a Python dict) into a format that can be stored or transmitted (like a JSON string). json.dumps() serializes; json.loads() deserializes.">serialization</span>
+      </p>
+    </div>
+
+    <!-- Screen 3: Try/Except -->
+    <div class="screen">
+      <h2 class="screen-heading animate-in">Try/Except — Expecting the Unexpected</h2>
+
+      <p class="animate-in">External resources fail. Files go missing. APIs go down. try/except lets your program handle these failures gracefully instead of crashing.</p>
+
+      <div class="flow-animation animate-in" id="flow-m5-try" data-steps='[
+        {"highlight":"flow-m5t-1","label":"Python enters the try block — attempting the risky operation"},
+        {"highlight":"flow-m5t-1","label":"Attempt: open config.json and read it"},
+        {"highlight":"flow-m5t-2","label":"ERROR! File not found — Python jumps to except block","packet":true,"from":"m5t-1","to":"m5t-2"},
+        {"highlight":"flow-m5t-2","label":"except FileNotFoundError: handle it — use defaults instead of crashing"},
+        {"highlight":"flow-m5t-4","label":"finally always runs — log the attempt, release any resources","packet":true,"from":"m5t-2","to":"m5t-4"},
+        {"highlight":"flow-m5t-3","label":"(Success path: else block runs when try succeeds with no exception)"}
+      ]'>
+        <div class="flow-actors">
+          <div class="flow-actor" id="flow-m5t-1">
+            <div class="flow-actor-icon">🎯</div>
+            <span>try block</span>
+          </div>
+          <div class="flow-actor" id="flow-m5t-2">
+            <div class="flow-actor-icon">🛡️</div>
+            <span>except block</span>
+          </div>
+          <div class="flow-actor" id="flow-m5t-3">
+            <div class="flow-actor-icon">✅</div>
+            <span>else block</span>
+          </div>
+          <div class="flow-actor" id="flow-m5t-4">
+            <div class="flow-actor-icon">🔁</div>
+            <span>finally block</span>
+          </div>
+        </div>
+        <div class="flow-packet"></div>
+        <div class="flow-step-label">Click "Next Step" to begin</div>
+        <div class="flow-controls">
+          <button class="btn flow-next-btn">Next Step</button>
+          <button class="btn flow-reset-btn">Restart</button>
+          <span class="flow-progress"></span>
+        </div>
+      </div>
+
+      <div class="translation-block animate-in">
+        <div class="translation-code">
+          <span class="translation-label">PYTHON</span>
+          <pre><code><span class="code-line"><span class="code-keyword">try</span>:</span>
+<span class="code-line">    <span class="code-keyword">with</span> <span class="code-function">open</span>(<span class="code-string">"config.json"</span>, <span class="code-string">"r"</span>) <span class="code-keyword">as</span> f:</span>
+<span class="code-line">        <span class="code-property">config</span> = json.<span class="code-function">load</span>(f)</span>
+<span class="code-line"><span class="code-keyword">except</span> <span class="code-function">FileNotFoundError</span>:</span>
+<span class="code-line">    <span class="code-property">config</span> = {<span class="code-string">"debug"</span>: <span class="code-keyword">False</span>, <span class="code-string">"timeout"</span>: <span class="code-number">30</span>}</span>
+<span class="code-line">    <span class="code-function">print</span>(<span class="code-string">"Config not found — using defaults"</span>)</span>
+<span class="code-line"><span class="code-keyword">except</span> json.<span class="code-function">JSONDecodeError</span> <span class="code-keyword">as</span> e:</span>
+<span class="code-line">    <span class="code-function">print</span>(<span class="code-string">f"Invalid JSON: {e}"</span>)</span>
+<span class="code-line">    <span class="code-property">config</span> = {}</span>
+<span class="code-line"><span class="code-keyword">else</span>:</span>
+<span class="code-line">    <span class="code-function">print</span>(<span class="code-string">"Config loaded successfully"</span>)</span>
+<span class="code-line"><span class="code-keyword">finally</span>:</span>
+<span class="code-line">    <span class="code-function">print</span>(<span class="code-string">"Setup complete"</span>)   <span class="code-comment"># always runs</span></span></code></pre>
+        </div>
+        <div class="translation-english">
+          <span class="translation-label">PLAIN ENGLISH</span>
+          <div class="translation-lines">
+            <p class="tl"><code>try:</code> → Attempt this code — it might fail</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl"><code>except FileNotFoundError:</code> → If the file does not exist, handle it here (no crash)</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl"><code>except json.JSONDecodeError as e:</code> → If JSON is malformed, handle it here. e holds error details</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl"><code>else:</code> → Runs ONLY if the try block completed with no exception</p>
+            <p class="tl">&nbsp;</p>
+            <p class="tl"><code>finally:</code> → Runs no matter what — success, failure, or any exception. Use for cleanup</p>
+          </div>
+        </div>
+      </div>
+
+      <p class="animate-in">
+        Glossary:
+        <span class="term" data-definition="An event that disrupts normal program flow — a signal that something went wrong. Python raises exceptions automatically (FileNotFoundError, TypeError) or you can raise them manually.">exception</span> ·
+        <span class="term" data-definition="A control flow structure: try the risky code, except catches specific errors, else runs on success, finally always runs. Use it to handle failures gracefully.">try/except</span> ·
+        <span class="term" data-definition="Raised when open() cannot find the file at the given path. A subclass of OSError. Handle it to provide a default when config files or data files are missing.">FileNotFoundError</span> ·
+        <span class="term" data-definition="An optional clause in a try/except block that always runs — regardless of whether an exception occurred. Use it for cleanup: closing connections, logging, releasing resources.">finally</span>
+      </p>
+    </div>
+
+    <!-- Screen 4: Exception Hierarchy -->
+    <div class="screen">
+      <h2 class="screen-heading animate-in">The Exception Hierarchy</h2>
+
+      <p class="animate-in">Python exceptions form a tree. Catching a parent type catches all its children. Knowing the hierarchy helps you write precise error handling.</p>
+
+      <div class="arch-diagram animate-in">
+        <div class="arch-zone">
+          <div class="arch-zone-label">Python Exception Hierarchy (click to explore)</div>
+          <div class="arch-components">
+            <div class="arch-component" data-desc="Root of all Python exceptions. Rarely caught directly — reserved for system events like KeyboardInterrupt (Ctrl+C).">
+              <div class="arch-component-icon">🌳</div>
+              <div class="arch-component-label">BaseException</div>
+            </div>
+            <div class="arch-component" data-desc="Base class for all regular exceptions. Catching Exception catches almost everything except system events.">
+              <div class="arch-component-icon">📦</div>
+              <div class="arch-component-label">Exception</div>
+            </div>
+            <div class="arch-component" data-desc="Raised when a value has the right type but wrong content: int('hello'), or a list index out of range conceptually.">
+              <div class="arch-component-icon">❌</div>
+              <div class="arch-component-label">ValueError</div>
+            </div>
+            <div class="arch-component" data-desc="Raised when an operation is applied to the wrong type: 'hello' + 5, or calling a non-callable.">
+              <div class="arch-component-icon">🔀</div>
+              <div class="arch-component-label">TypeError</div>
+            </div>
+            <div class="arch-component" data-desc="Raised when a dictionary key does not exist: d['missing_key'].">
+              <div class="arch-component-icon">🗝️</div>
+              <div class="arch-component-label">KeyError</div>
+            </div>
+            <div class="arch-component" data-desc="Raised when a file does not exist. A subclass of OSError — catch FileNotFoundError for precision, OSError for any file system error.">
+              <div class="arch-component-icon">📂</div>
+              <div class="arch-component-label">FileNotFoundError</div>
+            </div>
+            <div class="arch-component" data-desc="Raised when a list index is out of range: my_list[100] on a 3-item list.">
+              <div class="arch-component-icon">📋</div>
+              <div class="arch-component-label">IndexError</div>
+            </div>
+            <div class="arch-component" data-desc="Raised when you access an attribute that does not exist: obj.nonexistent_method.">
+              <div class="arch-component-icon">🔍</div>
+              <div class="arch-component-label">AttributeError</div>
+            </div>
+          </div>
+        </div>
+        <div class="arch-description">Click any exception to learn when it appears</div>
+      </div>
+
+      <div class="callout callout-info animate-in">
+        <div class="callout-icon">🔗</div>
+        <div class="callout-content">
+          <p>Custom exceptions let you create domain-specific error types. A payment app might define <code>PaymentDeclined(ValueError)</code>. Claude often generates these in larger applications — now you know they are just subclasses of <span class="term" data-definition="Base class for all regular exceptions. Catching Exception catches almost everything except system events like KeyboardInterrupt.">Exception</span>.</p>
+        </div>
+      </div>
+
+      <p class="animate-in">
+        Glossary:
+        <span class="term" data-definition="The tree of exception types in Python. Parent types are broad (Exception, OSError); children are specific (FileNotFoundError, PermissionError). Catching a parent type catches all its children.">exception hierarchy</span> ·
+        <span class="term" data-definition="Raised when a value has the right type but wrong content: int('hello') raises ValueError because 'hello' is a string but not a valid integer string.">ValueError</span> ·
+        <span class="term" data-definition="Raised when an operation is applied to the wrong type: 'hello' + 5 raises TypeError because you cannot add a string and an integer.">TypeError</span> ·
+        <span class="term" data-definition="Raised when a dictionary key does not exist. Use .get(key, default) to avoid KeyError, or catch it with except KeyError.">KeyError</span>
+      </p>
+    </div>
+
+    <!-- Quiz -->
+    <div class="screen">
+      <h2 class="screen-heading animate-in">Check Your Understanding</h2>
+
+      <div class="quiz-container animate-in" id="quiz-module5">
+
+        <!-- Q1 -->
+        <div class="quiz-question-block"
+             data-correct="opt-b"
+             data-explanation-right=".get() with a default is the cleanest solution — one line, no try/except needed. This is the everyday fix for optional dict keys."
+             data-explanation-wrong="That works but is more code than needed. .get(key, default) handles optional keys in a single expression.">
+          <h3 class="quiz-question">Claude wrote code with <code>user["premium_tier"]</code> from an API response. Some users do not have this field. What is the safest fix?</h3>
+          <div class="quiz-options">
+            <button class="quiz-option" data-value="opt-a">
+              <div class="quiz-option-radio"></div>
+              <span>Wrap in <code>try: ... except KeyError:</code></span>
+            </button>
+            <button class="quiz-option" data-value="opt-b">
+              <div class="quiz-option-radio"></div>
+              <span>Change to <code>user.get("premium_tier", "free")</code></span>
+            </button>
+            <button class="quiz-option" data-value="opt-c">
+              <div class="quiz-option-radio"></div>
+              <span>Add <code>if "premium_tier" in user:</code> before every access</span>
+            </button>
+            <button class="quiz-option" data-value="opt-d">
+              <div class="quiz-option-radio"></div>
+              <span>Ask the API to always include this field</span>
+            </button>
+          </div>
+          <div class="quiz-feedback"></div>
+        </div>
+
+        <!-- Q2 -->
+        <div class="quiz-question-block"
+             data-correct="opt-c"
+             data-explanation-right="Correct! When an exception occurs, the except block catches it and the else block is skipped. finally ALWAYS runs regardless of success or failure."
+             data-explanation-wrong="else only runs when try completes WITHOUT an exception. finally always runs — that is its entire purpose.">
+          <h3 class="quiz-question">Trace this code. When the file does not exist, which blocks run?
+            <pre style="margin-top:0.5rem"><code>try:
+    f = open("missing.txt")
+    data = f.read()
+except FileNotFoundError:
+    data = "default"
+else:
+    print("File loaded")
+finally:
+    print("Done")</code></pre>
+          </h3>
+          <div class="quiz-options">
+            <button class="quiz-option" data-value="opt-a">
+              <div class="quiz-option-radio"></div>
+              <span>Just the except block</span>
+            </button>
+            <button class="quiz-option" data-value="opt-b">
+              <div class="quiz-option-radio"></div>
+              <span>except block and else block</span>
+            </button>
+            <button class="quiz-option" data-value="opt-c">
+              <div class="quiz-option-radio"></div>
+              <span>except block and finally block</span>
+            </button>
+            <button class="quiz-option" data-value="opt-d">
+              <div class="quiz-option-radio"></div>
+              <span>Just the finally block</span>
+            </button>
+          </div>
+          <div class="quiz-feedback"></div>
+        </div>
+
+        <!-- Q3 -->
+        <div class="quiz-question-block"
+             data-correct="opt-a"
+             data-explanation-right="Right! Mode 'a' appends — new content is added to the end. Mode 'w' is destructive: it truncates the file to zero length before writing."
+             data-explanation-wrong="Mode 'w' overwrites — it deletes existing content. Mode 'a' for append adds to the end of the existing file.">
+          <h3 class="quiz-question">You want to append new log entries without overwriting old ones. Which file mode?</h3>
+          <div class="quiz-options">
+            <button class="quiz-option" data-value="opt-a">
+              <div class="quiz-option-radio"></div>
+              <span><code>open("log.txt", "a")</code></span>
+            </button>
+            <button class="quiz-option" data-value="opt-b">
+              <div class="quiz-option-radio"></div>
+              <span><code>open("log.txt", "w")</code></span>
+            </button>
+            <button class="quiz-option" data-value="opt-c">
+              <div class="quiz-option-radio"></div>
+              <span><code>open("log.txt", "r")</code></span>
+            </button>
+            <button class="quiz-option" data-value="opt-d">
+              <div class="quiz-option-radio"></div>
+              <span><code>open("log.txt", "rw")</code></span>
+            </button>
+          </div>
+          <div class="quiz-feedback"></div>
+        </div>
+
+        <button class="quiz-check-btn">Check Answers</button>
+        <button class="quiz-reset-btn">Try Again</button>
+      </div>
+    </div>
+
+  </div>
+</section>
