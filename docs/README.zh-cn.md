@@ -4,7 +4,7 @@
 
 - 这是基于《Python编程 从入门到实践（第3版）》书籍总结的Python语法知识，包括不限于书籍中的内容。
 
-- ~~目标人群: 有其他编程语言的程序员~~
+- ~~目标人群: 有其他编程语言的程序员~~(如果有的话更好)
 
 ## [预览](https://fishes-pool.github.io/py_learn/py-course/index.html)
 
