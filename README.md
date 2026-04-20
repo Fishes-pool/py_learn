@@ -6,6 +6,10 @@
 
 - **Target Audience:** Programmers already proficient in other programming languages.
 
+## Preview course
+
+![py-course-web](.claude/docs/images/course_preview.png)
+
 ## Tech Stack
 
 - Python
