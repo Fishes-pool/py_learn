@@ -8,7 +8,7 @@
 
 - This project is a summary of Python syntax based on the book _Python Crash Course (3rd Edition)_, including but not limited to the content covered in the book.
 
-- **Target Audience:** Programmers already proficient in other programming languages.
+- ~~**Target Audience:** Programmers already proficient in other programming languages.~~(If better)
 
 ## [Preview course](https://fishes-pool.github.io/py_learn/py-course/index.html)
 
