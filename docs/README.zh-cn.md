@@ -8,7 +8,7 @@
 
 ## [预览](https://fishes-pool.github.io/py_learn/py-course/index.html)
 
-![py-course-web](./docs/images/course_preview.png)
+![py-course-web](./images/course_preview.png)
 
 ## 技术
 
