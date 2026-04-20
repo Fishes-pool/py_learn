@@ -6,7 +6,7 @@
 
 - **Target Audience:** Programmers already proficient in other programming languages.
 
-## Preview course
+## [Preview course](https://yongjieyuan.github.io/py_learn/py-course/index.html)
 
 ![py-course-web](.claude/docs/images/course_preview.png)
 
