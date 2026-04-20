@@ -1,0 +1,27 @@
+日志分析报告 - 生成时间：2026-04-19 23:28:04
+=======================================================
+
+【日志级别统计】
+  CRITICAL  :   1  █
+  ERROR     :   3  ███
+  WARNING   :   2  ██
+  INFO      :   4  ████
+  DEBUG     :   1  █
+
+【服务调用统计】
+  auth           : 3 次
+  api            : 3 次
+  db             : 2 次
+  payment        : 2 次
+  unknown        : 1 次
+
+【错误与严重告警（4 条）】
+  [ERROR] db - 数据库连接超时
+  [ERROR] payment - 支付接口异常：timeout
+  [CRITICAL] db - 主库宕机，切换从库
+  [ERROR] auth - JWT 验证失败
+
+【解析失败（1 条）】
+  ⚠ 第 11 行解析失败：JSON 格式错误：Expecting value: line 1 column 1 (char 0)
+
+共处理 12 行，其中 1 行解析失败。
