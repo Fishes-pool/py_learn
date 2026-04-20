@@ -8,7 +8,7 @@
 
 ## [Preview course](https://yongjieyuan.github.io/py_learn/py-course/index.html)
 
-![py-course-web](.claude/docs/images/course_preview.png)
+![py-course-web](./docs/images/course_preview.png)
 
 ## Tech Stack
 
