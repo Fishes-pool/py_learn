@@ -6,6 +6,8 @@
 
 - **Target Audience:** Programmers already proficient in other programming languages.
 
+## [Preview course](https://yongjieyuan.github.io/py_learn/py-course/index.html)
+
 ## Tech Stack
 
 - Python
